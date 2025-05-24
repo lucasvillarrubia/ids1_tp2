@@ -1,9 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.util.function.Function;
 
@@ -44,7 +42,9 @@ public record UserCreateDTO(
         @Schema(description = "Gender of the user", example = "male")
         String gender,
 
-        @NotBlank(message = "Age is required")
+        @NotNull(message = "Age is required")
+        @Min(value = 0, message = "Age must be a non-negative number")
+        @Max(value = 150, message = "Age must be a reasonable number")
         Short age
 
 

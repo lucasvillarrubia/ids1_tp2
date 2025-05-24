@@ -41,6 +41,7 @@ public class User implements UserDetails, UserCredentials {
     @Column (columnDefinition = "ENUM('Male', 'Female', 'Other')")
     private String gender;
 
+    @Column (nullable = false)
     private Short age;
 
     private final String role = "USER";
