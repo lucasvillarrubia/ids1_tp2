@@ -12,14 +12,11 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity(name = "users")
-public class User implements UserDetails, UserCredentials {
+public class User implements UserCredentials {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true, nullable = false)
-    private String username;
 
     @Column(nullable = false)
     private String name;
@@ -38,18 +35,17 @@ public class User implements UserDetails, UserCredentials {
 
     private String photo;
 
-    @Column (columnDefinition = "ENUM('Male', 'Female', 'Other')")
+    @Column (nullable = false)
     private String gender;
 
     @Column (nullable = false)
     private Short age;
 
-    private final String role = "USER";
+    private String role = "USER";
 
     public User() {}
 
-    public User(String username, String name, String lastname, String email, String zone, String password, String gender, String photo, Short age) {
-        this.username = username;
+    public User(String name, String lastname, String email, String zone, String password, String gender, String photo, Short age) {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
@@ -61,19 +57,12 @@ public class User implements UserDetails, UserCredentials {
     }
 
     @Override
-    public String username() {
-        return this.username;
-    }
-
-    @Override
     public String password() {
         return this.password;
     }
 
     @Override
-    public String getUsername() {
-        return this.username;
-    }
+    public String email() {return this.email;}
 
     public String getName() { return this.name;}
 
@@ -83,7 +72,6 @@ public class User implements UserDetails, UserCredentials {
 
     public String getZone() { return this.zone;}
 
-    @Override
     public String getPassword() { return this.password;}
 
     public String getGender() { return this.gender;}
@@ -93,9 +81,4 @@ public class User implements UserDetails, UserCredentials {
     public String getRole() { return this.role;}
 
     public Short getAge() { return this.age;}
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
-    }
 }

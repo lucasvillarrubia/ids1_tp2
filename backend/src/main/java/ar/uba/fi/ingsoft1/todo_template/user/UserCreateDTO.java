@@ -6,11 +6,6 @@ import jakarta.validation.constraints.*;
 import java.util.function.Function;
 
 public record UserCreateDTO(
-        @NotBlank(message = "Username is mandatory")
-        @Size(max = 255)
-        @Schema(description = "Username is mandatory", maxLength = 255, example = "john_doe", required = true)
-        String username,
-
         @NotBlank(message = "Name is mandatory")
         @Size(max = 255)
         @Schema(description = "Name is mandatory", maxLength = 255, example = "John", required = true)
@@ -51,6 +46,6 @@ public record UserCreateDTO(
 
 ) implements UserCredentials {
     public User asUser(Function<String, String> encryptPassword) {
-        return new User(username, name, lastname, email, zone, encryptPassword.apply(password), gender, photo, age);
+        return new User(name, lastname, email, zone, encryptPassword.apply(password), gender, photo, age);
     }
 }
