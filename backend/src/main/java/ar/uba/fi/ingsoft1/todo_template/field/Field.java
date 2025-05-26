@@ -11,12 +11,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "canchas")
+@Entity(name = "fields")
 public class Field {
 
     @Id
@@ -51,9 +50,9 @@ public class Field {
     @JoinColumn(name = "schedule_id", nullable = false, unique = true)
     private FieldSchedule schedule;
 
-    private ArrayList<String> reservations;
+    private ArrayList<Long> reservations;
 
-    @OneToMany(mappedBy = "cancha")
+    @OneToMany(mappedBy = "field")
     private ArrayList<Review> reviews;
 
     public Field(Long id, String name, Long ownerId, String location, String zone, ArrayList<FieldFeatures> features, Optional<ArrayList<String>> images) {
@@ -70,6 +69,20 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
+    public Field(Long id, String name, Long ownerId, String location, String zone, ArrayList<FieldFeatures> features, Optional<ArrayList<String>> images, FieldSchedule schedule, ArrayList<Long> reservations, ArrayList<Review> reviews) {
+        this.id = id;
+        this.name = name;
+        this.ownerId = ownerId;
+        this.location = location;
+        this.zone = zone;
+        this.features = features;
+        this.images = images.orElse(new ArrayList<>());
+
+        this.schedule = schedule;
+        this.reservations = reservations;
+        this.reviews = reviews;
+    }
+
     public Long getId() {
         return id;
     }
@@ -78,68 +91,80 @@ public class Field {
         return ownerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getLocation() {
         return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getZone() {
         return zone;
     }
 
-    public void setZone(String zone) {
-        this.zone = zone;
-    }
-
     public Double getPrice() {
         return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public ArrayList<FieldFeatures> getFeatures() {
         return features;
     }
 
-    public void setFeatures(ArrayList<FieldFeatures> features) {
-        this.features = features;
-    }
-
     public ArrayList<String> getImages() {
         return images;
     }
 
-    public void setImages(ArrayList<String> images) {
-        this.images = images;
-    }
-
     public FieldSchedule getSchedule() {
         return schedule;
+    }
+
+    public ArrayList<Long> getReservations() {
+        return reservations;
+    }
+
+    public ArrayList<Review> getReviews() {
+        return reviews;
+    }
+
+    public Boolean IsAvailable() {
+        return isAvailable;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public void setFeatures(ArrayList<FieldFeatures> features) {
+        this.features = features;
+    }
+
+    public void setImages(ArrayList<String> images) {
+        this.images = images;
     }
 
     public void setSchedule(FieldSchedule schedule) {
@@ -162,34 +187,23 @@ public class Field {
         this.schedule.setPredefDuration(predefDuration);
     }
 
-    public ArrayList<String> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(ArrayList<String> reservations) {
+    public void setReservations(ArrayList<Long> reservations) {
         this.reservations = reservations;
-    }
-    public void addReservation(String reservation) { // TODO: Que se modifique el schedule
-        this.reservations.add(reservation);
-    }
-
-    public ArrayList<Review> getReviews() {
-        return reviews;
     }
 
     public void setReviews(ArrayList<Review> reviews) {
         this.reviews = reviews;
     }
 
-    public void addReview(Review review) {
-        this.reviews.add(review);
-    }
-
-    public Boolean IsAvailable() {
-        return isAvailable;
-    }
-
     public void setIsAvailable(Boolean isAvailable) {
         this.isAvailable = isAvailable;
+    }
+
+    public void addReservation(Long reservation) { // TODO: Que se modifique el schedule
+        this.reservations.add(reservation);
+    }
+
+    public void addReview(Review review) {
+        this.reviews.add(review);
     }
 }
