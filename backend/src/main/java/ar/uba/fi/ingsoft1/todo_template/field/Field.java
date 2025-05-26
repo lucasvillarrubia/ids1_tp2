@@ -14,8 +14,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
-@Entity(name = "fields")
+@Entity
+@Table(name = "fields")
 public class Field {
 
     @Id
@@ -38,22 +40,30 @@ public class Field {
     @Column(nullable = false)
     private String zone;
 
+    @Column
     private Double price;
 
+    @Column
     private ArrayList<FieldFeatures> features;
 
+    @OneToMany
+    @JoinColumn(name = "field_id", nullable = false, unique = true)
     private ArrayList<String> images;
 
+    @Column
     private Boolean isAvailable = true;
 
     @OneToOne
     @JoinColumn(name = "schedule_id", nullable = false, unique = true)
     private FieldSchedule schedule;
 
+
     private ArrayList<Long> reservations;
 
     @OneToMany(mappedBy = "field")
     private ArrayList<Review> reviews;
+
+    public Field() {}
 
     public Field(Long id, String name, Long ownerId, String location, String zone, ArrayList<FieldFeatures> features, Optional<ArrayList<String>> images) {
         this.id = id;
@@ -69,19 +79,33 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long id, String name, Long ownerId, String location, String zone, ArrayList<FieldFeatures> features, Optional<ArrayList<String>> images, FieldSchedule schedule, ArrayList<Long> reservations, ArrayList<Review> reviews) {
+    public Field(Long id, Long ownerId, String name, String location, String zone, ArrayList<FieldFeatures> features) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
         this.location = location;
         this.zone = zone;
         this.features = features;
-        this.images = images.orElse(new ArrayList<>());
 
-        this.schedule = schedule;
-        this.reservations = reservations;
-        this.reviews = reviews;
+        this.schedule = new FieldSchedule();
+        this.images = new ArrayList<>();
+        this.reservations = new ArrayList<>();
+        this.reviews = new ArrayList<>();
     }
+
+    public Field(Long ownerId, String name, String location, String zone, ArrayList<FieldFeatures> features) {
+        this.name = name;
+        this.ownerId = ownerId;
+        this.location = location;
+        this.zone = zone;
+        this.features = features;
+
+        this.schedule = new FieldSchedule();
+        this.images = new ArrayList<>();
+        this.reservations = new ArrayList<>();
+        this.reviews = new ArrayList<>();
+    }
+
 
     public Long getId() {
         return id;
@@ -129,6 +153,10 @@ public class Field {
 
     public ArrayList<Review> getReviews() {
         return reviews;
+    }
+
+    public FieldSchedule getFieldSchedule() {
+        return schedule;
     }
 
     public Boolean IsAvailable() {

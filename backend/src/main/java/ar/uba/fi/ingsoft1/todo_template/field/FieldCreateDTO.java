@@ -1,18 +1,15 @@
+package ar.uba.fi.ingsoft1.todo_template.field;
+
+import java.util.ArrayList;
+
 public record FieldCreateDTO(
-        String name,
-        Long ownerId,
-        String description,
-        String address,
-        String phoneNumber,
-        String email,
-        String website,
-        String imageUrl,
-        Long fieldScheduleId
+       Long ownerId,
+       String name,
+       String location,
+       String zone,
+       ArrayList<FieldFeatures> features
 ) {
-    public Field asField(Long id, LongFunction<Optional<FieldSchedule>> getFieldSchedule) throws ItemNotFoundException {
-        var fieldSchedule = fieldScheduleId == null
-                ? null
-                : getFieldSchedule.apply(fieldScheduleId).orElseThrow(() -> new ItemNotFoundException("field schedule", fieldScheduleId));
-        return new Field(id, ownerId, name, description, address, phoneNumber, email, website, imageUrl, fieldSchedule);
+    public Field asField() {
+        return new Field(ownerId, name, location, zone, features);
     }
 }

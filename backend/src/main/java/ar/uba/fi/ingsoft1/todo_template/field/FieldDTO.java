@@ -1,84 +1,41 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
 
-public record FieldDTO() {
-    Long id;
-    String name;
-    Long ownerId;
-    String description;
-    String location;
-    String zone;
-    Integer price;
-    ArrayList<FieldFeatures> features;
-    FieldScheduleDTO schedule;
-    ArrayList<ReviewDTO> reviews;
-    ArrayList<String> reservations;
-    ArrayList<String> images;
+public class FieldDTO {
+    private Long id;
+    private Long ownerId;
+    private String name;
+    private String description;
+    private String location;
+    private String zone;
+    private Integer price;
+    private ArrayList<FieldFeatures> features;
+    private FieldScheduleDTO schedule;
+    private ArrayList<ReviewDTO> reviews;
+    private ArrayList<String> reservations;
+    private ArrayList<String> images;
 
-    public FieldDTO(Long id, Long ownerId, String name, String description, String zone, Integer price, ArrayList<FieldFeatures> features, ArrayList<images> images, String location, FieldScheduleDTO schedule, ArrayList<ReviewDTO> reviews, ArrayList<String> reservations) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.name = name;
-        this.description = description;
-        this.location = location;
-        this.zone = zone;
-        this.price = price;
-        this.features = features;
-        this.schedule = schedule;
-        this.reviews = reviews;
-        this.reservations = reservations;
-        this.images = images;
+    public FieldDTO(Field field) {
+        this.id = field.getId();
+        this.ownerId = field.getOwnerId();
+        this.name = field.getName();
+        this.description = field.getDescription();
+        this.location = field.getLocation();
+        this.zone = field.getZone();
+        this.price = field.getPrice() != null ? field.getPrice().intValue() : null;
+        this.features = field.getFeatures();
+        this.schedule = new FieldScheduleDTO(field.getFieldSchedule());
+        this.reviews = new ArrayList<>(field.getReviews().stream().map(ReviewDTO::new).collect(Collectors.toList()));
+        this.reservations = new ArrayList<>(field.getReservations().stream().map(String::valueOf).collect(Collectors.toList()));
+        this.images = field.getImages();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getZone() {
-        return zone;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public ArrayList<FieldFeatures> getFeatures() {
-        return features;
-    }
-
-    public ArrayList<String> getImages() {
-        return images;
-    }
-
-    public FieldScheduleDTO getSchedule() {
-        return schedule;
-    }
-
-    public ArrayList<ReviewDTO> getReviews() {
-        return reviews;
-    }
-
-    public ArrayList<String> getReservations() {
-        return reservations;
+    public Field asField() {
+        return new Field(this.id, this.ownerId, this.name, this.location, this.zone, this.features);
     }
 }

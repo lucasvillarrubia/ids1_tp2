@@ -1,24 +1,29 @@
+package ar.uba.fi.ingsoft1.todo_template.field;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import ar.uba.fi.ingsoft1.todo_template.reviews.Review;
+import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class FieldService {
-    private final FieldRepository fieldRepository;
-    private final FieldScheduleRepository fieldScheduleRepository;
-    private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
-
     @Autowired
-    public FieldService(FieldRepository fieldRepository, FieldScheduleRepository fieldScheduleRepository,
-                        ReviewRepository reviewRepository, UserRepository userRepository) {
+    private final FieldRepository fieldRepository;
+
+    public FieldService(FieldRepository fieldRepository) {
         this.fieldRepository = fieldRepository;
-        this.fieldScheduleRepository = fieldScheduleRepository;
-        this.reviewRepository = reviewRepository;
-        this.userRepository = userRepository;
     }
 
     public FieldDTO createField(FieldCreateDTO fieldCreate) {
-        return new FielfDTO(fieldRepository.save(fieldCreate.asField()));
+        return new FieldDTO(fieldRepository.save(fieldCreate.asField()));
     }
 
     public void deleteField(Long fieldId) {
@@ -43,8 +48,8 @@ public class FieldService {
         return fieldRepository.findByZone(zone).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
-    public FieldDTO getFieldByName(String name) {
-        return new FieldDTO(fieldRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException("Field not found")));
+    public List<FieldDTO> getFieldByName(String name) {
+        return fieldRepository.findByName(name).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
     // UPDATE
@@ -72,21 +77,11 @@ public class FieldService {
         return new FieldDTO(fieldRepository.save(field));
     }
 
-    public ReviewDTO addReviewToField(Long fieldId, ReviewCreateDTO reviewCreate) {
+    public FieldDTO addReviewToField(Long fieldId, ReviewDTO reviewDTO) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        User user = userRepository.findById(reviewCreate.getUserId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        Review review = new Review(reviewCreate.getRating(), reviewCreate.getComment(), field, user);
+        Review review = reviewDTO.asReview();
         field.addReview(review);
-        fieldRepository.save(field);
-        return new ReviewDTO(reviewRepository.save(review));
-    }
-
-    public void deleteReviewFromField(Long fieldId, Long reviewId) {
-        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new EntityNotFoundException("Review not found"));
-        field.removeReview(review);
-        fieldRepository.save(field);
-        reviewRepository.delete(review);
+        return new FieldDTO(fieldRepository.save(field));
     }
 
 }

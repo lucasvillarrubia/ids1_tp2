@@ -1,5 +1,11 @@
 package ar.uba.fi.ingsoft1.todo_template.reviews;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class Review {
@@ -13,29 +19,20 @@ public class Review {
     @Column(nullable = false)
     private Short score;
 
-    @ManyToOne(optional = false)
-    private Field field;
-
-    @ManyToOne(optional = false)
-    private User user;
+    private String comment;
 
     public Review() {}
 
-    public Review(Long id, Short score, Field field, User user) {
+    public Review(Long id, Short score, String comment) {
         this.id = id;
         this.score = score;
-        this.field = field;
-        this.user = user;
+        this.comment = comment;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public Short getScore() { return score; }
 
-    public Field getField() { return field; }
-
-    public User getUser() { return user; }
+    public String getComment() { return comment; }
 
 }

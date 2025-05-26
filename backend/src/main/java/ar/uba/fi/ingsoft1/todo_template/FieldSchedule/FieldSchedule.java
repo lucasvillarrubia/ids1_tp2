@@ -2,13 +2,10 @@ package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
 
 import java.util.ArrayList;
 
-import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 
 @Entity
 public class FieldSchedule {
@@ -26,10 +23,6 @@ public class FieldSchedule {
     private Integer predefDuration;
 
     private ArrayList<String> availableFieldSchedules;
-
-    @OneToOne
-    @JoinColumn(name = "cancha_id", nullable = false, unique = true)
-    private Field cancha;
 
     public FieldSchedule() {
         this.days = new ArrayList<>();
@@ -63,6 +56,23 @@ public class FieldSchedule {
         return availableFieldSchedules;
     }
     
+    public int getPredefDuration() {
+        return predefDuration;
+    }
+
+    public ArrayList<String> getTimeSlots() {
+        ArrayList<String> timeSlots = new ArrayList<>();
+        for (int hour = startHour; hour < endHour; hour++) {
+            String timeSlot = String.format("%02d:00-%02d:00", hour, hour + predefDuration);
+            timeSlots.add(timeSlot);
+        }
+        return timeSlots;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public void setDays(ArrayList<String> days) {
         this.days = days;
     }
@@ -81,18 +91,5 @@ public class FieldSchedule {
 
     public void setAvailableFieldSchedules() {
         this.availableFieldSchedules = getTimeSlots();
-    }
-
-    public ArrayList<String> getTimeSlots() {
-        ArrayList<String> timeSlots = new ArrayList<>();
-        for (int hour = startHour; hour < endHour; hour++) {
-            String timeSlot = String.format("%02d:00-%02d:00", hour, hour + predefDuration);
-            timeSlots.add(timeSlot);
-        }
-        return timeSlots;
-    }
-
-    public Long getId() {
-        return id;
     }
 }
