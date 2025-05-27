@@ -13,10 +13,11 @@ public class Partido {
     @GeneratedValue
     private Long id;
 
+    //cambiar por ID
     @Column(nullable = false)
     private String organizer;
 
-    /*
+    //cambiar por ID
     @Column(nullable = false)
     private Cancha cancha;
 
@@ -24,26 +25,23 @@ public class Partido {
     private ParticipationType participationType;
 
     @Column(nullable = false)
-    private FranjaHoraria franjaHoraria;
-    */
-    public Partido(String organizer,Cancha cancha, ParticipationType pt,FranjaHoraria fh) {
+    private TimeRange timeRange;
+
+
+
+
+    public Partido(String organizer, Cancha cancha, ParticipationType pt, TimeRange fh) {
         this.organizer = organizer;
-        /*
         this.cancha = cancha;
         this.participationType = pt;
-        this.franjaHoraria = fh;
-
-         */
+        this.timeRange = fh;
     }
 
     public Partido(PartidoDTO dto){
         this.organizer = dto.getOrganizer();
-        /*
         this.cancha = dto.getCancha();
         this.participationType = dto.getParticipationType();
-        this.franjaHoraria = dto.getFranjaHoraria();
-
-         */
+        this.timeRange = dto.getFranjaHoraria();
     }
 
     public boolean esOrganizador(String currentUsername){
@@ -57,7 +55,8 @@ public class Partido {
     public String getOrganizer() {
         return organizer;
     }
-/*
+
+
     public Cancha getCancha() {
         return cancha;
     }
@@ -66,7 +65,8 @@ public class Partido {
         return participationType;
     }
 
-
- */
+    public TimeRange getFranjaHoraria() {
+        return timeRange;
+    }
 
 }

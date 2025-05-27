@@ -1,58 +1,65 @@
 package ar.uba.fi.ingsoft1.todo_template.partido;
 
-import ar.uba.fi.ingsoft1.todo_template.actors.Actor;
-import ar.uba.fi.ingsoft1.todo_template.actors.ActorCreateDTO;
-import ar.uba.fi.ingsoft1.todo_template.categories.Category;
-import ar.uba.fi.ingsoft1.todo_template.categories.CategoryCreateDTO;
-import ar.uba.fi.ingsoft1.todo_template.movies.Movie;
-import ar.uba.fi.ingsoft1.todo_template.movies.MovieCreateDTO;
-import ar.uba.fi.ingsoft1.todo_template.movies.MovieDTO;
+
+import ar.uba.fi.ingsoft1.todo_template.common.exception.ItemNotFoundException;
+import ar.uba.fi.ingsoft1.todo_template.projects.ProjectDTO;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.*;
+import java.util.function.LongFunction;
 
 @Service
 @Transactional
 public class PartidoService {
 
     @Autowired
-    PartidosRepository repo;
+    PartidoRepository partidoRepository;
 
-    // mmmm.... hace ruido pero como se verifica que los equipos/jugadores dados son validos????
-    //private final TeamsRepository projectRepository;
-    //private final TeamsRepository projectRepository;
+    //se nita verificar que los equipos/jugadores dados son validos
+    //private final TeamRepository teamRepository;
+    //private final TeamRepository projectRepository;
 
-    public Partido createPartido(Partido partidoDTO) {
-        //Partido new_partido = new Partido(partidoDTO);
-        repo.save(partidoDTO);
-        return partidoDTO;
+    public PartidoDTO createPartido(PartidoCreateDTO partidoCreateDTO) throws MethodArgumentNotValidException {
+        return new PartidoDTO(partidoRepository.save(partidoCreateDTO.asPartido()));
     }
 
     public Partido deletePartido(Long id, String currentUsername) {
-        Partido partido = repo.findById(id).orElse(null);
+        Partido partido = partidoRepository.findById(id).orElse(null);
 
         if (partido == null || !partido.esOrganizador(currentUsername)){
             return null;
         }
-        repo.deleteById(id);
+        partidoRepository.deleteById(id);
         return partido;
     }
 
-    public Partido updatePartido(Long id, String currentUsername, Partido updatedPartido) {
-        Partido partido = repo.findById(id).orElse(null);
+    public PartidoDTO updatePartido(Long id, PartidoCreateDTO partidoCreateDTO ) {
+        Partido partido = partidoRepository.findById(id).orElse(null);
 
-        if (partido == null || !partido.esOrganizador(currentUsername)){
+        if (partido == null || !partido.esOrganizador("cambiar por id")) {
             return null;
         }
 
-        repo.save(updatedPartido);
-        return updatedPartido;
+        Partido saved;
+        try {
+            saved = partidoRepository.save(partidoCreateDTO.asPartido());
+        } catch (MethodArgumentNotValidException e) {
+            throw new RuntimeException(e);
+        }
+        return new PartidoDTO(saved);
+    }
+
+    Page<PartidoDTO> getPartidos(Pageable pageable) {
+        return partidoRepository.findAll(pageable).map(PartidoDTO::new);
     }
 
     //metodo de prueba --- ELIMINAR DESPUES
     public List<Partido> getAll() {
-        return repo.findAll();    }
+        return partidoRepository.findAll();    }
 }

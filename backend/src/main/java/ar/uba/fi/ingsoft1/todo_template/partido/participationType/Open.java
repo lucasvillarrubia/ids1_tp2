@@ -5,7 +5,7 @@ import jakarta.persistence.Column;
 
 import java.util.List;
 
-public class Open {
+public class Open implements ParticipationType{
 
     List<User> players;
 
