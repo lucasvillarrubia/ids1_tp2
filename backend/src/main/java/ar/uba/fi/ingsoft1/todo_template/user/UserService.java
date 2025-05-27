@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-class UserService{
+public class UserService{
 
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -75,4 +77,9 @@ class UserService{
         RefreshToken refreshToken = refreshTokenService.createFor(user);
         return new TokenDTO(accessToken, refreshToken.value());
     }
+
+    public boolean userExist(Long userId){
+        return userRepository.findById(userId).isPresent();
+    }
+
 }

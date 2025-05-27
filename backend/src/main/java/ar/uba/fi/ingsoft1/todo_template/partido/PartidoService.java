@@ -2,7 +2,6 @@ package ar.uba.fi.ingsoft1.todo_template.partido;
 
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.ItemNotFoundException;
-import ar.uba.fi.ingsoft1.todo_template.projects.ProjectDTO;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;

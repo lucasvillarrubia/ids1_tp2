@@ -19,12 +19,11 @@ public record PartidoDTO (
         return id;
     }
 
-    public Long getOrganizer() {
+    public Long getOrganizerId() {
         return organizerId;
     }
 
-
-    public Long getCancha() {
+    public Long getCanchaId() {
         return canchaId;
     }
 
