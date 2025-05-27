@@ -4,28 +4,28 @@ import ar.uba.fi.ingsoft1.todo_template.partido.participationType.ParticipationT
 
 public record PartidoDTO (
     Long id,
-    String organizer,
-    Cancha cancha,
+    Long organizerId,
+    Long canchaId,
     ParticipationType participationType,
     TimeRange timeRange
 )
 {
 
     public PartidoDTO(Partido partido)  {
-        this(partido.getId(), partido.getOrganizer(), partido.getCancha(), partido.getParticipationType() , partido.getFranjaHoraria());
+        this(partido.getId(), partido.getOrganizerId(), partido.getCanchaId(), partido.getParticipationType() , partido.getFranjaHoraria());
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getOrganizer() {
-        return organizer;
+    public Long getOrganizer() {
+        return organizerId;
     }
 
 
-    public Cancha getCancha() {
-        return cancha;
+    public Long getCancha() {
+        return canchaId;
     }
 
     public ParticipationType getParticipationType() {

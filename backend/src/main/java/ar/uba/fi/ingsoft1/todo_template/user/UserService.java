@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;

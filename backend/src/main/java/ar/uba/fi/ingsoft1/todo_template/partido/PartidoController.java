@@ -1,6 +1,5 @@
 package ar.uba.fi.ingsoft1.todo_template.partido;
 
-import ar.uba.fi.ingsoft1.todo_template.projects.ProjectDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,7 +18,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 // task: Elección de cancha y franja horaria ( franja horaria implementada falta enganchar con la api de cancha )
-// task: Franja horaria figura como reservada y ocupada en el sistema
+// task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
+// task: agregar partido creado historial de reservas del admin ()
+// task: actualizar listado de partidos dispo (se actualiza la db, falta crear filtro para obtener aquellos partidos abiertos y disponibles)
+// task: inscripcion de dos equipos al partido (faltaria checkear que sean validos)
 
 // eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNYWxlIiwiaWF0IjoxNzQ4MzAyMzE1LCJleHAiOjE3NDgzMDQxMTUsInJvbGUiOiJBRE1JTiJ9.7c3k5RCKrZjHiM4VHJbjNwb6Gr5QOnzQE2riQZXPlUw
 @RestController
@@ -31,7 +33,6 @@ public class PartidoController {
     public PartidoController(PartidoService partidoService) {
         this.partidoService = partidoService;
     }
-
 
     //@GetMapping(value = "/partidoCreation", produces = "application/json")
     @Operation(summary = "Get a partido given the specified characteristic")
@@ -85,11 +86,7 @@ public class PartidoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('USER')")
     void deletePartido(@Valid @PathVariable @Positive Long id) throws MethodArgumentNotValidException {
-        //mejorar la verif maybe con la api de user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-
-        Partido deleted = partidoService.deletePartido(id,currentUsername);
+        partidoService.deletePartido(id);
     }
 
 

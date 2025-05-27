@@ -9,20 +9,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 //        @NotBlank ParticipationType participationType,
 //        @NotBlank FranjaHoraria franjaHoraria
 public record PartidoCreateDTO(
-        String organizer,
-        Cancha cancha,
+        Long organizerId,
+        Long canchaId,
         ParticipationType participationType,
         TimeRange timeRange
 ){
-    /*
-    public Partido asPartido() throws ItemNotFoundException {
-        return this.asPartido(null, getProject);
-    }
-    */
+
     public Partido asPartido() throws MethodArgumentNotValidException {
-        // VERIFICAR TO DO
-        // VERIFICAR EXISTENCIA DE USERID,CANCHAID, EQUIPOS (EN CASO DE PARTIDO CERRADO)
-        return new Partido(organizer,cancha, participationType, timeRange);
+        return new Partido(organizerId, canchaId, participationType, timeRange);
     }
 
 }
