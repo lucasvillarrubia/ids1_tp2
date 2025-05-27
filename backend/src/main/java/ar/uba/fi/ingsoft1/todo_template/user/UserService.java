@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,18 +31,20 @@ class UserService{
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
+    private final EmailService emailService;
 
     @Autowired
     UserService(
             JwtService jwtService,
             PasswordEncoder passwordEncoder,
             UserRepository userRepository,
-            RefreshTokenService refreshTokenService
-    ) {
+            RefreshTokenService refreshTokenService,
+            EmailService emailService) {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.refreshTokenService = refreshTokenService;
+        this.emailService = emailService;
     }
 
     public Optional<TokenDTO> createUser(UserCreateDTO data) {
@@ -49,8 +52,13 @@ class UserService{
             throw new DuplicateUserException("Email already exists.");
 
         }
+
         var user = data.asUser(passwordEncoder::encode);
+        String verificationToken = UUID.randomUUID().toString();
+        user.setTokenVerified(verificationToken);
+        user.setEmailVerified(false);
         userRepository.save(user);
+        emailService.sendValidationEmail(user.getEmail(), verificationToken);
         return Optional.of(generateTokens(user));
     }
 
@@ -74,5 +82,14 @@ class UserService{
         ));
         RefreshToken refreshToken = refreshTokenService.createFor(user);
         return new TokenDTO(accessToken, refreshToken.value());
+    }
+
+    public boolean verifyEmailToken(String token) {
+        return userRepository.findByVerificationToken(token).map(user->{
+            user.setEmailVerified(false);
+            user.setTokenVerified(null);
+            userRepository.save(user);
+            return true;
+        }).orElse(false);
     }
 }

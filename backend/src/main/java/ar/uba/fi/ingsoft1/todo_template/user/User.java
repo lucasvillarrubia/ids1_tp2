@@ -41,6 +41,10 @@ public class User implements UserCredentials {
     @Column (nullable = false)
     private Short age;
 
+    @Column(name = "email-verified")
+    private boolean emailVerified;
+    @Column(name = "token-verified")
+    private String tokenVerified;
     private String role = "USER";
 
     public User() {}
@@ -81,4 +85,9 @@ public class User implements UserCredentials {
     public String getRole() { return this.role;}
 
     public Short getAge() { return this.age;}
+
+    public boolean isEmailVerified() { return this.emailVerified;}
+    public String getTokenVerified() { return this.tokenVerified;}
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified;}
+    public void setTokenVerified(String tokenVerified) { this.tokenVerified = tokenVerified;}
 }

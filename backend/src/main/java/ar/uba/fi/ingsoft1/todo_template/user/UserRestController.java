@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.service.annotation.GetExchange;
 
 import java.util.Map;
 
@@ -52,4 +54,17 @@ class UserRestController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
         return ResponseEntity.ok(tokens);
     }
+    @GetMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestParam@NotBlank String token) {
+        boolean verified = userService.verifyEmailToken(token);
+        if (verified){
+            return ResponseEntity.ok("Verified email");
+        }else{
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+    }
+
+
+
+
 }
