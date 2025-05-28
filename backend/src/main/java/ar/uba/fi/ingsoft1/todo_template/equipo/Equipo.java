@@ -2,13 +2,21 @@ package ar.uba.fi.ingsoft1.todo_template.equipo;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import jakarta.persistence.*;
 
+@Entity(name = "equipos")
 public class Equipo {
+    @Id
     private String nombre;
+
+    @Column(nullable = false)
     private String capitan;
+    
     private BufferedImage logo;
     private List<Color> colores;
     private Integer nivel;
+
+    public Equipo() {}
 
     public Equipo(String nombre, String capitan) {
         this.nombre = nombre;
