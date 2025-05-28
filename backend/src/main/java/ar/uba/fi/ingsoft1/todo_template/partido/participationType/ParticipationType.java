@@ -11,8 +11,8 @@ import java.io.Serializable;
         property = "type"  // name of the type field in JSON
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Open.class, name = "Abierta"),
-        @JsonSubTypes.Type(value = Close.class, name = "Cerrada")
+        @JsonSubTypes.Type(value = Open.class, name = "Open"),
+        @JsonSubTypes.Type(value = Close.class, name = "Close")
 })
 public interface ParticipationType extends Serializable {
 }

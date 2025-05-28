@@ -2,6 +2,7 @@ package ar.uba.fi.ingsoft1.todo_template.partido;
 
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.ItemNotFoundException;
+import ar.uba.fi.ingsoft1.todo_template.partido.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.time.LocalTime;
 import java.util.*;
 import java.util.function.LongFunction;
 
@@ -41,10 +43,10 @@ public class PartidoService {
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
         }
 
-        partidoRepository.save(newPartido);
+        //System.out.println("serializacion: \n "+ Partido.ser);
+        Partido savedPartido = partidoRepository.save(newPartido);
         //agregar PARTIDO a historial de user creator TODO
-
-        return newPartidoDTO;
+        return new PartidoDTO(savedPartido);
     }
 
     boolean validatePartidoCreationInputs(PartidoDTO partidoDTO){
@@ -73,13 +75,16 @@ public class PartidoService {
     public PartidoDTO updatePartido(Long id, PartidoCreateDTO partidoCreateDTO ) {
         Partido partido = partidoRepository.findById(id).orElse(null);
 
-        if (partido == null || !partido.esOrganizador(1L)) {
+        //if (partido == null || !partido.esOrganizador(actuaUserId)) {
+        if (partido == null) {
             return null;
         }
 
         Partido saved;
         try {
-            saved = partidoRepository.save(partidoCreateDTO.asPartido());
+            Partido updatedPartido = partidoCreateDTO.asPartido();
+            updatedPartido.setId(id);
+            saved = partidoRepository.save(updatedPartido);
         } catch (MethodArgumentNotValidException e) {
             throw new RuntimeException(e);
         }

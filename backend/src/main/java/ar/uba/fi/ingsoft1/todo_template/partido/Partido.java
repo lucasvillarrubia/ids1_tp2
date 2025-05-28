@@ -2,10 +2,10 @@ package ar.uba.fi.ingsoft1.todo_template.partido;
 
 
 import ar.uba.fi.ingsoft1.todo_template.partido.participationType.ParticipationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.*;
+
+import java.time.LocalTime;
 
 @Entity
 public class Partido {
@@ -22,11 +22,8 @@ public class Partido {
     @Column(nullable = false)
     private ParticipationType participationType;
 
-    @Column(nullable = false)
+    @Embedded
     private TimeRange timeRange;
-
-
-
 
     public Partido(Long organizer, Long cancha, ParticipationType pt, TimeRange fh) {
         this.organizerId = organizer;
@@ -35,16 +32,20 @@ public class Partido {
         this.timeRange = fh;
     }
 
+    public Partido(){}
+
     public Partido(PartidoDTO dto){
         this.organizerId = dto.getOrganizerId();
         this.canchaId = dto.getCanchaId();
         this.participationType = dto.getParticipationType();
-        this.timeRange = dto.getFranjaHoraria();
+        this.timeRange = dto.getTimeRange();
     }
 
     public boolean esOrganizador(Long currentId){
         return currentId.equals(this.organizerId);
     }
+
+    protected void setId(Long id){this.id = id;}
 
     public Long getId() {
         return id;
@@ -54,7 +55,6 @@ public class Partido {
         return organizerId;
     }
 
-
     public Long getCanchaId() {
         return canchaId;
     }
@@ -63,7 +63,7 @@ public class Partido {
         return participationType;
     }
 
-    public TimeRange getFranjaHoraria() {
+    public TimeRange getTimeRange() {
         return timeRange;
     }
 

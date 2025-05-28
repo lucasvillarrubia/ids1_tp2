@@ -12,7 +12,7 @@ public record PartidoDTO (
 {
 
     public PartidoDTO(Partido partido)  {
-        this(partido.getId(), partido.getOrganizerId(), partido.getCanchaId(), partido.getParticipationType() , partido.getFranjaHoraria());
+        this(partido.getId(), partido.getOrganizerId(), partido.getCanchaId(), partido.getParticipationType() , partido.getTimeRange());
     }
 
     public Long getId() {
@@ -31,7 +31,7 @@ public record PartidoDTO (
         return participationType;
     }
 
-    public TimeRange getFranjaHoraria(){
+    public TimeRange getTimeRange(){
         return timeRange;
     }
 
