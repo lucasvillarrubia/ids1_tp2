@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-class UserService{
+class UserService {
 
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -66,6 +66,7 @@ class UserService{
         Optional<User> maybeUser = userRepository.findByEmail(data.email());
         return maybeUser
                 .filter(user -> passwordEncoder.matches(data.password(), user.getPassword()))
+                .filter(User::isEmailVerified)
                 .map(this::generateTokens);
     }
 
@@ -86,7 +87,7 @@ class UserService{
 
     public boolean verifyEmailToken(String token) {
         return userRepository.findByVerificationToken(token).map(user->{
-            user.setEmailVerified(false);
+            user.setEmailVerified(true);
             user.setTokenVerified(null);
             userRepository.save(user);
             return true;
