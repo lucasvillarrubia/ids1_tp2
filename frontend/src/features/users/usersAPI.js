@@ -22,7 +22,11 @@ export const createUser = async (userData) => {
                 console.error("createUser error:", error);
                 const msg =
                         error?.response?.data?.errors?.[0]?.msg ||
+                        error?.response?.data?.message ||
+                        error?.message ||
                         "Ocurrió un error al crear el usuario.";
+                console.log("Status code:", error.response?.status);
+                console.log("Error data:", error.response?.data);
                 throw new Error(msg);
         }
 };
