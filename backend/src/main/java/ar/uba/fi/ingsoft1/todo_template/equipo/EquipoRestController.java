@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/equipos")
@@ -33,7 +33,7 @@ public class EquipoRestController {
                 description = "Ya existe un equipo con ese nombre",
                 content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    EquipoDTO crearEquipo(
+    public ResponseEntity<EquipoDTO> crearEquipo(
         @Valid
         @RequestBody
         EquipoCreateDTO equipoCreateDTO
@@ -44,7 +44,7 @@ public class EquipoRestController {
             return null;
         }
 
-        return equipoDTO;
+        return new ResponseEntity<>(equipoDTO, HttpStatus.OK);
     }
 
     @GetMapping(value = "/",

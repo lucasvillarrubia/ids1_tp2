@@ -47,7 +47,7 @@ public record EquipoCreateDTO(
     Integer nivel
 ) {
     public Equipo asEquipo() {
-        /*Equipo equipo = new Equipo(nombre, capitan);
+        Equipo equipo = new Equipo(nombre, capitan);
         
         if (logo != null) {
             equipo.setLogo(logo);
@@ -61,7 +61,6 @@ public record EquipoCreateDTO(
             equipo.setNivel(nivel);
         }
         
-        return equipo;*/
-        return new Equipo(nombre, capitan);
+        return equipo;
     }
 }
