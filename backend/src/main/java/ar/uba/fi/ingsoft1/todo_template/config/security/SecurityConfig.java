@@ -21,7 +21,7 @@ import java.util.List;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
 
-    public static final String[] PUBLIC_ENDPOINTS = {"/users", "/sessions", "/movies", "/actors", "/categories", "/ratings"};
+    public static final String[] PUBLIC_ENDPOINTS = {"/users", "/sessions", "/fields","/movies", "/actors", "/categories", "/ratings"};
 
     private final JwtAuthFilter authFilter;
 

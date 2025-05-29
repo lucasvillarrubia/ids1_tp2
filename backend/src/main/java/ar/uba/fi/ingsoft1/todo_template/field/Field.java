@@ -1,18 +1,20 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
-import ar.uba.fi.ingsoft1.todo_template.reviews.Review;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -24,8 +26,6 @@ public class Field {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "owner_id", nullable = false)
     @Column(nullable = false)
     private Long ownerId;
 
@@ -44,28 +44,36 @@ public class Field {
     private Double price;
 
     @Column
-    private ArrayList<FieldFeatures> features;
-
-    @OneToMany
-    @JoinColumn(name = "field_id", nullable = false, unique = true)
-    private ArrayList<String> images;
-
-    @Column
     private Boolean isAvailable = true;
 
     @OneToOne
     @JoinColumn(name = "schedule_id", nullable = false, unique = true)
     private FieldSchedule schedule;
 
+    @ElementCollection(targetClass = FieldFeatures.class)
+    @CollectionTable(name = "field_features", joinColumns = @JoinColumn(name = "field_id"))
+    @Column(name = "feature", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private List<FieldFeatures> features;
 
-    private ArrayList<Long> reservations;
+    @ElementCollection
+    @CollectionTable(name = "field_images", joinColumns = @JoinColumn(name = "field_id"))
+    @Column(name = "image")
+    private List<String> images;
 
-    @OneToMany(mappedBy = "field")
-    private ArrayList<Review> reviews;
+    @ElementCollection
+    @CollectionTable(name = "field_reservations", joinColumns = @JoinColumn(name = "field_id"))
+    @Column(name = "reservation_id")
+    private List<Long> reservations;
+
+    @ElementCollection
+    @CollectionTable(name = "field_reviews", joinColumns = @JoinColumn(name = "field_id"))
+    @Column(name = "review_id")
+    private List<Long> reviews;
 
     public Field() {}
 
-    public Field(Long id, String name, Long ownerId, String location, String zone, ArrayList<FieldFeatures> features, Optional<ArrayList<String>> images) {
+    public Field(Long id, String name, Long ownerId, String location, String zone, List<FieldFeatures> features, Optional<List<String>> images) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -79,7 +87,7 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long id, Long ownerId, String name, String location, String zone, ArrayList<FieldFeatures> features) {
+    public Field(Long id, Long ownerId, String name, String location, String zone, List<FieldFeatures> features) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -93,7 +101,7 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long ownerId, String name, String location, String zone, ArrayList<FieldFeatures> features) {
+    public Field(Long ownerId, String name, String location, String zone, List<FieldFeatures> features) {
         this.name = name;
         this.ownerId = ownerId;
         this.location = location;
@@ -135,11 +143,11 @@ public class Field {
         return price;
     }
 
-    public ArrayList<FieldFeatures> getFeatures() {
+    public List<FieldFeatures> getFeatures() {
         return features;
     }
 
-    public ArrayList<String> getImages() {
+    public List<String> getImages() {
         return images;
     }
 
@@ -147,11 +155,11 @@ public class Field {
         return schedule;
     }
 
-    public ArrayList<Long> getReservations() {
+    public List<Long> getReservations() {
         return reservations;
     }
 
-    public ArrayList<Review> getReviews() {
+    public List<Long> getReviews() {
         return reviews;
     }
 
@@ -187,11 +195,11 @@ public class Field {
         this.price = price;
     }
 
-    public void setFeatures(ArrayList<FieldFeatures> features) {
+    public void setFeatures(List<FieldFeatures> features) {
         this.features = features;
     }
 
-    public void setImages(ArrayList<String> images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
@@ -207,7 +215,7 @@ public class Field {
         this.schedule.setEndHour(endHour);
     }
 
-    public void setDays(ArrayList<String> days) {
+    public void setDays(List<String> days) {
         this.schedule.setDays(days);
     }
 
@@ -215,11 +223,11 @@ public class Field {
         this.schedule.setPredefDuration(predefDuration);
     }
 
-    public void setReservations(ArrayList<Long> reservations) {
+    public void setReservations(List<Long> reservations) {
         this.reservations = reservations;
     }
 
-    public void setReviews(ArrayList<Review> reviews) {
+    public void setReviews(List<Long> reviews) {
         this.reviews = reviews;
     }
 
@@ -231,7 +239,7 @@ public class Field {
         this.reservations.add(reservation);
     }
 
-    public void addReview(Review review) {
+    public void addReview(Long review) {
         this.reviews.add(review);
     }
 }

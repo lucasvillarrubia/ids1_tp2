@@ -1,6 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ public class FieldSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private ArrayList<String> days;
+    private List<String> days;
 
     private Integer startHour;
 
@@ -22,7 +23,7 @@ public class FieldSchedule {
 
     private Integer predefDuration;
 
-    private ArrayList<String> availableFieldSchedules;
+    private List<String> availableFieldSchedules;
 
     public FieldSchedule() {
         this.days = new ArrayList<>();
@@ -40,7 +41,7 @@ public class FieldSchedule {
         this.availableFieldSchedules = new ArrayList<>();
     }
 
-    public ArrayList<String> getDays() {
+    public List<String> getDays() {
         return days;
     }
 
@@ -52,7 +53,7 @@ public class FieldSchedule {
         return endHour;
     }
 
-    public ArrayList<String> getAvailableFieldSchedules() {
+    public List<String> getAvailableFieldSchedules() {
         return availableFieldSchedules;
     }
     
@@ -73,8 +74,8 @@ public class FieldSchedule {
         return id;
     }
 
-    public void setDays(ArrayList<String> days) {
-        this.days = days;
+    public void setDays(List<String> days2) {
+        this.days = days2;
     }
 
     public void setStartHour(Integer startHour) {

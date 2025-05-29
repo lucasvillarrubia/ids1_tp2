@@ -80,7 +80,7 @@ public class FieldService {
     public FieldDTO addReviewToField(Long fieldId, ReviewDTO reviewDTO) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
         Review review = reviewDTO.asReview();
-        field.addReview(review);
+        field.addReview(review.getId());
         return new FieldDTO(fieldRepository.save(field));
     }
 
