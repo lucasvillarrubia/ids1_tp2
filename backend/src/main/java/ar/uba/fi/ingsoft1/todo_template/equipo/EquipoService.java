@@ -1,5 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.equipo;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,20 @@ public class EquipoService {
         Equipo equipo = equipoCreateDTO.asEquipo(capitan);
         equipoRepository.save(equipo);
         return new EquipoDTO(equipo);
+    }
+
+    public EquipoDTO obtenerEquipo(String nombre) {
+        Equipo equipo = equipoRepository.findById(nombre).orElse(null);
+        if (equipo == null) {
+            return null;
+        }
+        return new EquipoDTO(equipo);
+    }
+
+    public List<EquipoDTO> obtenerEquipos() {
+        return equipoRepository.findAll().stream()
+                .map(EquipoDTO::new)
+                .toList();
     }
     
     public EquipoDTO actualizarEquipo(String nombre, EquipoCreateDTO equipoCreateDTO) {
