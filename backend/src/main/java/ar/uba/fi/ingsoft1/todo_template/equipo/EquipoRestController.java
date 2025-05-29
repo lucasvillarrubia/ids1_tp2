@@ -42,7 +42,7 @@ public class EquipoRestController {
         EquipoCreateDTO equipoCreateDTO,
         String capitan
     ) {
-        EquipoDTO equipoDTO = equipoService.crearEquipo(equipoCreateDTO, capitan);
+        EquipoDTO equipoDTO = equipoService.crearEquipo(equipoCreateDTO);
         
         if (equipoDTO == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

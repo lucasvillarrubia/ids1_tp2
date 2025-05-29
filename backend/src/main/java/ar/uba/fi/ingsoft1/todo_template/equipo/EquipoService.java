@@ -12,12 +12,12 @@ public class EquipoService {
     @Autowired
     EquipoRepository equipoRepository;
 
-    public EquipoDTO crearEquipo(EquipoCreateDTO equipoCreateDTO, String capitan) {
+    public EquipoDTO crearEquipo(EquipoCreateDTO equipoCreateDTO) {
         if (equipoRepository.existsById(equipoCreateDTO.nombre())) {
             return null;
         }
-        
-        Equipo equipo = equipoCreateDTO.asEquipo(capitan);
+        //El capitan tine que ser el nombre del usuario que crea el equipo
+        Equipo equipo = equipoCreateDTO.asEquipo("capitan");
         equipoRepository.save(equipo);
         return new EquipoDTO(equipo);
     }
