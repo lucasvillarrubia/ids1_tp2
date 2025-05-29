@@ -1,11 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.partido;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 /*
@@ -19,7 +14,6 @@ Unable to obtain LocalTime from TemporalAccessor: {HourOfDay=13, MonthOfYear=0, 
 ,ISO of type java.time.format.Parsed
  */
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalTime;
 @Embeddable

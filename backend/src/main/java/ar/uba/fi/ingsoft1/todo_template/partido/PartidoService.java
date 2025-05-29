@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.time.LocalTime;
 import java.util.*;
-import java.util.function.LongFunction;
 
 @Service
 @Transactional
@@ -59,7 +57,7 @@ public class PartidoService {
     }
 
     public void deletePartido(Long id) {
-        Partido partido = partidoRepository.findById(id).orElse(null);
+        //Partido partido = partidoRepository.findById(id).orElse(null);
 
         //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //String currentUsername = authentication.getName();

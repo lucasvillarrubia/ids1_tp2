@@ -2,10 +2,8 @@ package ar.uba.fi.ingsoft1.todo_template.partido;
 
 
 import ar.uba.fi.ingsoft1.todo_template.partido.participationType.ParticipationType;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
-import java.time.LocalTime;
 
 @Entity
 public class Partido {
