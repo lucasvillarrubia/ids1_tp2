@@ -32,12 +32,10 @@ public class FieldRestController {
     }
 
     @GetMapping(value = "/", produces = "application/json")
-    @Operation(summary = "Get all fields given the specified id")
+    @Operation(summary = "Get all fields")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFields(
-        @PathVariable @Positive Long id
-    ) {
+    public List<FieldDTO> getFields() {
         return fieldService.getAllFields().stream().toList();
     }
 
