@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
-class UserService {
+public class UserService {
 
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
