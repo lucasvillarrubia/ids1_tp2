@@ -1,6 +1,7 @@
 import React from 'react'
 import { ProductCardUI, ProductTitle, ProductInfo, ProductAuthor, ProductPrice, ProductButton } from './ProductStyles';
 import { useDispatch } from 'react-redux';
+import {formatDate} from "../../utils/formatDate.js";
 
 const ProductCard = (product) => {
         const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const ProductCard = (product) => {
                                         {product.name}
                                 </ProductTitle>
                                 <ProductPrice>
-                                        ${product.price}
+                                        Creado el {formatDate(product.date)}
                                 </ProductPrice>
                         </ProductInfo>
                         {/* <ProductButton onClick={() => dispatch(addToCart(product))}>
