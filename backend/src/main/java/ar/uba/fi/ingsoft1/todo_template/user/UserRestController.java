@@ -31,12 +31,6 @@ class UserRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(tokens);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody @Valid UserLoginDTO loginDTO) {
-        TokenDTO tokens = userService.loginUser(loginDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
-        return ResponseEntity.ok(tokens);
-    }
     @GetMapping("/verify-email")
     @Operation(
             summary = "Validación de correo electrónico",

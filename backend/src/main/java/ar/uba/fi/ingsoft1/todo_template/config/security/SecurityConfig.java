@@ -21,7 +21,7 @@ import java.util.List;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
 
-    public static final String[] PUBLIC_ENDPOINTS = {"/users", "/sessions", "/users/login" , "/partido/","/partido","/partido/partido", "/partido/availablePartidos", "/equipos", "/equipos/"}; // luego quitar partido
+    public static final String[] PUBLIC_ENDPOINTS = {"/users", "/sessions", "/users/login"}; // luego quitar partido
 
     private final JwtAuthFilter authFilter;
 
@@ -46,10 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
                         // ADMIN-only endpoints
-                        .requestMatchers("users/admin/**").hasAuthority("ROLE_ADMIN")
+                        //.requestMatchers("users/admin/**").hasAuthority("ROLE_ADMIN")
 
                         // USER-only endpoints, if you want to separate them (optional)
-                        //.requestMatchers("/user/**").hasAuthority("USER")
 
                         // All other authenticated requests allowed
                         .anyRequest().authenticated())
