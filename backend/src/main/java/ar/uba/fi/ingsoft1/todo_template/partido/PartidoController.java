@@ -15,8 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalTime;
-
 // task: Elección de cancha y franja horaria ( franja horaria implementada falta enganchar con la api de cancha )
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
 // task: agregar partido creado historial de reservas del admin ()
@@ -36,14 +34,25 @@ public class PartidoController {
     }
 
     @GetMapping(value = "/partido", produces = "application/json")
-    @Operation(summary = "Get a partido given the specified characteristic")
+    @Operation(summary = "Get a partido given the specified Id")
     @ApiResponse(responseCode = "200", description = "Partidos found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Partidos not found", content = @Content)
     @ResponseStatus(HttpStatus.OK)
-    Page<PartidoDTO> getProjects(
+    PartidoDTO getPartido(
+            @Valid @Positive Long id
+    ) throws MethodArgumentNotValidException {
+        return partidoService.getPartido(id);
+    }
+
+    @GetMapping(value = "/availablePartidos", produces = "application/json")
+    @Operation(summary = "Get all available partido's")
+    @ApiResponse(responseCode = "200", description = "Partidos found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Partidos not found", content = @Content)
+    @ResponseStatus(HttpStatus.OK)
+    Page<PartidoDTO> getAllAvailablePartidos(
             @Valid @ParameterObject Pageable pageable
     ) throws MethodArgumentNotValidException {
-        return partidoService.getPartidos(pageable);
+        return partidoService.getAllAvailablePartidos(pageable);
     }
 
 
@@ -51,12 +60,16 @@ public class PartidoController {
    partido creation example:
 {
   "organizerId": 13145,
-  "canchaId": 111314,
+  "canchaId": 2,
   "participationType": {
-    "type": "Open"
+    "type": "Open",
+    "teamAId": 100,
+    "teamBId": 200,
+    "minPlayersCount": 5,
+    "maxPlayersCount": 10
   },
   "timeRange": {
-    "start": "07:00:00",
+    "start": "08:00:00",
     "end": "09:00:00"
   }
 }
@@ -71,7 +84,6 @@ public class PartidoController {
     PartidoDTO createPartido(
             @Valid @RequestBody PartidoCreateDTO partidoCreateDTO
     ) throws MethodArgumentNotValidException {
-        //System.out.println("start: " + partidoCreateDTO.getTimeRange().start + "\nend:" + partidoCreateDTO.getTimeRange().end);
         return this.partidoService.createPartido(partidoCreateDTO);
     }
 

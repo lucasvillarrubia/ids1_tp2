@@ -1,13 +1,15 @@
 package ar.uba.fi.ingsoft1.todo_template.partido.participationType;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
 
-public class Close implements ParticipationType{
+@Entity
+@DiscriminatorValue("Close")
+public class Close extends ParticipationType{
 
-    @Column(nullable = false)
-    Team teamA;
+    public Close(){
 
-    @Column(nullable = false)
-    Team teamB;
-
+    }
 }

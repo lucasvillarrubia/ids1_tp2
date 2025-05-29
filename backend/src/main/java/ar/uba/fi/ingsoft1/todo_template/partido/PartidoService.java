@@ -1,10 +1,9 @@
 package ar.uba.fi.ingsoft1.todo_template.partido;
 
 
-import ar.uba.fi.ingsoft1.todo_template.common.exception.ItemNotFoundException;
-import ar.uba.fi.ingsoft1.todo_template.partido.participationType.Open;
+
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +42,6 @@ public class PartidoService {
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
         }
 
-        //System.out.println("serializacion: \n "+ Partido.ser);
         Partido savedPartido = partidoRepository.save(newPartido);
         //agregar PARTIDO a historial de user creator TODO
         return new PartidoDTO(savedPartido);
@@ -91,11 +89,19 @@ public class PartidoService {
         return new PartidoDTO(saved);
     }
 
-    Page<PartidoDTO> getPartidos(Pageable pageable) {
-        return partidoRepository.findAll(pageable).map(PartidoDTO::new);
+    PartidoDTO getPartido(Long id) throws MethodArgumentNotValidException {
+        Optional<Partido> partidoFound = partidoRepository.findById(id);
+        PartidoDTO partidoFoundDTO;
+        try {
+            partidoFoundDTO = new PartidoDTO(partidoFound.get());
+        } catch (Exception e) {
+            throw new NoSuchElementException(e);
+        }
+
+        return partidoFoundDTO;
     }
 
-
-
-
+    public Page<PartidoDTO> getAllAvailablePartidos(@Valid Pageable pageable) {
+        return partidoRepository.findAllWithOpenParticipationNative(pageable).map(PartidoDTO::new);
+    }
 }

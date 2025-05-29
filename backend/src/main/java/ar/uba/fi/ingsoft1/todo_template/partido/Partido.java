@@ -11,7 +11,7 @@ import java.time.LocalTime;
 public class Partido {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long PartidoId;
 
     @Column(nullable = false)
     private Long organizerId;
@@ -19,7 +19,8 @@ public class Partido {
     @Column(nullable = false)
     private Long canchaId;
 
-    @Column(nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "participationTypeId", nullable = false)
     private ParticipationType participationType;
 
     @Embedded
@@ -45,10 +46,10 @@ public class Partido {
         return currentId.equals(this.organizerId);
     }
 
-    protected void setId(Long id){this.id = id;}
+    protected void setId(Long id){this.PartidoId = id;}
 
     public Long getId() {
-        return id;
+        return PartidoId;
     }
 
     public Long getOrganizerId() {
