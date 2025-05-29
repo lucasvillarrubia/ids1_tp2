@@ -55,6 +55,10 @@ class UserRestController {
         return ResponseEntity.ok(tokens);
     }
     @GetMapping("/verify-email")
+    @Operation(
+            summary = "Validación de correo electrónico",
+            description = "Verifica el token enviado al correo electrónico del usuario durante el registro. Si el token es válido, se activa la cuenta del usuario."
+    )
     public ResponseEntity<String> verifyEmail(@RequestParam String token) {
         boolean verified = userService.verifyEmailToken(token);
         if (verified){
