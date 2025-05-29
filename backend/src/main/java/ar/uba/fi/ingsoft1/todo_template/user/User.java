@@ -58,6 +58,7 @@ public class User implements UserCredentials {
         this.gender = gender;
         this.photo = photo;
         this.age = age;
+        this.emailVerified = false;
     }
 
     @Override

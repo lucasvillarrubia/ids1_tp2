@@ -86,7 +86,7 @@ class UserService {
     }
 
     public boolean verifyEmailToken(String token) {
-        return userRepository.findByVerificationToken(token).map(user->{
+        return userRepository.findByTokenVerified(token).map(user->{
             user.setEmailVerified(true);
             user.setTokenVerified(null);
             userRepository.save(user);

@@ -55,7 +55,7 @@ class UserRestController {
         return ResponseEntity.ok(tokens);
     }
     @GetMapping("/verify-email")
-    public ResponseEntity<String> verifyEmail(@RequestParam@NotBlank String token) {
+    public ResponseEntity<String> verifyEmail(@RequestParam String token) {
         boolean verified = userService.verifyEmailToken(token);
         if (verified){
             return ResponseEntity.ok("Verified email");
