@@ -1,7 +1,5 @@
 package ar.uba.fi.ingsoft1.todo_template.equipo;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 import org.springframework.format.annotation.NumberFormat;
@@ -23,13 +21,17 @@ public record EquipoCreateDTO(
     String nombre,
 
     @Schema(description = "El logo del equipo es opcional",
+            minLength = 1,
+            maxLength = 100,
             example = "logo.png",
             required = false)
-    BufferedImage logo,
+    String logo,
 
     @Schema(description = "Los colores del equipo son opcionales",
+            example = "rojo, azul, verde",
             required = false)
-    List<Color> colores,
+    List<@NotBlank(message = "Los colores del equipo no deben ser nulos")
+        String> colores,
 
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 1, message = "El nivel del equipo debe ser al menos 1")
@@ -44,34 +46,18 @@ public record EquipoCreateDTO(
     public Equipo asEquipo(String capitan) {
         Equipo equipo = new Equipo(this.nombre, capitan);
         
-        if (this.logo != null) {
+        if (this.logo != null && !this.logo.isEmpty()) {
             equipo.setLogo(this.logo);
         }
 
-        if (this.colores != null) {
+        if (this.colores != null && !this.colores.isEmpty()) {            
             equipo.setColores(this.colores);
         }
 
-        if (this.nivel != null) {
+        if (this.nivel != null && this.nivel >= 1 && this.nivel <= 10) {
             equipo.setNivel(this.nivel);
         }
         
         return equipo;
-    }
-
-    public String getNombre() {
-        return this.nombre;
-    }
-
-    public BufferedImage getLogo() {
-        return this.logo;
-    
-    }
-    public List<Color> getColores() {
-        return this.colores;
-    }
-
-    public Integer getNivel() {
-        return this.nivel;
     }
 }

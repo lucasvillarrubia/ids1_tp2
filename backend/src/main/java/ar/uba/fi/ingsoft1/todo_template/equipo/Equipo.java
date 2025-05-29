@@ -1,19 +1,23 @@
 package ar.uba.fi.ingsoft1.todo_template.equipo;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import jakarta.persistence.*;
 
 @Entity(name = "equipos")
 public class Equipo {
     @Id
+    @Column(nullable = false, unique = true)
     private String nombre;
 
     @Column(nullable = false)
     private String capitan;
     
-    private BufferedImage logo;
-    private List<Color> colores;
+    @Column(nullable = true)
+    private String logo;
+
+    @Column(nullable = true)
+    private List<String> colores;
+
+    @Column(nullable = true)
     private Integer nivel;
 
     public Equipo() {}
@@ -34,11 +38,11 @@ public class Equipo {
         return capitan;
     }
 
-    public BufferedImage getLogo() {
+    public String getLogo() {
         return logo;
     }
 
-    public List<Color> getColores() {
+    public List<String> getColores() {
         return colores;
     }
 
@@ -50,15 +54,11 @@ public class Equipo {
         this.nombre = nombre;
     }
 
-    public void setCapitan(String capitan) {
-        this.capitan = capitan;
-    }
-
-    public void setLogo(BufferedImage logo) {
+    public void setLogo(String logo) {
         this.logo = logo;
     }
 
-    public void setColores(List<Color> colores) {
+    public void setColores(List<String> colores) {
         this.colores = colores;
     }
 
