@@ -1,24 +1,28 @@
 package ar.uba.fi.ingsoft1.todo_template.equipo;
 
-import java.util.List;
-
 import org.springframework.format.annotation.NumberFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public record EquipoCreateDTO(
     @NotBlank(message = "El nombre del equipo es obligatorio")
-    @Size(min = 1, max = 100)
     @Schema(description = "El nombre del equipo es obligatorio",
             minLength = 1,
             maxLength = 100,
             example = "All Stars",
             required = true)
     String nombre,
+
+    @NotBlank(message = "El capitan del equipo es obligatorio")
+    @Schema(description = "El capitan del equipo es obligatorio",
+            minLength = 1,
+            maxLength = 100,
+            example = "Messi",
+            required = true)
+    String capitan,
 
     @Schema(description = "El logo del equipo es opcional",
             minLength = 1,
@@ -30,8 +34,7 @@ public record EquipoCreateDTO(
     @Schema(description = "Los colores del equipo son opcionales",
             example = "rojo, azul, verde",
             required = false)
-    List<@NotBlank(message = "Los colores del equipo no deben ser nulos")
-        String> colores,
+    String colores,
 
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 1, message = "El nivel del equipo debe ser al menos 1")
@@ -43,21 +46,22 @@ public record EquipoCreateDTO(
             required = false)
     Integer nivel
 ) {
-    public Equipo asEquipo(String capitan) {
-        Equipo equipo = new Equipo(this.nombre, capitan);
+    public Equipo asEquipo() {
+        /*Equipo equipo = new Equipo(nombre, capitan);
         
-        if (this.logo != null && !this.logo.isEmpty()) {
-            equipo.setLogo(this.logo);
+        if (logo != null) {
+            equipo.setLogo(logo);
         }
 
-        if (this.colores != null && !this.colores.isEmpty()) {            
-            equipo.setColores(this.colores);
+        if (colores != null) {            
+            equipo.setColores(colores);
         }
 
-        if (this.nivel != null && this.nivel >= 1 && this.nivel <= 10) {
-            equipo.setNivel(this.nivel);
+        if (nivel != null) {
+            equipo.setNivel(nivel);
         }
         
-        return equipo;
+        return equipo;*/
+        return new Equipo(nombre, capitan);
     }
 }

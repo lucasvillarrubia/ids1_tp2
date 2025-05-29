@@ -1,5 +1,4 @@
 package ar.uba.fi.ingsoft1.todo_template.equipo;
-import java.util.List;
 import jakarta.persistence.*;
 
 @Entity(name = "equipos")
@@ -11,13 +10,10 @@ public class Equipo {
     @Column(nullable = false)
     private String capitan;
     
-    @Column(nullable = true)
     private String logo;
 
-    @Column(nullable = true)
-    private List<String> colores;
+    private String colores;
 
-    @Column(nullable = true)
     private Integer nivel;
 
     public Equipo() {}
@@ -42,7 +38,7 @@ public class Equipo {
         return logo;
     }
 
-    public List<String> getColores() {
+    public String getColores() {
         return colores;
     }
 
@@ -58,7 +54,7 @@ public class Equipo {
         this.logo = logo;
     }
 
-    public void setColores(List<String> colores) {
+    public void setColores(String colores) {
         this.colores = colores;
     }
 

@@ -4,15 +4,10 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,26 +27,27 @@ public class EquipoRestController {
                 produces = "application/json")
     @Operation(summary = "Crea un nuevo equipo")
     @ApiResponse(responseCode = "201",
-                description = "Equipo creado exitosamente")
+                description = "Equipo creado exitosamente",
+                content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400",
-                description = "Ya existe un equipo con ese nombre")
+                description = "Ya existe un equipo con ese nombre",
+                content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<EquipoDTO> crearEquipo(
+    EquipoDTO crearEquipo(
         @Valid
         @RequestBody
-        EquipoCreateDTO equipoCreateDTO,
-        String capitan
+        EquipoCreateDTO equipoCreateDTO
     ) {
         EquipoDTO equipoDTO = equipoService.crearEquipo(equipoCreateDTO);
         
         if (equipoDTO == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return null;
         }
 
-        return new ResponseEntity<>(equipoDTO, HttpStatus.CREATED);
+        return equipoDTO;
     }
 
-    @GetMapping(value = "/{nombre}",
+    @GetMapping(value = "/",
                 produces = "application/json")
     @Operation(summary = "Obtiene un equipo")
     @ApiResponse(responseCode = "201",
@@ -112,7 +108,7 @@ public class EquipoRestController {
         return new ResponseEntity<>(equipoDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{nombre}")
+    @DeleteMapping(value = "/")
     @Operation(summary = "Elimina un equipo")
     @ApiResponse(responseCode = "204",
                 description = "Equipo eliminado exitosamente")

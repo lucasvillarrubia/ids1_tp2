@@ -1,12 +1,10 @@
 package ar.uba.fi.ingsoft1.todo_template.equipo;
 
-import java.util.List;
-
 public record EquipoDTO(
     String nombre,
     String capitan,
     String logo,
-    List<String> colores,
+    String colores,
     Integer nivel
 ) {
     public EquipoDTO(Equipo equipo) {

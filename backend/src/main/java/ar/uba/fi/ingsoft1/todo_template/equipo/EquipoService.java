@@ -13,11 +13,12 @@ public class EquipoService {
     EquipoRepository equipoRepository;
 
     public EquipoDTO crearEquipo(EquipoCreateDTO equipoCreateDTO) {
-        if (equipoRepository.existsById(equipoCreateDTO.nombre())) {
+        Equipo equipo = equipoCreateDTO.asEquipo();
+
+        if (equipoRepository.existsById(equipo.getNombre())) {
             return null;
         }
-        //El capitan tine que ser el nombre del usuario que crea el equipo
-        Equipo equipo = equipoCreateDTO.asEquipo("capitan");
+        
         equipoRepository.save(equipo);
         return new EquipoDTO(equipo);
     }
@@ -43,15 +44,17 @@ public class EquipoService {
             return null;
         }
 
-        if (equipo.getNombre().equals(equipoCreateDTO.nombre())) {
+        Equipo nuevoEquipo = equipoCreateDTO.asEquipo();
+
+        if (equipo.getNombre().equals(nuevoEquipo.getNombre())) {
             equipo.setNombre(null);
             return new EquipoDTO(equipo);
         }
         
-        equipo.setNombre(equipoCreateDTO.nombre());    
-        equipo.setLogo(equipoCreateDTO.logo());
-        equipo.setColores(equipoCreateDTO.colores());
-        equipo.setNivel(equipoCreateDTO.nivel());
+        equipo.setNombre(nuevoEquipo.getNombre());    
+        equipo.setLogo(nuevoEquipo.getLogo());
+        equipo.setColores(nuevoEquipo.getColores());
+        equipo.setNivel(nuevoEquipo.getNivel());
 
         equipoRepository.save(equipo);
         return new EquipoDTO(equipo);
