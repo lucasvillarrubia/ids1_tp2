@@ -1,6 +1,6 @@
 import React from 'react'
 import { CategoryCardUI, CategorySymbol, CategoryName } from './CategoryStyles'
-import { IconByCat } from '../../data/Categories'
+import { IconByCat } from '../../staticData/Categories'
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCategory } from '../../features/categories/categoriesSlice';
 

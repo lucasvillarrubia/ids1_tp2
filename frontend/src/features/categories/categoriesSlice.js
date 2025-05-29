@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { CategoryCollection } from "../../data/Categories";
+import { CategoryCollection } from "../../staticData/Categories";
 
 const initialState = {
         categories: CategoryCollection,
