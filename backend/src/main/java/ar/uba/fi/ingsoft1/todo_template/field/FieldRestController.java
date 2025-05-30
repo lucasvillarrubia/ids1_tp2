@@ -81,7 +81,7 @@ public class FieldRestController {
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Delete a field by its id")
     @ApiResponse(responseCode = "200", description = "Field deleted successfully")
-    // @ApiResponse(responseCode = "404", description = "Field not found")
+    @ApiResponse(responseCode = "404", description = "Field not found")
     //@PreAuthorize("hasRole('ADMIN')") // esto representa a un administrador de cancha no de app ?
     public ResponseEntity<Void> deleteField(@PathVariable @Positive long id) {
         fieldService.deleteField(id);

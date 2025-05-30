@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
-import ar.uba.fi.ingsoft1.todo_template.reviews.Review;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -17,7 +16,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 

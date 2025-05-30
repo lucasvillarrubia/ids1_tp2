@@ -31,6 +31,11 @@ public class Review implements Serializable {
         this.comment = comment;
     }
 
+    public Review(Short score, String comment) {
+        this.score = score;
+        this.comment = comment;
+    }
+
     public Long getId() { return id; }
 
     public Short getScore() { return score; }
