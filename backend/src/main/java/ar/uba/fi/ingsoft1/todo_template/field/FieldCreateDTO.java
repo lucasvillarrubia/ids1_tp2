@@ -3,21 +3,22 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 import java.util.List;
 
 import io.micrometer.common.lang.NonNull;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record FieldCreateDTO(
         @NonNull @Positive Long ownerId,
-        @NotNull String name,
-        String location,
-        String zone,
-        List<String> features
+        @NotNull @NotEmpty String name,
+        @NotNull @NotEmpty String location,
+        @NotNull @NotEmpty String zone,
+        @NotNull @NotEmpty List<String> features,
+        List<String> images
 ) {
     public Field asField() {
-        System.out.println("Creating Field from FieldCreateDTO: " + this);
         return new Field(ownerId, name, location, zone, features.stream()
                 .map(FieldFeatures::valueOf)
-                .toList());
+                .toList(), images);
     }
 
     public Long getOwnerId() {
@@ -38,5 +39,9 @@ public record FieldCreateDTO(
 
     public List<String> getFeatures() {
         return features;
+    }
+
+    public List<String> getImages() {
+        return images;
     }
 }

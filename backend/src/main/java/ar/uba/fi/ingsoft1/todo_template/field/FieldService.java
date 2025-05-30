@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ar.uba.fi.ingsoft1.todo_template.reviews.Review;
+import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -83,11 +84,11 @@ public class FieldService {
         return new FieldDTO(fieldRepository.save(field));
     }
 
-    // public FieldDTO addReviewToField(Long fieldId, ReviewDTO reviewDTO) {
-    //     Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-    //     Review review = reviewDTO.asReview();
-    //     field.addReview(review.getId());
-    //     return new FieldDTO(fieldRepository.save(field));
-    // }
+    public FieldDTO addReviewToField(ReviewCreateDTO reviewDTO) {
+        Field field = fieldRepository.findById(reviewDTO.field_id()).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        Review review = reviewDTO.asReview();
+        field.addReview(review.getId());
+        return new FieldDTO(fieldRepository.save(field));
+    }
 
 }

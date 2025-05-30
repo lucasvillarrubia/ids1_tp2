@@ -1,6 +1,4 @@
 package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public record FieldScheduleDTO(
