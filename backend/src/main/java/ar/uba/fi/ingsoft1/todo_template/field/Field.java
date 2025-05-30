@@ -18,6 +18,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "fields")
@@ -27,18 +29,22 @@ public class Field {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Positive 
     @Column(nullable = false)
     private Long ownerId;
 
+    @NotEmpty(message = "La cancha debe tener un nombre")
     @Column(nullable = false)
     private String name;
 
+    
     private String description;
 
     private String location;
 
     private String zone;
 
+    @Positive(message = "El precio debe ser un valor positivo")
     @Column
     private Double price;
 
@@ -49,6 +55,7 @@ public class Field {
     @JoinColumn(name = "schedule_id", nullable = false, unique = true)
     private FieldSchedule schedule;
 
+    @NotEmpty(message = "La cancha debe tener al menos una característica como el tipo de superficie")
     @ElementCollection
     @CollectionTable(name = "field_features", joinColumns = @JoinColumn(name = "field_id"))
     @Column(name = "feature", nullable = false)
@@ -99,7 +106,7 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long ownerId, String name, String location, String zone, List<FieldFeatures> features) {
+    public Field(Long ownerId, String name, String location, String zone, List<FieldFeatures> features, List<String> images) {
         this.name = name;
         this.ownerId = ownerId;
         this.location = location;
@@ -107,11 +114,10 @@ public class Field {
         this.features = features;
 
         this.schedule = new FieldSchedule();
-        this.images = new ArrayList<>();
+        this.images = images != null ? images : new ArrayList<>();
         this.reservations = new ArrayList<>();
         this.reviews = new ArrayList<>();
     }
-
 
     public Long getId() {
         return id;

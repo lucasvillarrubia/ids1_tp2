@@ -12,13 +12,13 @@ public record FieldCreateDTO(
         @NotNull @NotEmpty String name,
         @NotNull @NotEmpty String location,
         @NotNull @NotEmpty String zone,
-        @NotNull @NotEmpty List<String> features
+        @NotNull @NotEmpty List<String> features,
+        List<String> images
 ) {
     public Field asField() {
-        System.out.println("Creating Field from FieldCreateDTO: " + this);
         return new Field(ownerId, name, location, zone, features.stream()
                 .map(FieldFeatures::valueOf)
-                .toList());
+                .toList(), images);
     }
 
     public Long getOwnerId() {
@@ -39,5 +39,9 @@ public record FieldCreateDTO(
 
     public List<String> getFeatures() {
         return features;
+    }
+
+    public List<String> getImages() {
+        return images;
     }
 }
