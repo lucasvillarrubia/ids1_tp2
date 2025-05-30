@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -86,6 +87,19 @@ public class FieldRestController {
     public ResponseEntity<Void> deleteField(@PathVariable @Positive long id) {
         fieldService.deleteField(id);
         return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
+    }
+
+    // PATCH
+
+    @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+    @Operation(summary = "Update a field by its id")
+    @ApiResponse(responseCode = "200", description = "Field updated successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public FieldDTO updateField(
+            @PathVariable @Positive Long id,
+            @Valid @RequestBody FieldUpdateDTO fieldUpdateDTO
+    ) {
+        return fieldService.updateField(id, fieldUpdateDTO);
     }
 
 }
