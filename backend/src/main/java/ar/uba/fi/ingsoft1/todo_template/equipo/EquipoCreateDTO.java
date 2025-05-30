@@ -49,15 +49,15 @@ public record EquipoCreateDTO(
     public Equipo asEquipo() {
         Equipo equipo = new Equipo(nombre, capitan);
         
-        if (logo != null) {
+        if (logo != null && !logo.isEmpty()) {
             equipo.setLogo(logo);
         }
 
-        if (colores != null) {            
+        if (colores != null && !colores.isEmpty()) {            
             equipo.setColores(colores);
         }
 
-        if (nivel != null) {
+        if (nivel != null && nivel >= 1 && nivel <= 10) {
             equipo.setNivel(nivel);
         }
         

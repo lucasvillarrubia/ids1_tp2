@@ -10,10 +10,13 @@ public class Equipo {
     @Column(nullable = false)
     private String capitan;
     
+    @Column(nullable = true)
     private String logo;
 
+    @Column(nullable = true)
     private String colores;
 
+    @Column(nullable = true)
     private Integer nivel;
 
     public Equipo() {}
