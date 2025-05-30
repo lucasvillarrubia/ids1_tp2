@@ -6,7 +6,6 @@ import ar.uba.fi.ingsoft1.todo_template.user.email_validation.EmailService;
 import ar.uba.fi.ingsoft1.todo_template.user.refresh_token.RefreshToken;
 import ar.uba.fi.ingsoft1.todo_template.user.refresh_token.RefreshTokenService;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,11 +45,11 @@ public class UserService {
         }
 
         var user = data.asUser(passwordEncoder::encode);
-        String verificationToken = UUID.randomUUID().toString();
-        user.setTokenVerified(verificationToken);
-        user.setEmailVerified(false);
+        //String verificationToken = UUID.randomUUID().toString();
+        //user.setTokenVerified(verificationToken);
+        //user.setEmailVerified(false);
         userRepository.save(user);
-        emailService.sendValidationEmail(user.getEmail(), verificationToken);
+        //emailService.sendValidationEmail(user.getEmail(), verificationToken);
         return Optional.of(generateTokens(user));
     }
 
@@ -58,7 +57,7 @@ public class UserService {
         Optional<User> maybeUser = userRepository.findByEmail(data.email());
         return maybeUser
                 .filter(user -> passwordEncoder.matches(data.password(), user.getPassword()))
-                .filter(User::isEmailVerified)
+                //.filter(User::isEmailVerified)
                 .map(this::generateTokens);
     }
 

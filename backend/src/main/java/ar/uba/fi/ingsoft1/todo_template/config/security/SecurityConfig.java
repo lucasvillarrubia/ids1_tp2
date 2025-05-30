@@ -46,10 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
                         // ADMIN-only endpoints
-                        .requestMatchers("users/admin/**").hasAuthority("ROLE_ADMIN")
+                        //.requestMatchers("users/admin/**").hasAuthority("ROLE_ADMIN")
 
                         // USER-only endpoints, if you want to separate them (optional)
-                        //.requestMatchers("/user/**").hasAuthority("USER")
 
                         // All other authenticated requests allowed
                         .anyRequest().authenticated())

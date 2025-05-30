@@ -1,9 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.partido.participationType;
 
-import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
 
-import java.util.List;
 
 @Entity
 @DiscriminatorValue("Open")
