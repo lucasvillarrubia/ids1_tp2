@@ -46,7 +46,7 @@ public class EquipoService {
 
         Equipo nuevoEquipo = equipoCreateDTO.asEquipo();
 
-        if (equipo.getNombre().equals(nuevoEquipo.getNombre())) {
+        if (equipoRepository.existsById(nuevoEquipo.getNombre()) && !equipo.getNombre().equals(nuevoEquipo.getNombre())) {
             equipo.setNombre(null);
             return new EquipoDTO(equipo);
         }
