@@ -1,6 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.config;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.ItemNotFoundException;
+import ar.uba.fi.ingsoft1.todo_template.user.DuplicateUserException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,8 +12,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.List;
+import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
+
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<Object> handleDuplicateUser(DuplicateUserException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT) // 409 Conflict
+                .body(Map.of("errors", List.of(Map.of("msg", ex.getMessage()))));
+    }
+
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class, produces = "text/plain")
     @ApiResponse(
