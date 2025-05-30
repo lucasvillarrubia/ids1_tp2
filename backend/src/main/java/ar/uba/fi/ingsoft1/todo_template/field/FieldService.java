@@ -23,7 +23,13 @@ public class FieldService {
     }
 
     public FieldDTO createField(FieldCreateDTO fieldCreate) {
-        return new FieldDTO(fieldRepository.save(fieldCreate.asField()));
+        Field newField = fieldCreate.asField();
+        if (!fieldRepository.findByName(newField.getName()).isEmpty()) {
+            throw new IllegalArgumentException("Field with this name already exists.");
+        }
+
+        Field savedField = fieldRepository.save(newField);
+        return new FieldDTO(savedField);
     }
 
     public void deleteField(Long fieldId) {
@@ -77,11 +83,11 @@ public class FieldService {
         return new FieldDTO(fieldRepository.save(field));
     }
 
-    public FieldDTO addReviewToField(Long fieldId, ReviewDTO reviewDTO) {
-        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        Review review = reviewDTO.asReview();
-        field.addReview(review.getId());
-        return new FieldDTO(fieldRepository.save(field));
-    }
+    // public FieldDTO addReviewToField(Long fieldId, ReviewDTO reviewDTO) {
+    //     Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+    //     Review review = reviewDTO.asReview();
+    //     field.addReview(review.getId());
+    //     return new FieldDTO(fieldRepository.save(field));
+    // }
 
 }

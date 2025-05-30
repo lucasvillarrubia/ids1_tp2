@@ -1,5 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class FieldSchedule {
+public class FieldSchedule implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
