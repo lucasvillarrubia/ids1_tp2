@@ -91,4 +91,41 @@ public class FieldService {
         return new FieldDTO(fieldRepository.save(field));
     }
 
+    // edit field
+    public FieldDTO updateField(Long fieldId, FieldUpdateDTO fieldEdit) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+
+        if (fieldEdit.getDescription() != null) {
+            field.setDescription(fieldEdit.getDescription());
+        }
+
+        if (fieldEdit.getLocation() != null) {
+            field.setLocation(fieldEdit.getLocation());
+        }
+
+        if (fieldEdit.getZone() != null) {
+            field.setZone(fieldEdit.getZone());
+        }
+
+        if (fieldEdit.getPrice() != null) {
+            field.setPrice(fieldEdit.getPrice().doubleValue());
+        }
+
+        if (fieldEdit.getFeatures() != null) {
+            field.setFeatures(fieldEdit.getFeatures().stream()
+                    .map(FieldFeatures::valueOf)
+                    .collect(Collectors.toList()));
+        }
+
+        if (fieldEdit.getImages() != null) {
+            field.setImages(fieldEdit.getImages());
+        }
+
+        if (fieldEdit.getName() != null) {
+            field.setName(fieldEdit.getName());
+        }
+
+        return new FieldDTO(fieldRepository.save(field));
+    }
+
 }
