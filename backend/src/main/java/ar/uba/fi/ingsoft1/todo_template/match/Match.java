@@ -1,15 +1,15 @@
-package ar.uba.fi.ingsoft1.todo_template.partido;
+package ar.uba.fi.ingsoft1.todo_template.match;
 
 
-import ar.uba.fi.ingsoft1.todo_template.partido.participationType.ParticipationType;
+import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import jakarta.persistence.*;
 
 
 @Entity
-public class Partido {
+public class Match {
     @Id
     @GeneratedValue
-    private Long PartidoId;
+    private Long MatchId;
 
     @Column(nullable = false)
     private Long organizerId;
@@ -27,16 +27,16 @@ public class Partido {
     @Embedded
     private TimeRange timeRange;
 
-    public Partido(Long organizer, Long cancha, ParticipationType pt, TimeRange fh) {
+    public Match(Long organizer, Long cancha, ParticipationType pt, TimeRange fh) {
         this.organizerId = organizer;
         this.canchaId = cancha;
         this.participationType = pt;
         this.timeRange = fh;
     }
 
-    public Partido(){}
+    public Match(){}
 
-    public Partido(PartidoDTO dto){
+    public Match(MatchDTO dto){
         this.organizerId = dto.getOrganizerId();
         this.canchaId = dto.getCanchaId();
         this.participationType = dto.getParticipationType();
@@ -48,10 +48,10 @@ public class Partido {
         return currentId.equals(this.organizerId);
     }
 
-    protected void setId(Long id){this.PartidoId = id;}
+    protected void setId(Long id){this.MatchId = id;}
 
     public Long getId() {
-        return PartidoId;
+        return MatchId;
     }
 
     public Long getOrganizerId() {

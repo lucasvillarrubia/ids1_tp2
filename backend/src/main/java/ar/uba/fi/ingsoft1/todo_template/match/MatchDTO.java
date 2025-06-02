@@ -1,8 +1,8 @@
-package ar.uba.fi.ingsoft1.todo_template.partido;
+package ar.uba.fi.ingsoft1.todo_template.match;
 
-import ar.uba.fi.ingsoft1.todo_template.partido.participationType.ParticipationType;
+import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 
-public record PartidoDTO (
+public record MatchDTO(
     Long id,
     Long organizerId,
     Long canchaId,
@@ -12,8 +12,8 @@ public record PartidoDTO (
 )
 {
 
-    public PartidoDTO(Partido partido)  {
-        this(partido.getId(), partido.getOrganizerId(), partido.getCanchaId(), partido.getParticipationType() , partido.getTimeRange(), partido.getState());
+    public MatchDTO(Match match)  {
+        this(match.getId(), match.getOrganizerId(), match.getCanchaId(), match.getParticipationType() , match.getTimeRange(), match.getState());
     }
 
     public Long getId() {

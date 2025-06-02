@@ -1,4 +1,4 @@
-package ar.uba.fi.ingsoft1.todo_template.partido;
+package ar.uba.fi.ingsoft1.todo_template.match;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,47 +17,47 @@ import org.springframework.web.bind.annotation.*;
 
 // task: Elección de cancha y franja horaria ( franja horaria implementada falta enganchar con la api de cancha )
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
-// task: agregar partido creado historial de reservas del admin ()
-// task: actualizar listado de partidos dispo (se actualiza la db, falta crear filtro para obtener aquellos partidos abiertos y disponibles)
-// task: inscripcion de dos equipos al partido (faltaria checkear que sean validos)
+// task: agregar Match creado historial de reservas del admin ()
+// task: actualizar listado de Matchs dispo (se actualiza la db, falta crear filtro para obtener aquellos Matchs abiertos y disponibles)
+// task: inscripcion de dos equipos al Match (faltaria checkear que sean validos)
 
 // eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNYWxlIiwiaWF0IjoxNzQ4MzAyMzE1LCJleHAiOjE3NDgzMDQxMTUsInJvbGUiOiJBRE1JTiJ9.7c3k5RCKrZjHiM4VHJbjNwb6Gr5QOnzQE2riQZXPlUw
 // 4o3bjlestcbb9gb24klqpbokqun7b9hq
 @RestController
-@RequestMapping("/partido")
-@Tag(name = "Partidos")
-public class PartidoController {
-    private final PartidoService partidoService;
+@RequestMapping("/Match")
+@Tag(name = "Matches")
+public class MatchRestController {
+    private final MatchService matchService;
 
-    public PartidoController(PartidoService partidoService) {
-        this.partidoService = partidoService;
+    public MatchRestController(MatchService matchService) {
+        this.matchService = matchService;
     }
 
-    @GetMapping(value = "/partido", produces = "application/json")
-    @Operation(summary = "Get a partido given the specified Id")
-    @ApiResponse(responseCode = "200", description = "Partidos found", content = @Content(mediaType = "application/json"))
-    @ApiResponse(responseCode = "404", description = "Partidos not found", content = @Content)
+    @GetMapping(value = "/Match", produces = "application/json")
+    @Operation(summary = "Get a Match given the specified Id")
+    @ApiResponse(responseCode = "200", description = "Matchs found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Matchs not found", content = @Content)
     @ResponseStatus(HttpStatus.OK)
-    PartidoDTO getPartido(
+    MatchDTO getMatch(
             @Valid @Positive Long id
     ) throws MethodArgumentNotValidException {
-        return partidoService.getPartido(id);
+        return matchService.getMatch(id);
     }
 
-    @GetMapping(value = "/availablePartidos", produces = "application/json")
-    @Operation(summary = "Get all available partido's")
-    @ApiResponse(responseCode = "200", description = "Partidos found", content = @Content(mediaType = "application/json"))
-    @ApiResponse(responseCode = "404", description = "Partidos not found", content = @Content)
+    @GetMapping(value = "/availableMatchs", produces = "application/json")
+    @Operation(summary = "Get all available Match's")
+    @ApiResponse(responseCode = "200", description = "Matchs found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Matchs not found", content = @Content)
     @ResponseStatus(HttpStatus.OK)
-    Page<PartidoDTO> getAllAvailablePartidos(
+    Page<MatchDTO> getAllAvailableMatches(
             @Valid @ParameterObject Pageable pageable
     ) throws MethodArgumentNotValidException {
-        return partidoService.getAllAvailablePartidos(pageable);
+        return matchService.getAllAvailableMatches(pageable);
     }
 
 
     /*
-   partido creation example:
+   Match creation example:
 {
   "organizerId": 13145,
   "canchaId": 2,
@@ -75,43 +75,43 @@ public class PartidoController {
 }
     */
     @PostMapping(consumes = "application/json", produces = "application/json")
-    @Operation(summary = "Create a new Partido")
+    @Operation(summary = "Create a new Match")
     //TO DO CREAR NOTIFICACION VISUAL DE CORRECTA CREACION
-    @ApiResponse(responseCode = "201", description = "Partido created", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "201", description = "Match created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.CREATED)
-    PartidoDTO createPartido(
-            @Valid @RequestBody PartidoCreateDTO partidoCreateDTO
+    MatchDTO createMatch(
+            @Valid @RequestBody MatchCreateDTO matchCreateDTO
     ) throws MethodArgumentNotValidException {
-        return this.partidoService.createPartido(partidoCreateDTO);
+        return this.matchService.createMatch(matchCreateDTO);
     }
 
     @PatchMapping(value = "/", consumes = "application/json", produces = "application/json")
-    @Operation(summary = "Update a partido by its id")
+    @Operation(summary = "Update a Match by its id")
     @ResponseStatus(HttpStatus.OK)
-    @ApiResponse(responseCode = "200", description = "Partido updated successfully", content = @Content(mediaType = "application/json"))
-    @ApiResponse(responseCode = "404", description = "Partido not found, Invalid Partido ID or you don't have permissions to access the Partido")
+    @ApiResponse(responseCode = "200", description = "Match updated successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Match not found, Invalid Match ID or you don't have permissions to access the Match")
     //@PreAuthorize("hasRole('USER')")
     //@Valid @PathVariable @Positive Long id,
-    ResponseEntity<PartidoDTO> updatePartido(
+    ResponseEntity<MatchDTO> updateMatch(
             @Valid @Positive Long id,
-            @Valid @RequestBody PartidoCreateDTO partidoCreateDTO
+            @Valid @RequestBody MatchCreateDTO matchCreateDTO
     ) throws MethodArgumentNotValidException {
-        PartidoDTO updatedPartido = partidoService.updatePartido(id,partidoCreateDTO);
-        return ResponseEntity.ok(updatedPartido);
+        MatchDTO updatedMatch = matchService.updateMatch(id, matchCreateDTO);
+        return ResponseEntity.ok(updatedMatch);
     }
 
     //@DeleteMapping(value = "/{id}")
     @DeleteMapping(value = "/")
-    @Operation(summary = "Delete a Partido by its id")
-    @ApiResponse(responseCode = "200", description = "Partido deleted successfully")
-    @ApiResponse(responseCode = "404", description = "Partido not found, Invalid Partido ID or you don't have permissions to access the Partido")
+    @Operation(summary = "Delete a Match by its id")
+    @ApiResponse(responseCode = "200", description = "Match deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Match not found, Invalid Match ID or you don't have permissions to access the Match")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     //@PreAuthorize("hasRole('USER')")
-    //void deletePartido(@Valid @PathVariable @Positive Long id) throws MethodArgumentNotValidException {
-    void deletePartido(@Valid @Positive Long id) throws MethodArgumentNotValidException {
-        partidoService.deletePartido(id);
+    //void deleteMatch(@Valid @PathVariable @Positive Long id) throws MethodArgumentNotValidException {
+    void deleteMatch(@Valid @Positive Long id) throws MethodArgumentNotValidException {
+        matchService.deleteMatch(id);
     }
 
     @PostMapping(value = "/join")
@@ -120,11 +120,11 @@ public class PartidoController {
     @ApiResponse(responseCode = "200", description = "Joined matched successfully", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Could not join match")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<PartidoDTO> joinMatch(
+    ResponseEntity<MatchDTO> joinMatch(
             @Valid @Positive Long id
     ) throws MethodArgumentNotValidException {
-        PartidoDTO updatedPartido = partidoService.joinMatch(id);
-        return ResponseEntity.ok(updatedPartido);
+        MatchDTO updatedMatch = matchService.joinMatch(id);
+        return ResponseEntity.ok(updatedMatch);
     }
 
     @PostMapping(value = "/leave")
@@ -133,11 +133,11 @@ public class PartidoController {
     @ApiResponse(responseCode = "200", description = "Left match successfully", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Could not leave match")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<PartidoDTO> leaveMatch(
+    ResponseEntity<MatchDTO> leaveMatch(
             @Valid @Positive Long id
     ) throws MethodArgumentNotValidException {
-        PartidoDTO updatedPartido = partidoService.leaveMatch(id);
-        return ResponseEntity.ok(updatedPartido);
+        MatchDTO updatedMatch = matchService.leaveMatch(id);
+        return ResponseEntity.ok(updatedMatch);
     }
 
 

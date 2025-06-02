@@ -1,18 +1,15 @@
-package ar.uba.fi.ingsoft1.todo_template.partido;
+package ar.uba.fi.ingsoft1.todo_template.match;
 
 
 
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
-import ar.uba.fi.ingsoft1.todo_template.partido.participationType.Open;
-import ar.uba.fi.ingsoft1.todo_template.partido.participationType.ParticipationType;
-import ar.uba.fi.ingsoft1.todo_template.user.User;
+import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
+import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,10 +20,10 @@ import java.util.*;
 
 @Service
 @Transactional
-public class PartidoService {
+public class MatchService {
 
     @Autowired
-    PartidoRepository partidoRepository;
+    MatchRepository matchRepository;
 
     @Autowired
     UserService userService;
@@ -39,21 +36,21 @@ public class PartidoService {
     TeamService canchaService;
      */
 
-    public PartidoDTO createPartido(PartidoCreateDTO partidoCreateDTO) throws MethodArgumentNotValidException {
-        Partido newPartido = partidoCreateDTO.asPartido();
-        PartidoDTO newPartidoDTO = new PartidoDTO(newPartido);
-        // TODO: Agregar al jugador que crea el partido al partido una vez creado
+    public MatchDTO createMatch(MatchCreateDTO MatchCreateDTO) throws MethodArgumentNotValidException {
+        Match newMatch = MatchCreateDTO.asMatch();
+        MatchDTO newMatchDTO = new MatchDTO(newMatch);
+        // TODO: Agregar al jugador que crea el Match al Match una vez creado
 
-        if (!validatePartidoCreationInputs(newPartidoDTO)){
+        if (!validateMatchCreationInputs(newMatchDTO)){
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
         }
 
-        Partido savedPartido = partidoRepository.save(newPartido);
-        //agregar PARTIDO a historial de user creator TODO
-        return new PartidoDTO(savedPartido);
+        Match savedMatch = matchRepository.save(newMatch);
+        //agregar Match a historial de user creator TODO
+        return new MatchDTO(savedMatch);
     }
 
-    boolean validatePartidoCreationInputs(PartidoDTO partidoDTO){
+    boolean validateMatchCreationInputs(MatchDTO matchDTO){
         //verif valid userId
         // existe este user.....
 
@@ -64,60 +61,60 @@ public class PartidoService {
         return true;
     }
 
-    public void deletePartido(Long id) {
-        //Partido partido = partidoRepository.findById(id).orElse(null);
+    public void deleteMatch(Long id) {
+        //Match Match = MatchRepository.findById(id).orElse(null);
 
         //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //String currentUsername = authentication.getName();
         // validar user id
-        //if (partido == null || !partido.esOrganizador(currentUsrId)){
+        //if (Match == null || !Match.esOrganizador(currentUsrId)){
         //    return null;
         //}
-        partidoRepository.deleteById(id);
+        matchRepository.deleteById(id);
     }
 
-    public PartidoDTO updatePartido(Long id, PartidoCreateDTO partidoCreateDTO ) {
-        Partido partido = partidoRepository.findById(id).orElse(null);
+    public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {
+        Match Match = matchRepository.findById(id).orElse(null);
 
-        //if (partido == null || !partido.esOrganizador(actuaUserId)) {
-        if (partido == null) {
+        //if (Match == null || !Match.esOrganizador(actuaUserId)) {
+        if (Match == null) {
             return null;
         }
 
-        Partido saved;
+        Match saved;
         try {
-            Partido updatedPartido = partidoCreateDTO.asPartido();
-            updatedPartido.setId(id);
-            saved = partidoRepository.save(updatedPartido);
+            Match updatedMatch = matchCreateDTO.asMatch();
+            updatedMatch.setId(id);
+            saved = matchRepository.save(updatedMatch);
         } catch (MethodArgumentNotValidException e) {
             throw new RuntimeException(e);
         }
-        return new PartidoDTO(saved);
+        return new MatchDTO(saved);
     }
 
-    PartidoDTO getPartido(Long id) throws MethodArgumentNotValidException {
-        Optional<Partido> partidoFound = partidoRepository.findById(id);
-        PartidoDTO partidoFoundDTO;
+    MatchDTO getMatch(Long id) throws MethodArgumentNotValidException {
+        Optional<Match> MatchFound = matchRepository.findById(id);
+        MatchDTO MatchFoundDTO;
         try {
-            partidoFoundDTO = new PartidoDTO(partidoFound.get());
+            MatchFoundDTO = new MatchDTO(MatchFound.get());
         } catch (Exception e) {
             throw new NoSuchElementException(e);
         }
 
-        return partidoFoundDTO;
+        return MatchFoundDTO;
     }
 
-    public Page<PartidoDTO> getAllAvailablePartidos(@Valid Pageable pageable) {
-        return partidoRepository.findAllWithOpenParticipationNative(pageable).map(PartidoDTO::new);
+    public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {
+        return matchRepository.findAllWithOpenParticipationNative(pageable).map(MatchDTO::new);
     }
 
-    public PartidoDTO joinMatch(Long id) {
+    public MatchDTO joinMatch(Long id) {
         Long userId = getUserId();
-        Partido partido = getPartidoById(id);
-        if (!partido.canJoin()){
+        Match Match = getMatchById(id);
+        if (!Match.canJoin()){
             throw new RuntimeException("Can't join match");
         }
-        ParticipationType participationType = partido.getParticipationType();
+        ParticipationType participationType = Match.getParticipationType();
         Open openParticipation = (Open) participationType;
         if (openParticipation.getPlayerCount() >= openParticipation.getMaxPlayersCount()){
             throw new RuntimeException("Match is already full!");
@@ -129,20 +126,19 @@ public class PartidoService {
         }
 
         participationIds.add(userId);
-        openParticipation.increasePlayerCount();
-        partidoRepository.save(partido);
+        matchRepository.save(Match);
 
-        return new PartidoDTO(partido);
+        return new MatchDTO(Match);
     }
 
-    public PartidoDTO leaveMatch(Long id){
+    public MatchDTO leaveMatch(Long id){
         // TODO: Verificar si el usuario a abandonar es el anfitrion
         Long userId = getUserId();
-        Partido partido = getPartidoById(id);
-        if (!partido.canLeave()){
+        Match Match = getMatchById(id);
+        if (!Match.canLeave()){
             throw new RuntimeException("Can't leave match");
         }
-        ParticipationType participationType = partido.getParticipationType();
+        ParticipationType participationType = Match.getParticipationType();
         Open openParticipation = (Open) participationType;
         HashSet<Long> participationIds = openParticipation.getPlayerIds();
 
@@ -150,10 +146,9 @@ public class PartidoService {
             throw new RuntimeException("User is no longer in the match");
         }
         participationIds.remove(userId);
-        openParticipation.decreasePlayerCount();
-        partidoRepository.save(partido);
+        matchRepository.save(Match);
 
-        return new PartidoDTO(partido);
+        return new MatchDTO(Match);
     }
 
     private Long getUserId(){
@@ -163,12 +158,12 @@ public class PartidoService {
         return userService.getUserId(email);
     }
 
-    private Partido getPartidoById(Long id){
-        Optional<Partido> partidoFound = partidoRepository.findById(id);
-        if (partidoFound.isEmpty()) {
-            throw new RuntimeException("Partido not found");
+    private Match getMatchById(Long id){
+        Optional<Match> MatchFound = matchRepository.findById(id);
+        if (MatchFound.isEmpty()) {
+            throw new RuntimeException("Match not found");
         }
-        return partidoFound.get();
+        return MatchFound.get();
     }
 
 }

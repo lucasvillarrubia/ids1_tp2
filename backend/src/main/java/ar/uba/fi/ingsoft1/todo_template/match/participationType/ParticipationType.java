@@ -1,4 +1,4 @@
-package ar.uba.fi.ingsoft1.todo_template.partido.participationType;
+package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -18,21 +18,6 @@ public class ParticipationType implements Serializable {
     @Id
     @GeneratedValue
     private Long PartTypeId;
-
-    @Column(name = "TeamA", nullable = false)
-    private Long teamAId;
-
-    @Column(name = "TeamB", nullable = false)
-    private Long teamBId;
-
-    public Long getTeamAId() {
-        return teamAId;
-    }
-
-    public Long getTeamBId() {
-        return teamBId;
-    }
-
 }
 
 

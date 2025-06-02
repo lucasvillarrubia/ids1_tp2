@@ -1,4 +1,4 @@
-package ar.uba.fi.ingsoft1.todo_template.partido.participationType;
+package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
 import jakarta.persistence.*;
 
@@ -13,9 +13,7 @@ public class Open extends ParticipationType {
 
     private Integer maxPlayersCount;
 
-    private Integer playerCount = 1;
-
-    private HashSet<Long> playerIds = new HashSet<>();
+    private HashSet<Long> playerIds = new HashSet<>(); // Ver de guardar como
 
     public Open(){}
 
@@ -27,11 +25,11 @@ public class Open extends ParticipationType {
         return this.maxPlayersCount;
     }
 
-    public Integer getPlayerCount() { return this.playerCount; }
+    public Integer getPlayerCount() { return playerIds.size(); }
 
-    public void increasePlayerCount() { this.playerCount++; }
+    //public void addPlayer(id) {}
 
-    public void decreasePlayerCount() { this.playerCount--; }
+    //public void deletePlayer(id) {}
 
     public HashSet<Long> getPlayerIds() { return this.playerIds; }
 
