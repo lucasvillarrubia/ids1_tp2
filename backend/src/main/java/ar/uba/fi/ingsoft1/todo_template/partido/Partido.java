@@ -21,6 +21,9 @@ public class Partido {
     @JoinColumn(name = "participationTypeId", nullable = false)
     private ParticipationType participationType;
 
+    @Column
+    private String state = "Active";
+
     @Embedded
     private TimeRange timeRange;
 
@@ -38,6 +41,7 @@ public class Partido {
         this.canchaId = dto.getCanchaId();
         this.participationType = dto.getParticipationType();
         this.timeRange = dto.getTimeRange();
+        this.state = dto.getState();
     }
 
     public boolean esOrganizador(Long currentId){
@@ -58,12 +62,30 @@ public class Partido {
         return canchaId;
     }
 
+    public String getState() { return state; }
+
     public ParticipationType getParticipationType() {
         return participationType;
     }
 
     public TimeRange getTimeRange() {
         return timeRange;
+    }
+
+    public void closeMatch(){
+        this.state = "Closed";
+    }
+
+    public void endMatch() {
+        this.state = "Ended";
+    }
+
+    public boolean canJoin() {
+        return this.state.equals("Active");
+    }
+
+    public boolean canLeave() {
+        return this.canJoin();
     }
 
 }

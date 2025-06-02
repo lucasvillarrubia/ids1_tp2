@@ -114,5 +114,31 @@ public class PartidoController {
         partidoService.deletePartido(id);
     }
 
+    @PostMapping(value = "/join")
+    @Operation(summary = "Join a match")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Joined matched successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Could not join match")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<PartidoDTO> joinMatch(
+            @Valid @Positive Long id
+    ) throws MethodArgumentNotValidException {
+        PartidoDTO updatedPartido = partidoService.joinMatch(id);
+        return ResponseEntity.ok(updatedPartido);
+    }
+
+    @PostMapping(value = "/leave")
+    @Operation(summary = "Leave a match")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Left match successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Could not leave match")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<PartidoDTO> leaveMatch(
+            @Valid @Positive Long id
+    ) throws MethodArgumentNotValidException {
+        PartidoDTO updatedPartido = partidoService.leaveMatch(id);
+        return ResponseEntity.ok(updatedPartido);
+    }
+
 
 }

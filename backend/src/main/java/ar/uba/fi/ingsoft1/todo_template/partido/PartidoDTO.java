@@ -7,12 +7,13 @@ public record PartidoDTO (
     Long organizerId,
     Long canchaId,
     ParticipationType participationType,
-    TimeRange timeRange
+    TimeRange timeRange,
+    String state
 )
 {
 
     public PartidoDTO(Partido partido)  {
-        this(partido.getId(), partido.getOrganizerId(), partido.getCanchaId(), partido.getParticipationType() , partido.getTimeRange());
+        this(partido.getId(), partido.getOrganizerId(), partido.getCanchaId(), partido.getParticipationType() , partido.getTimeRange(), partido.getState());
     }
 
     public Long getId() {
@@ -34,6 +35,8 @@ public record PartidoDTO (
     public TimeRange getTimeRange(){
         return timeRange;
     }
+
+    public String getState() { return state; }
 
 
 }

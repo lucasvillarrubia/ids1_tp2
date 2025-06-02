@@ -82,4 +82,6 @@ public class User implements UserCredentials {
     public String getTokenVerified() { return this.tokenVerified;}
     public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified;}
     public void setTokenVerified(String tokenVerified) { this.tokenVerified = tokenVerified;}
+
+    public Long getId() { return this.id;}
 }

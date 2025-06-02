@@ -84,4 +84,12 @@ public class UserService {
             return true;
         }).orElse(false);
     }
+
+    public Long getUserId(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User does not exist.");
+        }
+        return user.get().getId();
+    }
 }
