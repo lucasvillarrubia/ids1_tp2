@@ -42,6 +42,7 @@ public class PartidoService {
     public PartidoDTO createPartido(PartidoCreateDTO partidoCreateDTO) throws MethodArgumentNotValidException {
         Partido newPartido = partidoCreateDTO.asPartido();
         PartidoDTO newPartidoDTO = new PartidoDTO(newPartido);
+        // TODO: Agregar al jugador que crea el partido al partido una vez creado
 
         if (!validatePartidoCreationInputs(newPartidoDTO)){
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
@@ -111,36 +112,63 @@ public class PartidoService {
     }
 
     public PartidoDTO joinMatch(Long id) {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-
-        if (authentication == null)
-            throw new RuntimeException("Authentication is null");
-        Object principal = authentication.getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
-        User user = userService.getUser(email);
-
-        Optional<Partido> partidoFound = partidoRepository.findById(id);
-        if (partidoFound.isEmpty()) {
-            throw new RuntimeException("Partido not found");
+        Long userId = getUserId();
+        Partido partido = getPartidoById(id);
+        if (!partido.canJoin()){
+            throw new RuntimeException("Can't join match");
         }
-        Partido partido = partidoFound.get();
         ParticipationType participationType = partido.getParticipationType();
         Open openParticipation = (Open) participationType;
+        if (openParticipation.getPlayerCount() >= openParticipation.getMaxPlayersCount()){
+            throw new RuntimeException("Match is already full!");
+        }
         HashSet<Long> participationIds = openParticipation.getPlayerIds();
 
-        if (participationIds.contains(user.getId())){
+        if (participationIds.contains(userId)){
             throw new RuntimeException("User already registered");
         }
 
-        participationIds.add(user.getId());
+        participationIds.add(userId);
         openParticipation.increasePlayerCount();
         partidoRepository.save(partido);
 
         return new PartidoDTO(partido);
     }
 
+    public PartidoDTO leaveMatch(Long id){
+        // TODO: Verificar si el usuario a abandonar es el anfitrion
+        Long userId = getUserId();
+        Partido partido = getPartidoById(id);
+        if (!partido.canLeave()){
+            throw new RuntimeException("Can't leave match");
+        }
+        ParticipationType participationType = partido.getParticipationType();
+        Open openParticipation = (Open) participationType;
+        HashSet<Long> participationIds = openParticipation.getPlayerIds();
 
+        if (!participationIds.contains(userId)){
+            throw new RuntimeException("User is no longer in the match");
+        }
+        participationIds.remove(userId);
+        openParticipation.decreasePlayerCount();
+        partidoRepository.save(partido);
+
+        return new PartidoDTO(partido);
+    }
+
+    private Long getUserId(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        String email = userDetails.username();
+        return userService.getUserId(email);
+    }
+
+    private Partido getPartidoById(Long id){
+        Optional<Partido> partidoFound = partidoRepository.findById(id);
+        if (partidoFound.isEmpty()) {
+            throw new RuntimeException("Partido not found");
+        }
+        return partidoFound.get();
+    }
 
 }
