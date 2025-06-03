@@ -1,9 +1,16 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
 
+import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Embedded;
 
 @Entity
 public class Match {
@@ -14,8 +21,9 @@ public class Match {
     @Column(nullable = false)
     private Long organizerId;
 
-    @Column(nullable = false)
-    private Long canchaId;
+    @ManyToOne
+    @JoinColumn(name = "fieldId", nullable = false)
+    private Field field;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "participationTypeId", nullable = false)
@@ -27,18 +35,18 @@ public class Match {
     @Embedded
     private TimeRange timeRange;
 
-    public Match(Long organizer, Long cancha, ParticipationType pt, TimeRange fh) {
+    public Match(Long organizer, Field field, ParticipationType pt, TimeRange fh) {
         this.organizerId = organizer;
-        this.canchaId = cancha;
+        this.field = field;
         this.participationType = pt;
         this.timeRange = fh;
     }
 
     public Match(){}
 
-    public Match(MatchDTO dto){
+    public Match(MatchDTO dto, Field field){
         this.organizerId = dto.getOrganizerId();
-        this.canchaId = dto.getCanchaId();
+        this.field = field;
         this.participationType = dto.getParticipationType();
         this.timeRange = dto.getTimeRange();
         this.state = dto.getState();
@@ -58,8 +66,8 @@ public class Match {
         return organizerId;
     }
 
-    public Long getCanchaId() {
-        return canchaId;
+    public Field getField() {
+        return this.field;
     }
 
     public String getState() { return state; }

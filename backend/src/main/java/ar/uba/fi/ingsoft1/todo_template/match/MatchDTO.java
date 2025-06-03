@@ -5,7 +5,7 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTyp
 public record MatchDTO(
     Long id,
     Long organizerId,
-    Long canchaId,
+    Long fieldId,
     ParticipationType participationType,
     TimeRange timeRange,
     String state
@@ -13,7 +13,7 @@ public record MatchDTO(
 {
 
     public MatchDTO(Match match)  {
-        this(match.getId(), match.getOrganizerId(), match.getCanchaId(), match.getParticipationType() , match.getTimeRange(), match.getState());
+        this(match.getId(), match.getOrganizerId(), match.getField().getId(), match.getParticipationType() , match.getTimeRange(), match.getState());
     }
 
     public Long getId() {
@@ -24,8 +24,8 @@ public record MatchDTO(
         return organizerId;
     }
 
-    public Long getCanchaId() {
-        return canchaId;
+    public Long getFieldId() {
+        return fieldId;
     }
 
     public ParticipationType getParticipationType() {

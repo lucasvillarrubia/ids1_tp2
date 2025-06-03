@@ -15,14 +15,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+
+//can't parse JSON.  Raw result:
+//org.springframework.http.converter.HttpMessageNotReadableException JSON parse error: Unexpected character ('o' (code 111)): was expecting double-quote to start field name
+
+
+
 // task: Elección de cancha y franja horaria ( franja horaria implementada falta enganchar con la api de cancha )
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
 // task: agregar Match creado historial de reservas del admin ()
 // task: actualizar listado de Matchs dispo (se actualiza la db, falta crear filtro para obtener aquellos Matchs abiertos y disponibles)
 // task: inscripcion de dos equipos al Match (faltaria checkear que sean validos)
 
-// eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJNYWxlIiwiaWF0IjoxNzQ4MzAyMzE1LCJleHAiOjE3NDgzMDQxMTUsInJvbGUiOiJBRE1JTiJ9.7c3k5RCKrZjHiM4VHJbjNwb6Gr5QOnzQE2riQZXPlUw
-// 4o3bjlestcbb9gb24klqpbokqun7b9hq
+// {
+//  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm9iYW5kb0BleGFtcGxlLmNvbSIsImlhdCI6MTc0ODk3MjA0NCwiZXhwIjoxNzQ4OTczODQ0LCJyb2xlIjoiVVNFUiJ9.sgNyCchSAD9Y1zRj46eJsZTOQW9Npx2m72siMqS9__k",
+//  "refreshToken": "6mrqf977bat3aitfc3i6ppigfhs33sal"
+//}
+//
+
 @RestController
 @RequestMapping("/Match")
 @Tag(name = "Matches")
@@ -60,7 +70,7 @@ public class MatchRestController {
    Match creation example:
 {
   "organizerId": 13145,
-  "canchaId": 2,
+  "fieldId": 2,
   "participationType": {
     "type": "Open",
     "teamAId": 100,
@@ -73,6 +83,15 @@ public class MatchRestController {
     "end": "09:00:00"
   }
 }
+
+{
+    "ownerId": "11",
+    "name": "Cancha 1",
+    "description": "Cancha de futbol 5",
+    "location": "Calle Falsa 123",
+    "zone": "San Telmo",
+    "features": ["GRASS", "LIGHTS", "RESTROOMS"]
+}
     */
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new Match")
@@ -84,6 +103,7 @@ public class MatchRestController {
     MatchDTO createMatch(
             @Valid @RequestBody MatchCreateDTO matchCreateDTO
     ) throws MethodArgumentNotValidException {
+        System.out.println(matchCreateDTO);
         return this.matchService.createMatch(matchCreateDTO);
     }
 

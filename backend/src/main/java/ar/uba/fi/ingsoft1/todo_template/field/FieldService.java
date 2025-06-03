@@ -12,6 +12,7 @@ import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 @Transactional
@@ -39,7 +40,7 @@ public class FieldService {
     }
 
     // GET
-    public FieldDTO getFieldById(Long fieldId) {
+    public FieldDTO getFieldById(Long fieldId) throws MethodArgumentNotValidException {
         return new FieldDTO(fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found")));
     }
 

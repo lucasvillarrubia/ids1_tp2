@@ -1,25 +1,27 @@
 package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import ar.uba.fi.ingsoft1.todo_template.equipo.Equipo;
+import jakarta.persistence.*;
 
 @Entity
 @DiscriminatorValue("Close")
 public class Close extends ParticipationType{
-    @Column(name = "TeamA", nullable = false)
-    private Long teamAId;
 
-    @Column(name = "TeamB", nullable = false)
-    private Long teamBId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "TeamA", nullable = false)
+    private Equipo teamAId;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "TeamB", nullable = false)
+    private Equipo teamBId;
 
     public Close(){}
 
-    public Long getTeamAId() {
+    public Equipo getTeamAId() {
         return teamAId;
     }
 
-    public Long getTeamBId() {
+    public Equipo getTeamBId() {
         return teamBId;
     }
 

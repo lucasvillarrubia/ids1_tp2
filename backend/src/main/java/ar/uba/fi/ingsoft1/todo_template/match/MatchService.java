@@ -3,9 +3,13 @@ package ar.uba.fi.ingsoft1.todo_template.match;
 
 
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
+import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
+import ar.uba.fi.ingsoft1.todo_template.equipo.EquipoService;
+import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,22 +26,27 @@ import java.util.*;
 @Transactional
 public class MatchService {
 
-    @Autowired
-    MatchRepository matchRepository;
+    private final MatchRepository matchRepository;
+    private final UserService userService;
+    private final FieldService fieldService;
+    private final EquipoService teamService;
 
-    @Autowired
-    UserService userService;
+    public MatchService(MatchRepository matchRepository, UserService userService,FieldService fieldService, EquipoService teamService) {
+        this.matchRepository = matchRepository;
+        this.userService = userService;
+        this.fieldService = fieldService;
+        this.teamService = teamService;
+    }
 
-    /*
-    @Autowired
-    CanchaService canchaService;
+    public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) throws MethodArgumentNotValidException {
+        Field field;
+        try {
+            field = fieldService.getFieldById(matchCreateDTO.getFieldId()).asField();
+        } catch (MethodArgumentNotValidException e) {
+            throw new RuntimeException(e);
+        }
 
-    @Autowired
-    TeamService canchaService;
-     */
-
-    public MatchDTO createMatch(MatchCreateDTO MatchCreateDTO) throws MethodArgumentNotValidException {
-        Match newMatch = MatchCreateDTO.asMatch();
+        Match newMatch = matchCreateDTO.asMatch(field);
         MatchDTO newMatchDTO = new MatchDTO(newMatch);
         // TODO: Agregar al jugador que crea el Match al Match una vez creado
 
@@ -76,14 +85,20 @@ public class MatchService {
     public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {
         Match Match = matchRepository.findById(id).orElse(null);
 
-        //if (Match == null || !Match.esOrganizador(actuaUserId)) {
+        Field field;
+        try {
+            field = fieldService.getFieldById(matchCreateDTO.getFieldId()).asField();
+        } catch (MethodArgumentNotValidException e) {
+            throw new RuntimeException(e);
+        }
+
         if (Match == null) {
             return null;
         }
 
         Match saved;
         try {
-            Match updatedMatch = matchCreateDTO.asMatch();
+            Match updatedMatch = matchCreateDTO.asMatch(field);
             updatedMatch.setId(id);
             saved = matchRepository.save(updatedMatch);
         } catch (MethodArgumentNotValidException e) {

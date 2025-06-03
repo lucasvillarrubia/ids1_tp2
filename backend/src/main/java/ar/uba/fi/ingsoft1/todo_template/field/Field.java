@@ -37,7 +37,6 @@ public class Field {
     @Column(nullable = false)
     private String name;
 
-    
     private String description;
 
     private String location;
