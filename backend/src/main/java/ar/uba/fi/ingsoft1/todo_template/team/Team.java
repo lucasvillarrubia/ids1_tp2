@@ -1,4 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.team;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity(name = "teams")
@@ -19,6 +22,9 @@ public class Team {
     @Column(nullable = true)
     private Integer skill;
 
+    @ElementCollection
+    private List<String> players;
+
     public Team() {}
 
     public Team(String name, String captain) {
@@ -27,6 +33,8 @@ public class Team {
         this.logo = null;
         this.colors = null;
         this.skill = null;
+        this.players = new ArrayList<>();
+        this.players.add(captain);
     }
 
     public String getName() {
@@ -49,6 +57,10 @@ public class Team {
         return skill;
     }
 
+    public List<String> getPlayers() {
+        return players;
+    }
+
     public void setName(String nombre) {
         this.name = nombre;
     }
@@ -63,5 +75,25 @@ public class Team {
 
     public void setSkill(Integer nivel) {
         this.skill = nivel;
+    }
+
+    public boolean addPlayer(String player) {
+        if (!players.contains(player)) {
+            players.add(player);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removePlayer(String player) {
+        if (players.contains(player)) {
+            players.remove(player);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isComplete() {
+        return players.size() >= 5;
     }
 }

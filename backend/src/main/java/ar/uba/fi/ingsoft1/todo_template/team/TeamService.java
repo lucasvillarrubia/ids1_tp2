@@ -23,41 +23,83 @@ public class TeamService {
         return new TeamDTO(team);
     }
 
-    public TeamDTO searchTeam(String name) {
-        Team team = teamRepository.findById(name).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+    public TeamDTO getTeam(String teamName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
         return new TeamDTO(team);
     }
 
-    public List<TeamDTO> searchTeams() {
-        return teamRepository.findAll().stream()
-                .map(TeamDTO::new)
-                .toList();
+    public List<TeamDTO> getTeams() {
+        List<TeamDTO> teams = teamRepository.findAll()
+                                        .stream()
+                                    .map(TeamDTO::new)
+                                .toList();
+        
+        if (teams.isEmpty()) {
+            throw new IllegalArgumentException("No teams found");
+        }
+
+        return teams;
     }
     
-    public TeamDTO updateTeams(String nombre, TeamCreateDTO equipoCreateDTO) {
-        Team team = teamRepository.findById(nombre).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+    public TeamDTO updateTeams(String teamName, TeamCreateDTO equipoCreateDTO) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
 
-        Team nuevoEquipo = equipoCreateDTO.asEquipo();
+        Team newTeam = equipoCreateDTO.asEquipo();
 
-        if (teamRepository.existsById(nuevoEquipo.getName()) && !team.getName().equals(nuevoEquipo.getName())) {
+        if (teamRepository.existsById(newTeam.getName()) && !team.getName().equals(newTeam.getName())) {
             throw new IllegalArgumentException("Team with that name already exists");
         }
         
-        team.setName(nuevoEquipo.getName());    
-        team.setLogo(nuevoEquipo.getLogo());
-        team.setColors(nuevoEquipo.getColors());
-        team.setSkill(nuevoEquipo.getSkill());
+        team.setName(newTeam.getName());    
+        team.setLogo(newTeam.getLogo());
+        team.setColors(newTeam.getColors());
+        team.setSkill(newTeam.getSkill());
+        for (String player : newTeam.getPlayers()) {
+            if (!team.getPlayers().contains(player)) {
+                team.getPlayers().add(player);
+            }
+        }
 
         teamRepository.save(team);
         return new TeamDTO(team);
     }
 
-    public boolean deleteTeam(String name) {
-        if (!teamRepository.existsById(name)) {
-            return false;
+    public String addPlayer(String teamName, String playerName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+
+        if (team.isComplete()) {
+            throw new IllegalArgumentException("Team is already complete");
         }
 
-        teamRepository.deleteById(name);
-        return true;
+        if (team.getPlayers().contains(playerName)) {
+            throw new IllegalArgumentException("Player already exists in the team");
+        }
+
+        team.addPlayer(playerName);
+        teamRepository.save(team);
+        return playerName;
+    }
+
+    public void removePlayer(String teamName, String playerName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+
+        if (!team.getPlayers().contains(playerName)) {
+            throw new IllegalArgumentException("Player not found in the team");
+        }
+
+        if (team.getCaptain().equals(playerName)) {
+            throw new IllegalArgumentException("Can not remove the captain player from the team");
+        }
+
+        team.getPlayers().remove(playerName);
+        teamRepository.save(team);
+    }
+
+    public void deleteTeam(String teamName) {
+        if (!teamRepository.existsById(teamName)) {
+            throw new IllegalArgumentException("Team not found");
+        }
+
+        teamRepository.deleteById(teamName);
     }
 }
