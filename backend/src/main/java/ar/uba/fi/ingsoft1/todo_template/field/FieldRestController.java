@@ -66,6 +66,14 @@ public class FieldRestController {
         return fieldService.getFieldsByZone(zone).stream().toList();
     }
 
+    @GetMapping(value = "/name/{name}", produces = "application/json")
+    @Operation(summary = "Get all fields by name. This is a case-sensitive search and match the full name.")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldByName(@PathVariable String name) {
+        return fieldService.getFieldByName(name).stream().toList();
+    }
+
     /* ejemplo del body para crear una cancha
     {
         owner_id: 1,
