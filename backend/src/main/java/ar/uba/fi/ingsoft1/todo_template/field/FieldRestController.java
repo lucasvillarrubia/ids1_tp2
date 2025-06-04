@@ -58,6 +58,14 @@ public class FieldRestController {
         return fieldService.getFieldsByOwnerId(ownerId).stream().toList();
     }
 
+    @GetMapping(value = "/zone/{zone}", produces = "application/json")
+    @Operation(summary = "Get all fields by zone")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldsByZone(@PathVariable String zone) {
+        return fieldService.getFieldsByZone(zone).stream().toList();
+    }
+
     /* ejemplo del body para crear una cancha
     {
         owner_id: 1,
