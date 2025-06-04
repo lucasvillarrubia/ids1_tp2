@@ -9,4 +9,5 @@ public interface FieldRepository extends JpaRepository<Field, Long> {
     List<Field> findByOwnerId(Long ownerId);
     List<Field> findByName(String name);
     List<Field> findByZone(String zone);
+    List<Field> findByFeaturesContaining(FieldFeatures feature);
 }

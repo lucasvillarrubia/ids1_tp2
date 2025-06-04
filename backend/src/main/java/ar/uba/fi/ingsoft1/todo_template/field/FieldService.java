@@ -59,6 +59,10 @@ public class FieldService {
         return fieldRepository.findByName(name).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
+    public List<FieldDTO> getFieldsByFeature(FieldFeatures feature) {
+        return fieldRepository.findByFeaturesContaining(feature).stream().map(FieldDTO::new).collect(Collectors.toList());
+    }
+
     // UPDATE
     public FieldDTO updateFieldDescription(Long fieldId, String description) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
