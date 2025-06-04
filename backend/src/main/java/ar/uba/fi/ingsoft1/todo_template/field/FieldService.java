@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ar.uba.fi.ingsoft1.todo_template.reviews.Review;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
+import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
@@ -18,9 +19,12 @@ import jakarta.transaction.Transactional;
 public class FieldService {
     @Autowired
     private final FieldRepository fieldRepository;
+    private final ReviewRepository reviewRepository;
 
-    public FieldService(FieldRepository fieldRepository) {
+    public FieldService(FieldRepository fieldRepository, 
+                        ReviewRepository reviewRepository) {
         this.fieldRepository = fieldRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public FieldDTO createField(FieldCreateDTO fieldCreate) {
@@ -63,6 +67,16 @@ public class FieldService {
         return fieldRepository.findByFeaturesContaining(feature).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
+    public List<ReviewDTO> getReviewsByFieldId(Long fieldId) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        return field.getReviews().stream()
+                .map(reviewRepository::findById)
+                .filter(java.util.Optional::isPresent)
+                .map(java.util.Optional::get)
+                .map(ReviewDTO::new)
+                .collect(Collectors.toList());
+    }
+
     // UPDATE
     public FieldDTO updateFieldDescription(Long fieldId, String description) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
@@ -88,11 +102,12 @@ public class FieldService {
         return new FieldDTO(fieldRepository.save(field));
     }
 
-    public FieldDTO addReviewToField(ReviewCreateDTO reviewDTO) {
+    public ReviewDTO addReviewToField(ReviewCreateDTO reviewDTO) {
         Field field = fieldRepository.findById(reviewDTO.field_id()).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        Review review = reviewDTO.asReview();
+        Review review = reviewRepository.save(reviewDTO.asReview());
         field.addReview(review.getId());
-        return new FieldDTO(fieldRepository.save(field));
+        fieldRepository.save(field);
+        return new ReviewDTO(review);
     }
 
     // edit field
