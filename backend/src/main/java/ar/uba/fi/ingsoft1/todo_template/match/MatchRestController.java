@@ -15,15 +15,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-
-//can't parse JSON.  Raw result:
-//org.springframework.http.converter.HttpMessageNotReadableException JSON parse error: Unexpected character ('o' (code 111)): was expecting double-quote to start field name
-
-
-
 // task: Elección de cancha y franja horaria ( franja horaria implementada falta enganchar con la api de cancha )
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
-// task: agregar Match creado historial de reservas del admin ()
+// task: agregar Match creado historial de reservas del admin
 // task: actualizar listado de Matchs dispo (se actualiza la db, falta crear filtro para obtener aquellos Matchs abiertos y disponibles)
 // task: inscripcion de dos equipos al Match (faltaria checkear que sean validos)
 
@@ -67,22 +61,25 @@ public class MatchRestController {
 
 
     /*
-   Match creation example:
+   Open Match creation example:
 {
   "organizerId": 13145,
   "fieldId": 2,
   "participationType": {
     "type": "Open",
-    "teamAId": 100,
-    "teamBId": 200,
-    "minPlayersCount": 5,
-    "maxPlayersCount": 10
+    "minPlayersCount": 2,
+    "maxPlayersCount": 6,
+    "players": []
   },
   "timeRange": {
     "start": "08:00:00",
     "end": "09:00:00"
   }
 }
+
+    Close Match creation example:
+
+
 
 {
     "ownerId": "11",
@@ -92,7 +89,9 @@ public class MatchRestController {
     "zone": "San Telmo",
     "features": ["GRASS", "LIGHTS", "RESTROOMS"]
 }
-    */
+
+*/
+
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new Match")
     //TO DO CREAR NOTIFICACION VISUAL DE CORRECTA CREACION

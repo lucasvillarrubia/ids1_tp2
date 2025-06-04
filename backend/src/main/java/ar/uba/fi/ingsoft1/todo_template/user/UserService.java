@@ -92,4 +92,12 @@ public class UserService {
         }
         return user.get().getId();
     }
+
+    public User getUser(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User does not exist.");
+        }
+        return user.get();
+    }
 }

@@ -34,7 +34,12 @@ public class Match {
 
     @Embedded
     private TimeRange timeRange;
+/*
+can't parse JSON.  Raw result:
 
+org.springframework.dao.DataIntegrityViolationException could not execute statement [ERROR: null value in column "teama" of relation "close" violates not-null constraint
+  Detail: Failing row contains (2254, null, null).] [insert into close (teama,teamb,part_type_id) values (?,?,?)]; SQL [insert into close (teama,teamb,part_type_id) values (?,?,?)]; constraint [teama" of relation "close]
+ */
     public Match(Long organizer, Field field, ParticipationType pt, TimeRange fh) {
         this.organizerId = organizer;
         this.field = field;

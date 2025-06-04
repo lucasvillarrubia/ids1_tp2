@@ -14,4 +14,6 @@ public record EquipoDTO(
     public String getNombre() {
         return nombre;
     }
+
+    public String getCapitan() {return capitan; }
 }

@@ -2,27 +2,37 @@ package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
 import ar.uba.fi.ingsoft1.todo_template.equipo.Equipo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
-@DiscriminatorValue("Close")
 public class Close extends ParticipationType{
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "TeamA", nullable = false)
-    private Equipo teamAId;
+    private Equipo teama;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "TeamB", nullable = false)
-    private Equipo teamBId;
+    private Equipo teamb;
 
     public Close(){}
 
-    public Equipo getTeamAId() {
-        return teamAId;
+    public Close(@NotBlank Equipo teama, @NotBlank Equipo teamb) {
+        this.teama = teama;
+        this.teamb = teamb;
     }
 
-    public Equipo getTeamBId() {
-        return teamBId;
+    public Equipo getTeama() {
+        return teama;
+    }
+
+    public Equipo getTeamb() {
+        return teamb;
+    }
+
+    @Override
+    public String toString() {
+        return "type: 'Close', teama: " + teama.getNombre() + "teamb: "+ teamb.getNombre();
     }
 
 }

@@ -6,6 +6,7 @@ import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
+import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.equipo.EquipoService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
@@ -29,16 +30,17 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final UserService userService;
     private final FieldService fieldService;
-    private final EquipoService teamService;
+    private final ParticipationTypeService participationTypeService;
 
-    public MatchService(MatchRepository matchRepository, UserService userService,FieldService fieldService, EquipoService teamService) {
+    public MatchService(MatchRepository matchRepository, UserService userService,FieldService fieldService, ParticipationTypeService participationTypeService) {
         this.matchRepository = matchRepository;
         this.userService = userService;
         this.fieldService = fieldService;
-        this.teamService = teamService;
+        this.participationTypeService = participationTypeService;
     }
 
     public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) throws MethodArgumentNotValidException {
+        // luego mover a una funcion de validacion -----
         Field field;
         try {
             field = fieldService.getFieldById(matchCreateDTO.getFieldId()).asField();
@@ -46,16 +48,17 @@ public class MatchService {
             throw new RuntimeException(e);
         }
 
-        Match newMatch = matchCreateDTO.asMatch(field);
+        ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
+
+        Match newMatch = matchCreateDTO.asMatch(field,partType);
         MatchDTO newMatchDTO = new MatchDTO(newMatch);
-        // TODO: Agregar al jugador que crea el Match al Match una vez creado
 
         if (!validateMatchCreationInputs(newMatchDTO)){
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
         }
 
         Match savedMatch = matchRepository.save(newMatch);
-        //agregar Match a historial de user creator TODO
+
         return new MatchDTO(savedMatch);
     }
 
@@ -96,9 +99,13 @@ public class MatchService {
             return null;
         }
 
+        ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
+
+
+
         Match saved;
         try {
-            Match updatedMatch = matchCreateDTO.asMatch(field);
+            Match updatedMatch = matchCreateDTO.asMatch(field,partType);
             updatedMatch.setId(id);
             saved = matchRepository.save(updatedMatch);
         } catch (MethodArgumentNotValidException e) {
@@ -119,10 +126,6 @@ public class MatchService {
         return MatchFoundDTO;
     }
 
-    public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {
-        return matchRepository.findAllWithOpenParticipationNative(pageable).map(MatchDTO::new);
-    }
-
     public MatchDTO joinMatch(Long id) {
         Long userId = getUserId();
         Match Match = getMatchById(id);
@@ -134,7 +137,8 @@ public class MatchService {
         if (openParticipation.getPlayerCount() >= openParticipation.getMaxPlayersCount()){
             throw new RuntimeException("Match is already full!");
         }
-        HashSet<Long> participationIds = openParticipation.getPlayerIds();
+
+        /*HashSet<Long> participationIds = openParticipation.getPlayerIds();
 
         if (participationIds.contains(userId)){
             throw new RuntimeException("User already registered");
@@ -143,6 +147,8 @@ public class MatchService {
         participationIds.add(userId);
         matchRepository.save(Match);
 
+
+         */
         return new MatchDTO(Match);
     }
 
@@ -155,6 +161,7 @@ public class MatchService {
         }
         ParticipationType participationType = Match.getParticipationType();
         Open openParticipation = (Open) participationType;
+        /*
         HashSet<Long> participationIds = openParticipation.getPlayerIds();
 
         if (!participationIds.contains(userId)){
@@ -163,6 +170,8 @@ public class MatchService {
         participationIds.remove(userId);
         matchRepository.save(Match);
 
+
+         */
         return new MatchDTO(Match);
     }
 
@@ -179,6 +188,20 @@ public class MatchService {
             throw new RuntimeException("Match not found");
         }
         return MatchFound.get();
+    }
+
+    public Page<Match> getSelfOrganizedMatches(@Valid Pageable pageable){
+        Long actualUserId = getUserId();
+        return matchRepository.findByOrganizer(actualUserId);
+    }
+
+    public Page<Match> getMatchesActualPlayerParticipatesIn(@Valid Pageable pageable){
+        Long actualUserId = getUserId();
+        return matchRepository.findByOrganizer(actualUserId);
+    }
+
+    public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {
+        return matchRepository.findAllWithOpenParticipationNative(pageable).map(MatchDTO::new);
     }
 
 }

@@ -6,7 +6,11 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Open.class, name = "Open"),
         @JsonSubTypes.Type(value = Close.class, name = "Close")
@@ -18,6 +22,10 @@ public class ParticipationType implements Serializable {
     @Id
     @GeneratedValue
     private Long PartTypeId;
+
+    public String toString() {
+        return null;
+    }
 }
 
 
