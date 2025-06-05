@@ -32,19 +32,18 @@ export const UserMenuUI = styled.div`
         top: 25%;
         right: 0;
         width: 25vw;
-        height: 25vh;
+        //height: 25vh;
         min-width: 320px;
         /* background-color: rgb(0, 0, 0); */
         background-color: var(--marronzote);
         backdrop-filter: blur(10px);
         z-index: 3;
-        /* padding-top: 20px; */
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: baseline;
         gap: 10px;
-        padding-left: 30px;
+        padding: 30px 20px;
         border-bottom-left-radius: 20px;
         border-top-left-radius: 20px;
         & p {
