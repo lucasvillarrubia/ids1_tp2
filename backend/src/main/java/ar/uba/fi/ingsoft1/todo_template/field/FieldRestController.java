@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -48,7 +49,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Field found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    public FieldDTO getFieldById(@PathVariable @Positive Long id) {
+    public FieldDTO getFieldById(@PathVariable @Positive Long id) throws MethodArgumentNotValidException {
         return fieldService.getFieldById(id);
     }
 
@@ -93,14 +94,14 @@ public class FieldRestController {
     }
 
     /* ejemplo del body para crear una cancha
-    {
-        owner_id: 1,
-        name: "Cancha 1",
-        description: "Cancha de futbol 5",
-        location: "Calle Falsa 123",
-        zone: "San Telmo",
-        features: ["GRASS", "LIGHTS", "RESTROOMS"]
-    }
+{
+    owner_id: 1,
+    name: "Cancha 1",
+    description: "Cancha de futbol 5",
+    location: "Calle Falsa 123",
+    zone: "San Telmo",
+    features: ["GRASS", "LIGHTS", "RESTROOMS"]
+}
     */
 
     @PostMapping(consumes = "application/json", produces = "application/json")
