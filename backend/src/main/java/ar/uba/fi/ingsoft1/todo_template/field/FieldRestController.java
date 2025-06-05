@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
+import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,6 +52,45 @@ public class FieldRestController {
         return fieldService.getFieldById(id);
     }
 
+    @GetMapping(value = "/owner/{ownerId}", produces = "application/json")
+    @Operation(summary = "Get all fields by owner id")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldsByOwnerId(@PathVariable @Positive Long ownerId) {
+        return fieldService.getFieldsByOwnerId(ownerId).stream().toList();
+    }
+
+    @GetMapping(value = "/zone/{zone}", produces = "application/json")
+    @Operation(summary = "Get all fields by zone")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldsByZone(@PathVariable String zone) {
+        return fieldService.getFieldsByZone(zone).stream().toList();
+    }
+
+    @GetMapping(value = "/name/{name}", produces = "application/json")
+    @Operation(summary = "Get all fields by name. This is a case-sensitive search and match the full name.")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldByName(@PathVariable String name) {
+        return fieldService.getFieldByName(name).stream().toList();
+    }
+
+    @GetMapping(value = "/feature/{feature}", produces = "application/json")
+    @Operation(summary = "Get all fields by feature")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldsByFeature(@PathVariable FieldFeatures feature) {
+        return fieldService.getFieldsByFeature(feature).stream().toList();
+    }
+
+    @GetMapping(value = "/reviews/{id}", produces = "application/json")
+    @Operation(summary = "Get all reviews for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reviews found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<ReviewDTO> getReviewsByFieldId(@PathVariable @Positive Long id) {
+        return fieldService.getReviewsByFieldId(id).stream().toList();
+    }
 
     /* ejemplo del body para crear una cancha
     {
@@ -77,6 +118,18 @@ public class FieldRestController {
         }
         FieldDTO createdField = this.fieldService.createField(fieldCreateDTO);
         return createdField;
+    }
+
+    @PostMapping(consumes = "application/json", produces = "application/json", value = "/{id}/reviews")
+    @Operation(summary = "Create a new review for a field")
+    @ApiResponse(responseCode = "201", description = "Review created", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('USER')") // cualquier usuario puede crear una reseña
+    public ReviewDTO createReview(
+            @Valid @RequestBody ReviewCreateDTO reviewCreateDTO
+    ) {
+        return fieldService.addReviewToField(reviewCreateDTO);
     }
 
     @DeleteMapping(value = "/{id}")
