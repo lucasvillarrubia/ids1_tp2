@@ -1,4 +1,4 @@
-package ar.uba.fi.ingsoft1.todo_template.partido;
+package ar.uba.fi.ingsoft1.todo_template.match;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
