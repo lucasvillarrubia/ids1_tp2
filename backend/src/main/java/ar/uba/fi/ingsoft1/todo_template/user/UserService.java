@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -85,23 +84,7 @@ public class UserService {
         }).orElse(false);
     }
 
-    public Long getUserId(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new RuntimeException("User does not exist.");
-        }
-        return user.get().getId();
-    }
-
-    public User getUser(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new RuntimeException("User does not exist.");
-        }
-        return user.get();
-    }
-
-    public User getUserById(String email) {
+    public User getUserByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
             throw new RuntimeException("User does not exist.");
