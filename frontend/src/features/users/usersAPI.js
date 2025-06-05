@@ -1,5 +1,6 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/constants"
+import { setCurrentUser } from "./usersSlice.js";
 
 
 /**
@@ -54,13 +55,20 @@ export const verifyUser = async (email, code) => {
 
 export const loginUser = async (email, password) => {
         try {
-                const data = await axios.post(`${BASE_URL}/sessions`, { email, password });
-                // print the received token
-                console.log("Received:", data);
-                return data;
+                const response = await axios.post(`${BASE_URL}/sessions`, { email, password });
+                const token = response.data.accessToken;
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                const userResponse = await axios.get(`${BASE_URL}/sessions/me`);
+                const name = userResponse.data.name;
+                return { token, name };
         } catch (error) {
                 console.error("Login error:", error);
                 const msg = error?.response?.data?.msg || "Unexpected login error";
                 throw new Error(msg);
         }
+};
+
+export const logoutUser = (dispatch) => {
+        delete axios.defaults.headers.common["Authorization"];
+        dispatch(setCurrentUser(null));
 };
