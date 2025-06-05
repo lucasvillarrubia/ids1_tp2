@@ -39,27 +39,23 @@ public class MatchService {
         this.participationTypeService = participationTypeService;
     }
 
-    public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) throws MethodArgumentNotValidException {
-        // luego mover a una funcion de validacion -----
-        Field field;
-        try {
-            field = fieldService.getFieldById(matchCreateDTO.getFieldId()).asField();
-        } catch (MethodArgumentNotValidException e) {
-            throw new RuntimeException(e);
-        }
+    public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) {
+        Match newMatch = buildMatch(matchCreateDTO);
+        Match savedMatch = matchRepository.save(newMatch);
+        return new MatchDTO(savedMatch);
+    }
+
+    private Match buildMatch(MatchCreateDTO matchCreateDTO) {
+        Field field = getField(matchCreateDTO.getFieldId());
 
         ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
 
-        Match newMatch = matchCreateDTO.asMatch(field,partType);
-        MatchDTO newMatchDTO = new MatchDTO(newMatch);
+        Match newMatch = matchCreateDTO.asMatch(userService.getUserById(getUserEmail()),field,partType);
 
-        if (!validateMatchCreationInputs(newMatchDTO)){
+        if (!validateMatchCreationInputs(new MatchDTO(newMatch))){
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
         }
-
-        Match savedMatch = matchRepository.save(newMatch);
-
-        return new MatchDTO(savedMatch);
+        return newMatch;
     }
 
     boolean validateMatchCreationInputs(MatchDTO matchDTO){
@@ -68,50 +64,29 @@ public class MatchService {
 
         //verif cancha dispo (hace falta el id a menos q el check de dispo devuelva error  en caso de cancha inexistente)
 
-        //verif valid team o user ¿participationTypeService?
-
         return true;
     }
 
     public void deleteMatch(Long id) {
-        //Match Match = MatchRepository.findById(id).orElse(null);
+        Match match = matchRepository.findById(id).orElse(null);
 
-        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //String currentUsername = authentication.getName();
-        // validar user id
-        //if (Match == null || !Match.esOrganizador(currentUsrId)){
-        //    return null;
-        //}
-        matchRepository.deleteById(id);
+        if (match != null && match.isOrganizer(userService.getUserById(getUserEmail()))){
+            matchRepository.deleteById(id);
+        }
     }
 
     public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {
-        Match Match = matchRepository.findById(id).orElse(null);
+        Match existingMatch = matchRepository.findById(id).orElse(null);
 
-        Field field;
-        try {
-            field = fieldService.getFieldById(matchCreateDTO.getFieldId()).asField();
-        } catch (MethodArgumentNotValidException e) {
-            throw new RuntimeException(e);
+        if (existingMatch != null && !existingMatch.isOrganizer(userService.getUserById(getUserEmail()))){
+            throw new RuntimeException("Inexistent match or permissions denied");
         }
 
-        if (Match == null) {
-            return null;
-        }
-
-        ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
-
-
-
-        Match saved;
-        try {
-            Match updatedMatch = matchCreateDTO.asMatch(field,partType);
-            updatedMatch.setId(id);
-            saved = matchRepository.save(updatedMatch);
-        } catch (MethodArgumentNotValidException e) {
-            throw new RuntimeException(e);
-        }
-        return new MatchDTO(saved);
+        Match match = buildMatch(matchCreateDTO);
+        match.setId(id);
+        participationTypeService.updateParticipationType(existingMatch.getParticipationType(),match.getParticipationType());
+        Match savedMatch = matchRepository.save(match);
+        return new MatchDTO(savedMatch);
     }
 
     MatchDTO getMatch(Long id) throws MethodArgumentNotValidException {
@@ -127,81 +102,68 @@ public class MatchService {
     }
 
     public MatchDTO joinMatch(Long id) {
-        Long userId = getUserId();
-        Match Match = getMatchById(id);
-        if (!Match.canJoin()){
-            throw new RuntimeException("Can't join match");
-        }
-        ParticipationType participationType = Match.getParticipationType();
-        Open openParticipation = (Open) participationType;
-        if (openParticipation.getPlayerCount() >= openParticipation.getMaxPlayersCount()){
-            throw new RuntimeException("Match is already full!");
-        }
-
-        /*HashSet<Long> participationIds = openParticipation.getPlayerIds();
-
-        if (participationIds.contains(userId)){
-            throw new RuntimeException("User already registered");
-        }
-
-        participationIds.add(userId);
-        matchRepository.save(Match);
-
-
-         */
-        return new MatchDTO(Match);
-    }
-
-    public MatchDTO leaveMatch(Long id){
-        // TODO: Verificar si el usuario a abandonar es el anfitrion
-        Long userId = getUserId();
-        Match Match = getMatchById(id);
-        if (!Match.canLeave()){
-            throw new RuntimeException("Can't leave match");
-        }
-        ParticipationType participationType = Match.getParticipationType();
-        Open openParticipation = (Open) participationType;
-        /*
-        HashSet<Long> participationIds = openParticipation.getPlayerIds();
-
-        if (!participationIds.contains(userId)){
-            throw new RuntimeException("User is no longer in the match");
-        }
-        participationIds.remove(userId);
-        matchRepository.save(Match);
-
-
-         */
-        return new MatchDTO(Match);
-    }
-
-    private Long getUserId(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         JwtUserDetails userDetails = (JwtUserDetails) principal;
         String email = userDetails.username();
-        return userService.getUserId(email);
+        Match match = getMatchById(id);
+
+        if (!match.join(userService.getUser(email))){
+            throw new RuntimeException("Can't join match");
+        }
+
+        Match savedMatch = matchRepository.save(match);
+        return new MatchDTO(savedMatch);
+    }
+
+    public void leaveMatch(Long id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        String email = userDetails.username();
+        Match match = getMatchById(id);
+
+        if (!match.leaveMatch(userService.getUser(email))){
+            throw new RuntimeException("Can't leave match");
+        }
+
+        matchRepository.save(match);
     }
 
     private Match getMatchById(Long id){
-        Optional<Match> MatchFound = matchRepository.findById(id);
-        if (MatchFound.isEmpty()) {
+        Optional<Match> matchFound = matchRepository.findById(id);
+        if (matchFound.isEmpty()) {
             throw new RuntimeException("Match not found");
         }
-        return MatchFound.get();
+        //
+        return matchFound.get();
     }
 
-    public Page<Match> getSelfOrganizedMatches(@Valid Pageable pageable){
-        Long actualUserId = getUserId();
-        return matchRepository.findByOrganizer(actualUserId);
+    public Page<MatchDTO> getSelfOrganizedMatches(@Valid Pageable pageable){
+        return matchRepository.findByOrganizer(pageable,userService.getUserById(getUserEmail())).map(MatchDTO::new);
     }
 
-    public Page<Match> getMatchesActualPlayerParticipatesIn(@Valid Pageable pageable){
-        Long actualUserId = getUserId();
-        return matchRepository.findByOrganizer(actualUserId);
+    public Page<MatchDTO> getMatchesActualPlayerParticipatesIn(@Valid Pageable pageable){
+        return matchRepository.findAllMatchesUserPlaysIn(pageable,userService.getUserId(getUserEmail())).map(MatchDTO::new);
     }
 
     public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {
-        return matchRepository.findAllWithOpenParticipationNative(pageable).map(MatchDTO::new);
+        return matchRepository.findAllWithOpenParticipation(pageable).map(MatchDTO::new);
+    }
+
+    private Field getField(Long fieldId) {
+        Field field;
+        try {
+            field = fieldService.getFieldById(fieldId).asField();
+        } catch (MethodArgumentNotValidException e) {
+            throw new RuntimeException(e);
+        }
+        return field;
+    }
+
+    // ver si se puede meter en otro file con otras funciones para conseguir data del contexto actual del usuario
+    private String getUserEmail(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        return userDetails.username();
     }
 
 }

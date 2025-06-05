@@ -25,8 +25,7 @@ public class OpenDTO extends ParticipationTypeDTO {
         return minPlayersCount;
     }
 
-    public
-    Set<String> getPlayers() {
+    public Set<String> getPlayers() {
         return players;
     }
 

@@ -1,6 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
 import ar.uba.fi.ingsoft1.todo_template.equipo.Equipo;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -35,4 +36,13 @@ public class Close extends ParticipationType{
         return "type: 'Close', teama: " + teama.getNombre() + "teamb: "+ teamb.getNombre();
     }
 
+    @Override
+    public boolean leaveMatch(User user) {
+        return false;
+    }
+
+    @Override
+    public boolean addPlayer(User user){
+        return false;
+    }
 }

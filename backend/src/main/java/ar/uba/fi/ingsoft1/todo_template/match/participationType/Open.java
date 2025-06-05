@@ -18,7 +18,7 @@ public class Open extends ParticipationType {
 
     private Integer maxPlayersCount;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "open_players",
             joinColumns = @JoinColumn(name = "open_id"),
@@ -44,8 +44,6 @@ public class Open extends ParticipationType {
 
     public Integer getPlayerCount() { return players.size(); }
 
-    //public void addPlayer(id) {}
-
     //public void deletePlayer(id) {}
 
     public Set<User> getPlayers() { return this.players; }
@@ -54,8 +52,27 @@ public class Open extends ParticipationType {
 
     @Override
     public String toString() {
-        return "type: 'Open' minPlayersCount: " + minPlayersCount.toString() + "maxPlayersCount: "+ maxPlayersCount;
+        return "type: 'Open' minPlayersCount: " + minPlayersCount + "maxPlayersCount: "+ maxPlayersCount;
     }
+
+    @Override
+    public boolean addPlayer(User user) {
+        if (players.size() == maxPlayersCount) {
+            return false;
+        }
+        players.add(user);
+        return true;
+    }
+
+    @Override
+    public boolean leaveMatch(User user) {
+        if (!players.contains(user)) {
+            return false;
+        }
+        players.remove(user);
+        return true;
+    }
+
 
 
 }

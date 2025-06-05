@@ -4,7 +4,7 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTyp
 
 public record MatchDTO(
     Long id,
-    Long organizerId,
+    String organizer,
     Long fieldId,
     ParticipationType participationType,
     TimeRange timeRange,
@@ -13,15 +13,15 @@ public record MatchDTO(
 {
 
     public MatchDTO(Match match)  {
-        this(match.getId(), match.getOrganizerId(), match.getField().getId(), match.getParticipationType() , match.getTimeRange(), match.getState());
+        this(match.getId(), match.getOrganizer().email(), match.getField().getId(), match.getParticipationType() , match.getTimeRange(), match.getState());
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getOrganizerId() {
-        return organizerId;
+    public String getOrganizer() {
+        return organizer;
     }
 
     public Long getFieldId() {

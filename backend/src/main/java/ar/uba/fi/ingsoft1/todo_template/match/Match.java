@@ -3,29 +3,24 @@ package ar.uba.fi.ingsoft1.todo_template.match;
 
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Embedded;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
+import jakarta.persistence.*;
 
 @Entity
 public class Match {
     @Id
     @GeneratedValue
-    private Long MatchId;
+    private Long matchId;
 
-    @Column(nullable = false)
-    private Long organizerId;
+    @ManyToOne
+    @JoinColumn(name = "organizer", nullable = false)
+    private User organizer;
 
     @ManyToOne
     @JoinColumn(name = "fieldId", nullable = false)
     private Field field;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     @JoinColumn(name = "participationTypeId", nullable = false)
     private ParticipationType participationType;
 
@@ -34,14 +29,9 @@ public class Match {
 
     @Embedded
     private TimeRange timeRange;
-/*
-can't parse JSON.  Raw result:
 
-org.springframework.dao.DataIntegrityViolationException could not execute statement [ERROR: null value in column "teama" of relation "close" violates not-null constraint
-  Detail: Failing row contains (2254, null, null).] [insert into close (teama,teamb,part_type_id) values (?,?,?)]; SQL [insert into close (teama,teamb,part_type_id) values (?,?,?)]; constraint [teama" of relation "close]
- */
-    public Match(Long organizer, Field field, ParticipationType pt, TimeRange fh) {
-        this.organizerId = organizer;
+    public Match(User organizer, Field field, ParticipationType pt, TimeRange fh) {
+        this.organizer = organizer;
         this.field = field;
         this.participationType = pt;
         this.timeRange = fh;
@@ -49,26 +39,18 @@ org.springframework.dao.DataIntegrityViolationException could not execute statem
 
     public Match(){}
 
-    public Match(MatchDTO dto, Field field){
-        this.organizerId = dto.getOrganizerId();
-        this.field = field;
-        this.participationType = dto.getParticipationType();
-        this.timeRange = dto.getTimeRange();
-        this.state = dto.getState();
+    public boolean isOrganizer(User actualUser){
+        return actualUser.equals(this.organizer);
     }
 
-    public boolean esOrganizador(Long currentId){
-        return currentId.equals(this.organizerId);
-    }
-
-    protected void setId(Long id){this.MatchId = id;}
+    protected void setId(Long id){this.matchId = id;}
 
     public Long getId() {
-        return MatchId;
+        return matchId;
     }
 
-    public Long getOrganizerId() {
-        return organizerId;
+    public User getOrganizer() {
+        return organizer;
     }
 
     public Field getField() {
@@ -97,8 +79,15 @@ org.springframework.dao.DataIntegrityViolationException could not execute statem
         return this.state.equals("Active");
     }
 
-    public boolean canLeave() {
-        return this.canJoin();
+    public boolean leaveMatch(User user) {
+        return this.participationType.leaveMatch(user);
     }
 
+    public boolean join(User user) {
+        return participationType.addPlayer(user);
+    }
+
+    public void setParticipationType(ParticipationType partType) {
+        this.participationType = partType;
+    }
 }

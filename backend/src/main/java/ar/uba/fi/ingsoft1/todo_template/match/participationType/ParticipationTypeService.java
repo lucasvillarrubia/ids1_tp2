@@ -21,7 +21,7 @@ public class ParticipationTypeService {
     }
 
     public ParticipationType buildFromDTO(ParticipationTypeDTO dto) {
-        // habria q implementar un factory may be (tal vez service no es tan necesario)
+        // habria q implementar un factory may be (tal vez service no es tan necesario sino mas bien un factory)
         if (dto instanceof CloseDTO closeDTO) {
             EquipoDTO teamADTO = teamService.obtenerEquipo(closeDTO.getTeama()); // TODO deberia devolver algun error en casos de invalid
             Equipo teama = new Equipo(teamADTO.getNombre(),teamADTO.getCapitan());
@@ -41,5 +41,9 @@ public class ParticipationTypeService {
         } else {
             throw new IllegalArgumentException("Unknown participation type");
         }
+    }
+
+    public void updateParticipationType(ParticipationType oldPartType,ParticipationType newPartType){
+        newPartType.setId(oldPartType.getId());
     }
 }

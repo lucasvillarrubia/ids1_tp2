@@ -1,5 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
+import ar.uba.fi.ingsoft1.todo_template.user.User;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -18,14 +19,26 @@ import java.io.Serializable;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-public class ParticipationType implements Serializable {
+public abstract class ParticipationType implements Serializable {
     @Id
     @GeneratedValue
-    private Long PartTypeId;
+    private Long partTypeId;
+
+    public abstract boolean addPlayer(User user);
 
     public String toString() {
         return null;
     }
+
+    public Long getId(){
+        return partTypeId;
+    }
+
+    public Long setId(Long newId){
+        return this.partTypeId = newId;
+    }
+
+    public abstract boolean leaveMatch(User user);
 }
 
 

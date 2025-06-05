@@ -15,11 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-// task: Elección de cancha y franja horaria ( franja horaria implementada falta enganchar con la api de cancha )
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
-// task: agregar Match creado historial de reservas del admin
-// task: actualizar listado de Matchs dispo (se actualiza la db, falta crear filtro para obtener aquellos Matchs abiertos y disponibles)
-// task: inscripcion de dos equipos al Match (faltaria checkear que sean validos)
 
 // {
 //  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm9iYW5kb0BleGFtcGxlLmNvbSIsImlhdCI6MTc0ODk3MjA0NCwiZXhwIjoxNzQ4OTczODQ0LCJyb2xlIjoiVVNFUiJ9.sgNyCchSAD9Y1zRj46eJsZTOQW9Npx2m72siMqS9__k",
@@ -48,10 +44,10 @@ public class MatchRestController {
         return matchService.getMatch(id);
     }
 
-    @GetMapping(value = "/availableMatchs", produces = "application/json")
-    @Operation(summary = "Get all available Match's")
-    @ApiResponse(responseCode = "200", description = "Matchs found", content = @Content(mediaType = "application/json"))
-    @ApiResponse(responseCode = "404", description = "Matchs not found", content = @Content)
+    @GetMapping(value = "/availableMatches", produces = "application/json")
+    @Operation(summary = "Get all available Matches")
+    @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Matches not found", content = @Content)
     @ResponseStatus(HttpStatus.OK)
     Page<MatchDTO> getAllAvailableMatches(
             @Valid @ParameterObject Pageable pageable
@@ -59,11 +55,30 @@ public class MatchRestController {
         return matchService.getAllAvailableMatches(pageable);
     }
 
+    @GetMapping(value = "/OrganizedMatches", produces = "application/json")
+    @Operation(summary = "Get all Matches manage by actual user")
+    @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Matches not found", content = @Content)
+    @ResponseStatus(HttpStatus.OK)
+    Page<MatchDTO> getAllManageMatches(
+            @Valid @ParameterObject Pageable pageable
+    ) throws MethodArgumentNotValidException {
+        return matchService.getSelfOrganizedMatches(pageable);
+    }
 
+    @GetMapping(value = "/SelfRegisteredMatches", produces = "application/json")
+    @Operation(summary = "Get all Matches the actual user is going to play")
+    @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Matches not found", content = @Content)
+    @ResponseStatus(HttpStatus.OK)
+    Page<MatchDTO> getSelfRegisteredMatches(
+            @Valid @ParameterObject Pageable pageable
+    ) throws MethodArgumentNotValidException {
+        return matchService.getMatchesActualPlayerParticipatesIn(pageable);
+    }
     /*
    Open Match creation example:
 {
-  "organizerId": 13145,
   "fieldId": 2,
   "participationType": {
     "type": "Open",
@@ -152,12 +167,11 @@ public class MatchRestController {
     @ApiResponse(responseCode = "200", description = "Left match successfully", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Could not leave match")
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<MatchDTO> leaveMatch(
+    void leaveMatch(
             @Valid @Positive Long id
-    ) throws MethodArgumentNotValidException {
-        MatchDTO updatedMatch = matchService.leaveMatch(id);
-        return ResponseEntity.ok(updatedMatch);
+    ) throws MethodArgumentNotValidException {  matchService.leaveMatch(id);
     }
 
 
 }
+
