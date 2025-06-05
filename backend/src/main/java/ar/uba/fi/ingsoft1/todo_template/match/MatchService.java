@@ -49,7 +49,7 @@ public class MatchService {
 
         ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
 
-        Match newMatch = matchCreateDTO.asMatch(userService.getUserById(getUserEmail()),field,partType);
+        Match newMatch = matchCreateDTO.asMatch(userService.getUserByEmail(getUserEmail()),field,partType);
 
         if (!validateMatchCreationInputs(new MatchDTO(newMatch))){
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
@@ -69,7 +69,7 @@ public class MatchService {
     public void deleteMatch(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
 
-        if (match != null && match.isOrganizer(userService.getUserById(getUserEmail()))){
+        if (match != null && match.isOrganizer(userService.getUserByEmail(getUserEmail()))){
             matchRepository.deleteById(id);
         }
     }
@@ -77,7 +77,7 @@ public class MatchService {
     public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {
         Match existingMatch = matchRepository.findById(id).orElse(null);
 
-        if (existingMatch != null && !existingMatch.isOrganizer(userService.getUserById(getUserEmail()))){
+        if (existingMatch != null && !existingMatch.isOrganizer(userService.getUserByEmail(getUserEmail()))){
             throw new RuntimeException("Inexistent match or permissions denied");
         }
 
@@ -106,7 +106,7 @@ public class MatchService {
         String email = userDetails.username();
         Match match = getMatchById(id);
 
-        if (!match.join(userService.getUser(email))){
+        if (!match.join(userService.getUserByEmail(email))){
             throw new RuntimeException("Can't join match");
         }
 
@@ -120,7 +120,7 @@ public class MatchService {
         String email = userDetails.username();
         Match match = getMatchById(id);
 
-        if (!match.leaveMatch(userService.getUser(email))){
+        if (!match.leaveMatch(userService.getUserByEmail(email))){
             throw new RuntimeException("Can't leave match");
         }
 
@@ -137,11 +137,11 @@ public class MatchService {
     }
 
     public Page<MatchDTO> getSelfOrganizedMatches(@Valid Pageable pageable){
-        return matchRepository.findByOrganizer(pageable,userService.getUserById(getUserEmail())).map(MatchDTO::new);
+        return matchRepository.findByOrganizer(pageable,userService.getUserByEmail(getUserEmail())).map(MatchDTO::new);
     }
 
     public Page<MatchDTO> getMatchesActualPlayerParticipatesIn(@Valid Pageable pageable){
-        return matchRepository.findAllMatchesUserPlaysIn(pageable,userService.getUserId(getUserEmail())).map(MatchDTO::new);
+        return matchRepository.findAllMatchesUserPlaysIn(pageable,userService.getUserByEmail(getUserEmail()).getId()).map(MatchDTO::new);
     }
 
     public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {

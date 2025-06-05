@@ -34,7 +34,7 @@ public class ParticipationTypeService {
             }
             HashSet<User> players = new HashSet<>();
             for(String email: openDTO.getPlayers()){
-                players.add(userService.getUser(email));
+                players.add(userService.getUserByEmail(email));
             }
 
             return new Open(openDTO.getMinPlayersCount(), openDTO.getMaxPlayersCount(), players); // TODO deberia devolver algun error en casos de invalid players
