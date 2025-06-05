@@ -8,7 +8,6 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
-import ar.uba.fi.ingsoft1.todo_template.equipo.EquipoService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;

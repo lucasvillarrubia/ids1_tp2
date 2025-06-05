@@ -1,6 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
-import ar.uba.fi.ingsoft1.todo_template.equipo.Equipo;
+
+import ar.uba.fi.ingsoft1.todo_template.team.Team;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,30 +11,30 @@ public class Close extends ParticipationType{
 
     @ManyToOne
     @JoinColumn(name = "TeamA", nullable = false)
-    private Equipo teama;
+    private Team teama;
 
     @ManyToOne
     @JoinColumn(name = "TeamB", nullable = false)
-    private Equipo teamb;
+    private Team teamb;
 
     public Close(){}
 
-    public Close(@NotBlank Equipo teama, @NotBlank Equipo teamb) {
+    public Close(@NotBlank Team teama, @NotBlank Team teamb) {
         this.teama = teama;
         this.teamb = teamb;
     }
 
-    public Equipo getTeama() {
+    public Team getTeama() {
         return teama;
     }
 
-    public Equipo getTeamb() {
+    public Team getTeamb() {
         return teamb;
     }
 
     @Override
     public String toString() {
-        return "type: 'Close', teama: " + teama.getNombre() + "teamb: "+ teamb.getNombre();
+        return "type: 'Close', teama: " + teama.getName() + "teamb: "+ teamb.getName();
     }
 
     @Override
