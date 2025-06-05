@@ -17,12 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
 
-// {
-//  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwcm9iYW5kb0BleGFtcGxlLmNvbSIsImlhdCI6MTc0ODk3MjA0NCwiZXhwIjoxNzQ4OTczODQ0LCJyb2xlIjoiVVNFUiJ9.sgNyCchSAD9Y1zRj46eJsZTOQW9Npx2m72siMqS9__k",
-//  "refreshToken": "6mrqf977bat3aitfc3i6ppigfhs33sal"
-//}
-//
-
 @RestController
 @RequestMapping("/Match")
 @Tag(name = "Matches")
