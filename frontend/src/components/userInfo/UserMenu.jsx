@@ -17,11 +17,36 @@ const UserMenu = () => {
                                 <UserMenuUI>
                                         <h6>{`¡Hola ${currentUser?.name}!`}</h6>
                                         <p onClick={() => {
-                                                        dispatch(toggleUserMenuDisplay());
-                                                        navigate('my-orders');
-                                                }}
+                                                dispatch(toggleUserMenuDisplay());
+                                                // navigate('my-orders');
+                                                alert('Todavía no lo terminé de implementar!');
+                                        }}
                                         >
-                                                Tus ordenes
+                                                Tus partidos
+                                        </p>
+                                        <p onClick={() => {
+                                                dispatch(toggleUserMenuDisplay());
+                                                // navigate('my-orders');
+                                                alert('Todavía no lo terminé de implementar!');
+                                        }}
+                                        >
+                                                Tus equipos
+                                        </p>
+                                        <p onClick={() => {
+                                                dispatch(toggleUserMenuDisplay());
+                                                // navigate('my-orders');
+                                                alert('Todavía no lo terminé de implementar!');
+                                        }}
+                                        >
+                                                Tus torneos
+                                        </p>
+                                        <p onClick={() => {
+                                                dispatch(toggleUserMenuDisplay());
+                                                // navigate('my-orders');
+                                                alert('Todavía no lo terminé de implementar!');
+                                        }}
+                                        >
+                                                Tus reviews
                                         </p>
                                         <p onClick={() => {
                                                         dispatch(setCurrentUser(null));

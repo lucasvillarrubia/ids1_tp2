@@ -35,7 +35,7 @@ class SessionRestController {
     @ApiResponse(responseCode = "401", description = "Invalid username or password supplied", content = @Content)
     public TokenDTO login(
             @Valid @NonNull @RequestBody UserLoginDTO data
-    ) throws MethodArgumentNotValidException {
+    ) {
         return userService
                 .loginUser(data)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
@@ -47,7 +47,7 @@ class SessionRestController {
     @ApiResponse(responseCode = "401", description = "Invalid refresh token supplied", content = @Content)
     public TokenDTO refresh(
             @Valid @NonNull @RequestBody RefreshDTO data
-    ) throws MethodArgumentNotValidException {
+    ) {
         return userService
                 .refresh(data)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));

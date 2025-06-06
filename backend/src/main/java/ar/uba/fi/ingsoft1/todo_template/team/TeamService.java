@@ -2,6 +2,8 @@ package ar.uba.fi.ingsoft1.todo_template.team;
 
 import java.util.List;
 
+import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,15 +18,15 @@ public class TeamService {
         Team team = teamCreateDTO.asTeam();
 
         teamRepository.findById(team.getName()).ifPresent(existingTeam -> {
-            throw new IllegalArgumentException("Team with that name already exists");
+            throw new DuplicateEntityException("Team", "name");
         });
         
         teamRepository.save(team);
         return new TeamDTO(team);
     }
 
-    public TeamDTO getTeam(String teamName) {
-        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+    public TeamDTO searchTeam(String name) {
+        Team team = teamRepository.findById(name).orElseThrow(() -> new EntityNotFoundException("Team not found"));
         return new TeamDTO(team);
     }
 
@@ -41,13 +43,13 @@ public class TeamService {
         return teams;
     }
     
-    public TeamDTO updateTeams(String teamName, TeamCreateDTO equipoCreateDTO) {
-        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+    public TeamDTO updateTeams(String nombre, TeamCreateDTO equipoCreateDTO) {
+        Team team = teamRepository.findById(nombre).orElseThrow(() -> new EntityNotFoundException("Team not found"));
 
         Team newTeam = equipoCreateDTO.asTeam();
 
-        if (teamRepository.existsById(newTeam.getName()) && !team.getName().equals(newTeam.getName())) {
-            throw new IllegalArgumentException("Team with that name already exists");
+        if (teamRepository.existsById(nuevoEquipo.getName()) && !team.getName().equals(nuevoEquipo.getName())) {
+            throw new DuplicateEntityException("Team", "name");
         }
         
         team.setName(newTeam.getName());    

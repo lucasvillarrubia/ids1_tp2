@@ -33,7 +33,7 @@ export const createUser = async (userData) => {
 
 export const verifyUser = async (email, code) => {
         try {
-                const { data } = await axios.patch(`${BASE_URL}/auth/verify`, { email, code });
+                const { data } = await axios.post(`${BASE_URL}/auth/verify`, { email, code });
                 return data;
         } catch (error) {
                 console.log({ verifyUserError: error });
@@ -41,12 +41,26 @@ export const verifyUser = async (email, code) => {
         }
 }
 
+// export const loginUser = async (email, password) => {
+//         try {
+//                 const { data } = await axios.post(`${BASE_URL}/sessions`, { email, password });
+//                 return data;
+//         } catch (error) {
+//                 console.log({ loginUserError: error });
+//                 return alert(error.response.data.msg);
+//         }
+// }
+
+
 export const loginUser = async (email, password) => {
         try {
-                const { data } = await axios.post(`${BASE_URL}/auth/login`, { email, password });
+                const data = await axios.post(`${BASE_URL}/sessions`, { email, password });
+                // print the received token
+                console.log("Received:", data);
                 return data;
         } catch (error) {
-                console.log({ loginUserError: error });
-                return alert(error.response.data.msg);
+                console.error("Login error:", error);
+                const msg = error?.response?.data?.msg || "Unexpected login error";
+                throw new Error(msg);
         }
-}
+};

@@ -1,32 +1,17 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/constants"
+import { Product } from '../../staticData/Products.jsx'
+import { setProducts } from './productsSlice'
 
-export const createUser = async (name, email, password) => {
+export const loadProductsByGenre = (genre) => async (dispatch) => {
         try {
-                const { data } = await axios.post(`${BASE_URL}/auth/signup`, { name, email, password });
-                return data;
-        } catch (error) {
-                console.log({ createUserError: error });
-                return alert(error.response.data.errors[0].msg);
+                const res = await axios.get(`${BASE_URL}/${genre}`);
+                const data = res.data;
+                const products = data.map(p => new Product(
+                    p.id, p.name, p.author, p.date, p.genre, p.xAdded
+                ));
+                dispatch(setProducts(products));
+        } catch (err) {
+                console.error("Failed to fetch products by genre:", err);
         }
-}
-
-export const verifyUser = async (email, code) => {
-        try {
-                const { data } = await axios.patch(`${BASE_URL}/auth/verify`, { email, code });
-                return data;
-        } catch (error) {
-                console.log({ verifyUserError: error });
-                return alert(error.response.data.msg);
-        }
-}
-
-export const loginUser = async (email, password) => {
-        try {
-                const { data } = await axios.post(`${BASE_URL}/auth/login`, { email, password });
-                return data;
-        } catch (error) {
-                console.log({ loginUserError: error });
-                return alert(error.response.data.msg);
-        }
-}
+};

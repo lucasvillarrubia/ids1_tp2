@@ -2,19 +2,23 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ProductCollection, ProductsByGenre } from "../../staticData/Products";
 
 const initialState = {
-        products: ProductCollection,
-        productsByGenre: ProductsByGenre,
-        totalProducts: ProductCollection.length
+        products: [],
+        productsByGenre: {},
+        totalProducts: 0
 }
 
 export const ProductsSlice = createSlice({
         name: 'products',
         initialState,
         reducers: {
-                getProducts: state => state
+                getProducts: state => state,
+                setProducts(state, action) {
+                        state.products = action.payload;
+                        state.totalProducts = action.payload.length;
+                }
         }
 });
 
-export const { getProducts } = ProductsSlice.actions;
+export const { getProducts, setProducts } = ProductsSlice.actions;
 
 export default ProductsSlice.reducer;
