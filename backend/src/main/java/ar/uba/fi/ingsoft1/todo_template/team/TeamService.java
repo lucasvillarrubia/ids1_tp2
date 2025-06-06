@@ -25,7 +25,7 @@ public class TeamService {
         return new TeamDTO(team);
     }
 
-    public TeamDTO searchTeam(String name) {
+    public TeamDTO getTeam(String name) {
         Team team = teamRepository.findById(name).orElseThrow(() -> new EntityNotFoundException("Team not found"));
         return new TeamDTO(team);
     }
@@ -37,18 +37,18 @@ public class TeamService {
                                 .toList();
         
         if (teams.isEmpty()) {
-            throw new IllegalArgumentException("No teams found");
+            throw new EntityNotFoundException("Teams not found");
         }
 
         return teams;
     }
     
-    public TeamDTO updateTeams(String nombre, TeamCreateDTO equipoCreateDTO) {
-        Team team = teamRepository.findById(nombre).orElseThrow(() -> new EntityNotFoundException("Team not found"));
+    public TeamDTO updateTeams(String teamName, TeamCreateDTO teamCreateDTO) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new EntityNotFoundException("Team not found"));
 
-        Team newTeam = equipoCreateDTO.asTeam();
+        Team newTeam = teamCreateDTO.asTeam();
 
-        if (teamRepository.existsById(nuevoEquipo.getName()) && !team.getName().equals(nuevoEquipo.getName())) {
+        if (teamRepository.existsById(newTeam.getName()) && !team.getName().equals(newTeam.getName())) {
             throw new DuplicateEntityException("Team", "name");
         }
         
@@ -63,7 +63,7 @@ public class TeamService {
     }
 
     public String addPlayer(String teamName, String playerName) {
-        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new EntityNotFoundException("Team not found"));
 
         if (team.isComplete()) {
             throw new IllegalArgumentException("Team is already complete");
@@ -78,12 +78,12 @@ public class TeamService {
             return playerName;
         }
         else {
-            throw new IllegalArgumentException("Player already exists in the team");
+            throw new DuplicateEntityException("Player", "name");
         }
     }
 
     public void removePlayer(String teamName, String playerName) {
-        Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new EntityNotFoundException("Team not found"));
 
         if (team.getCaptain().equals(playerName)) {
             throw new IllegalArgumentException("Can not remove the captain player from the team");
@@ -93,13 +93,13 @@ public class TeamService {
             teamRepository.save(team);
         }
         else {
-            throw new IllegalArgumentException("Player not found in the team");
+            throw new EntityNotFoundException("Player not found in the team");
         }
     }
 
     public void deleteTeam(String teamName) {
         if (!teamRepository.existsById(teamName)) {
-            throw new IllegalArgumentException("Team not found");
+            throw new EntityNotFoundException("Team not found");
         }
 
         teamRepository.deleteById(teamName);

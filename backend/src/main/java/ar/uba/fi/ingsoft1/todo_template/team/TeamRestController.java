@@ -6,10 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import ar.uba.fi.ingsoft1.todo_template.common.exception.GlobalExceptionHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 
@@ -19,8 +22,10 @@ import jakarta.validation.Valid;
 public class TeamRestController {
     private final TeamService teamService;
 
+    private final GlobalExceptionHandler globalExceptionHandler;
     public TeamRestController(TeamService teamService) {
         this.teamService = teamService;
+        globalExceptionHandler = new GlobalExceptionHandler();
     }
 
     @PostMapping(consumes = "application/json",
@@ -32,7 +37,7 @@ public class TeamRestController {
     @ApiResponse(responseCode = "409",
                 description = "Team with that name already exists",
                 content = @Content)
-    public ResponseEntity<TeamDTO> createTeam(
+    public ResponseEntity<?> createTeam(
         @Valid
         @RequestBody
         TeamCreateDTO teamCreateDTO
@@ -41,8 +46,8 @@ public class TeamRestController {
             TeamDTO teamDTO = teamService.createTeam(teamCreateDTO);
             return new ResponseEntity<>(teamDTO, HttpStatus.CREATED);
         }
-        catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        catch (DuplicateEntityException exception) {
+            return globalExceptionHandler.handleDuplicateEntityException(exception);
         }
     }
 
@@ -53,7 +58,7 @@ public class TeamRestController {
                 description = "Team obtained successfully")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    public ResponseEntity<TeamDTO> getTeam(
+    public ResponseEntity<?> getTeam(
         @PathVariable
         String teamName
     ) {
@@ -61,8 +66,8 @@ public class TeamRestController {
             TeamDTO teamDTO = teamService.getTeam(teamName);
             return new ResponseEntity<>(teamDTO, HttpStatus.OK);
         }
-        catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch (EntityNotFoundException exception) {
+            return globalExceptionHandler.handleEntityNotFoundException(exception);
         }
     }
 
@@ -72,13 +77,13 @@ public class TeamRestController {
                 description = "Teams obtained successfully")
     @ApiResponse(responseCode = "404",
                 description = "Teams not found")
-    public ResponseEntity<List<TeamDTO>> getTeams() {
+    public ResponseEntity<?> getTeams() {
         try {
             List<TeamDTO> teams = teamService.getTeams();
             return new ResponseEntity<>(teams, HttpStatus.OK);
         }
-        catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch (EntityNotFoundException exception) {
+            return globalExceptionHandler.handleEntityNotFoundException(exception);
         }
     }
 
@@ -92,7 +97,7 @@ public class TeamRestController {
                 description = "Team with that name already exists")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    public ResponseEntity<TeamDTO> updateTeam(
+    public ResponseEntity<?> updateTeam(
         @PathVariable
         String teamName,
         @Valid
@@ -103,13 +108,11 @@ public class TeamRestController {
             TeamDTO teamDTO = teamService.updateTeams(teamName, teamCreateDTO);
             return new ResponseEntity<>(teamDTO, HttpStatus.OK);
         }
-        catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("not found")) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            else {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
+        catch (EntityNotFoundException exception) {
+            return globalExceptionHandler.handleEntityNotFoundException(exception);
+        }
+        catch (DuplicateEntityException exception) {
+            return globalExceptionHandler.handleDuplicateEntityException(exception);
         }
     }
 
@@ -120,10 +123,10 @@ public class TeamRestController {
     @ApiResponse(responseCode = "409",
                 description = "Player already exists in the team")
     @ApiResponse(responseCode = "400",
-                description = "Team is full")
+                description = "Team is full or player name is empty")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    public ResponseEntity<String> addPlayer(
+    public ResponseEntity<?> addPlayer(
         @PathVariable
         String teamName,
         @RequestParam
@@ -133,16 +136,14 @@ public class TeamRestController {
             String newPlayer = teamService.addPlayer(teamName, playerName);
             return new ResponseEntity<>(newPlayer, HttpStatus.OK);
         }
-        catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("not found")) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            else if (e.getMessage().contains("already exists")) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
-            else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+        catch (EntityNotFoundException exception) {
+            return globalExceptionHandler.handleEntityNotFoundException(exception);
+        }
+        catch (DuplicateEntityException exception) {
+            return globalExceptionHandler.handleDuplicateEntityException(exception);
+        }
+        catch (IllegalArgumentException exception) {
+            return globalExceptionHandler.handleIllegalArgumentException(exception);
         }
     }
 
@@ -151,12 +152,10 @@ public class TeamRestController {
     @ApiResponse(responseCode = "204",
                 description = "Player removed successfully")
     @ApiResponse(responseCode = "404",
-                description = "Team not found")
-    @ApiResponse(responseCode = "409",
-                description = "Player does not exist")
+                description = "Team or player not found")
     @ApiResponse(responseCode = "400",
                 description = "Captain can not be removed")
-    public ResponseEntity<Void> removePlayer(
+    public ResponseEntity<?> removePlayer(
         @PathVariable
         String teamName,
         @RequestParam
@@ -165,16 +164,12 @@ public class TeamRestController {
         try {
             teamService.removePlayer(teamName, playerName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("Team not found")) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            else if (e.getMessage().contains("Player not found")) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
-            else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+        }
+        catch (EntityNotFoundException exception) {
+            return globalExceptionHandler.handleEntityNotFoundException(exception);
+        }
+        catch (IllegalArgumentException exception) {
+            return globalExceptionHandler.handleIllegalArgumentException(exception);
         }
     }
 
@@ -184,15 +179,15 @@ public class TeamRestController {
                 description = "Team deleted successfully")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    public ResponseEntity<Void> deleteTeam(
+    public ResponseEntity<?> deleteTeam(
         @PathVariable
         String teamName
     ) {
         try {
             teamService.deleteTeam(teamName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (EntityNotFoundException excpetion) {
+            return globalExceptionHandler.handleEntityNotFoundException(excpetion);
         }
     }
 }

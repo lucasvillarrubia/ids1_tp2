@@ -24,13 +24,13 @@ public class ParticipationTypeService {
     public ParticipationType buildFromDTO(ParticipationTypeDTO dto) {
         // habria q implementar un factory may be (tal vez service no es tan necesario sino mas bien un factory)
         if (dto instanceof CloseDTO closeDTO) {
-            Optional<TeamDTO> teamADTO = Optional.ofNullable(teamService.searchTeam(closeDTO.getTeama()));
-            Optional<TeamDTO> teamBDTO = Optional.ofNullable(teamService.searchTeam(closeDTO.getTeamb()));
+            Optional<TeamDTO> teamADTO = Optional.ofNullable(teamService.getTeam(closeDTO.getTeama()));
+            Optional<TeamDTO> teamBDTO = Optional.ofNullable(teamService.getTeam(closeDTO.getTeamb()));
             if (teamADTO.isEmpty() || teamBDTO.isEmpty()){
                 throw new IllegalArgumentException("Both teams must exist");
             }
-            Team teama = new Team(teamADTO.get().getNombre(), teamADTO.get().captain());
-            Team teamb = new Team(teamBDTO.get().getNombre(),teamBDTO.get().captain());
+            Team teama = teamADTO.get().asTeam();
+            Team teamb = teamBDTO.get().asTeam();
             return new Close(teama, teamb);
         } else if (dto instanceof OpenDTO openDTO) {
             if (openDTO.getMinPlayersCount() > openDTO.getMaxPlayersCount()){
