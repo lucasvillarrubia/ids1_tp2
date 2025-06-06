@@ -2,6 +2,7 @@ package ar.uba.fi.ingsoft1.todo_template.match;
 
 
 
+import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
@@ -75,10 +76,10 @@ public class MatchService {
     }
 
     public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {
-        Match existingMatch = matchRepository.findById(id).orElse(null);
+        Match existingMatch = matchRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
-        if (existingMatch != null && !existingMatch.isOrganizer(userService.getUserByEmail(getUserEmail()))){
-            throw new RuntimeException("Inexistent match or permissions denied");
+        if (!existingMatch.isOrganizer(userService.getUserByEmail(getUserEmail()))){
+            throw new InvalidActionException("Permissions denied");
         }
 
         Match match = buildMatch(matchCreateDTO);
@@ -88,13 +89,13 @@ public class MatchService {
         return new MatchDTO(savedMatch);
     }
 
-    MatchDTO getMatch(Long id) throws MethodArgumentNotValidException {
+    MatchDTO getMatch(Long id) {
         Optional<Match> MatchFound = matchRepository.findById(id);
         MatchDTO MatchFoundDTO;
         try {
             MatchFoundDTO = new MatchDTO(MatchFound.get());
         } catch (Exception e) {
-            throw new NoSuchElementException(e);
+            throw new EntityNotFoundException(e);
         }
 
         return MatchFoundDTO;
@@ -107,7 +108,7 @@ public class MatchService {
         Match match = getMatchById(id);
 
         if (!match.join(userService.getUserByEmail(email))){
-            throw new RuntimeException("Can't join match");
+            throw new InvalidActionException("Can't join match");
         }
 
         Match savedMatch = matchRepository.save(match);
@@ -121,7 +122,7 @@ public class MatchService {
         Match match = getMatchById(id);
 
         if (!match.leaveMatch(userService.getUserByEmail(email))){
-            throw new RuntimeException("Can't leave match");
+            throw new InvalidActionException("Can't leave match");
         }
 
         matchRepository.save(match);
@@ -130,9 +131,8 @@ public class MatchService {
     private Match getMatchById(Long id){
         Optional<Match> matchFound = matchRepository.findById(id);
         if (matchFound.isEmpty()) {
-            throw new RuntimeException("Match not found");
+            throw new EntityNotFoundException("Match not found");
         }
-        //
         return matchFound.get();
     }
 
@@ -153,7 +153,7 @@ public class MatchService {
         try {
             field = fieldService.getFieldById(fieldId).asField();
         } catch (MethodArgumentNotValidException e) {
-            throw new RuntimeException(e);
+            throw new EntityNotFoundException(e);
         }
         return field;
     }

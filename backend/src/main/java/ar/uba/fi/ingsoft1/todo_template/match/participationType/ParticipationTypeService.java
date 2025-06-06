@@ -8,6 +8,7 @@ import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 
 @Service
 public class ParticipationTypeService {
@@ -23,14 +24,17 @@ public class ParticipationTypeService {
     public ParticipationType buildFromDTO(ParticipationTypeDTO dto) {
         // habria q implementar un factory may be (tal vez service no es tan necesario sino mas bien un factory)
         if (dto instanceof CloseDTO closeDTO) {
-            TeamDTO teamADTO = teamService.searchTeam(closeDTO.getTeama()); // TODO deberia devolver algun error en casos de invalid
-            Team teama = new Team(teamADTO.getNombre(),teamADTO.captain());
-            TeamDTO teamBDTO = teamService.searchTeam(closeDTO.getTeamb()); // TODO deberia devolver algun error en casos de invalid
-            Team teamb = new Team(teamBDTO.getNombre(),teamBDTO.captain());
+            Optional<TeamDTO> teamADTO = Optional.ofNullable(teamService.searchTeam(closeDTO.getTeama()));
+            Optional<TeamDTO> teamBDTO = Optional.ofNullable(teamService.searchTeam(closeDTO.getTeamb()));
+            if (teamADTO.isEmpty() || teamBDTO.isEmpty()){
+                throw new IllegalArgumentException("Both teams must exist");
+            }
+            Team teama = new Team(teamADTO.get().getNombre(), teamADTO.get().captain());
+            Team teamb = new Team(teamBDTO.get().getNombre(),teamBDTO.get().captain());
             return new Close(teama, teamb);
         } else if (dto instanceof OpenDTO openDTO) {
             if (openDTO.getMinPlayersCount() > openDTO.getMaxPlayersCount()){
-                throw new IllegalArgumentException("Invalid arguments minimun player count is bigger than the players cap");
+                throw new IllegalArgumentException("Minimum player count is bigger than the maximum player count");
             }
             HashSet<User> players = new HashSet<>();
             for(String email: openDTO.getPlayers()){

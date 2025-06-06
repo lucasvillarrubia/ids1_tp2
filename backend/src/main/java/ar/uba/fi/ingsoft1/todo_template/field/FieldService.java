@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class FieldService {
     public FieldDTO createField(FieldCreateDTO fieldCreate) {
         Field newField = fieldCreate.asField();
         if (!fieldRepository.findByName(newField.getName()).isEmpty()) {
-            throw new IllegalArgumentException("Field with this name already exists.");
+            throw new DuplicateEntityException("Field", "name");
         }
 
         Field savedField = fieldRepository.save(newField);

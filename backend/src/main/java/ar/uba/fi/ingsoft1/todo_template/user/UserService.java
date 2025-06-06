@@ -1,11 +1,13 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 
+import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtService;
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.user.email_validation.EmailService;
 import ar.uba.fi.ingsoft1.todo_template.user.refresh_token.RefreshToken;
 import ar.uba.fi.ingsoft1.todo_template.user.refresh_token.RefreshTokenService;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,8 +41,7 @@ public class UserService {
 
     public Optional<TokenDTO> createUser(UserCreateDTO data) {
         if (userRepository.findByEmail(data.email()).isPresent()) {
-            throw new DuplicateUserException("Email already exists.");
-
+            throw new DuplicateEntityException("User", "email");
         }
 
         var user = data.asUser(passwordEncoder::encode);
@@ -87,7 +88,7 @@ public class UserService {
     public User getUserByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
-            throw new RuntimeException("User does not exist.");
+            throw new EntityNotFoundException("User does not exist");
         }
         return user.get();
     }

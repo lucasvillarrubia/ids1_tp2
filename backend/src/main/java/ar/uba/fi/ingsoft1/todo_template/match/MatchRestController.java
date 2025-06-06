@@ -45,7 +45,7 @@ public class MatchRestController {
     @ResponseStatus(HttpStatus.OK)
     Page<MatchDTO> getAllAvailableMatches(
             @Valid @ParameterObject Pageable pageable
-    ) throws MethodArgumentNotValidException {
+    ){
         return matchService.getAllAvailableMatches(pageable);
     }
 
@@ -56,7 +56,7 @@ public class MatchRestController {
     @ResponseStatus(HttpStatus.OK)
     Page<MatchDTO> getAllManageMatches(
             @Valid @ParameterObject Pageable pageable
-    ) throws MethodArgumentNotValidException {
+    ){
         return matchService.getSelfOrganizedMatches(pageable);
     }
 
@@ -67,7 +67,7 @@ public class MatchRestController {
     @ResponseStatus(HttpStatus.OK)
     Page<MatchDTO> getSelfRegisteredMatches(
             @Valid @ParameterObject Pageable pageable
-    ) throws MethodArgumentNotValidException {
+    ) {
         return matchService.getMatchesActualPlayerParticipatesIn(pageable);
     }
     /*
@@ -110,7 +110,7 @@ public class MatchRestController {
     @ResponseStatus(HttpStatus.CREATED)
     MatchDTO createMatch(
             @Valid @RequestBody MatchCreateDTO matchCreateDTO
-    ) throws MethodArgumentNotValidException {
+    ) {
         System.out.println(matchCreateDTO);
         return this.matchService.createMatch(matchCreateDTO);
     }
@@ -125,7 +125,7 @@ public class MatchRestController {
     ResponseEntity<MatchDTO> updateMatch(
             @Valid @Positive Long id,
             @Valid @RequestBody MatchCreateDTO matchCreateDTO
-    ) throws MethodArgumentNotValidException {
+    ) {
         MatchDTO updatedMatch = matchService.updateMatch(id, matchCreateDTO);
         return ResponseEntity.ok(updatedMatch);
     }
@@ -138,7 +138,7 @@ public class MatchRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     //@PreAuthorize("hasRole('USER')")
     //void deleteMatch(@Valid @PathVariable @Positive Long id) throws MethodArgumentNotValidException {
-    void deleteMatch(@Valid @Positive Long id) throws MethodArgumentNotValidException {
+    void deleteMatch(@Valid @Positive Long id){
         matchService.deleteMatch(id);
     }
 
@@ -150,7 +150,7 @@ public class MatchRestController {
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<MatchDTO> joinMatch(
             @Valid @Positive Long id
-    ) throws MethodArgumentNotValidException {
+    ) {
         MatchDTO updatedMatch = matchService.joinMatch(id);
         return ResponseEntity.ok(updatedMatch);
     }
@@ -163,7 +163,7 @@ public class MatchRestController {
     @PreAuthorize("hasRole('USER')")
     void leaveMatch(
             @Valid @Positive Long id
-    ) throws MethodArgumentNotValidException {  matchService.leaveMatch(id);
+    ) {  matchService.leaveMatch(id);
     }
 
 
