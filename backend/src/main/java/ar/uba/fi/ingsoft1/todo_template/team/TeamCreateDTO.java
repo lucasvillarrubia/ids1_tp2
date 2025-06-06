@@ -1,6 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.team;
 
-import java.util.List;
+import java.util.Arrays;
 
 import org.springframework.format.annotation.NumberFormat;
 
@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record TeamCreateDTO(
     @NotBlank(message = "Team name is required")
@@ -17,14 +18,6 @@ public record TeamCreateDTO(
             example = "All Stars",
             required = true)
     String name,
-
-    @NotBlank(message = "Team captain is required")
-    @Schema(description = "Team captain is required",
-            minLength = 1,
-            maxLength = 100,
-            example = "Messi",
-            required = true)
-    String captain,
 
     @Schema(description = "Team logo is optional",
             minLength = 1,
@@ -48,17 +41,16 @@ public record TeamCreateDTO(
             required = false)
     Integer skill,
 
-    @Min(value = 0, message = "Team must have at least 0 players")
-    @Max(value = 4, message = "Team can have at most 4 players")
+    @Size(min = 0, max = 4, message = "Team must have between 0 and 4 players")
     @Schema(description = "List of players in the team",
             minLength = 0,
             maxLength = 4,
             example = "[\"Di Maria\", \"De Paul\", \"Otamendi\", \"Dibu\"]",
             required = false)
-    List<String> players
+    String[] players
 ) {
-    public Team asEquipo() {
-        Team team = new Team(name, captain);
+    public Team asTeam() {
+        Team team = new Team(name);
         
         if (logo != null && !logo.isEmpty()) {
             team.setLogo(logo);
@@ -72,15 +64,8 @@ public record TeamCreateDTO(
             team.setSkill(skill);
         }
 
-        if (players != null && !players.isEmpty()) {
-            for (String player : players) {
-                if (!team.isComplete()) {
-                    team.addPlayer(player);
-                }
-                else {
-                    break;
-                }
-            }
+        if (players != null && players.length > 0) {
+            team.setPlayers(Arrays.asList(players));
         }
         
         return team;

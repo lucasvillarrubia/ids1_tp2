@@ -1,6 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.team;
 
-import java.util.List;
+import java.util.Arrays;
 
 public record TeamDTO(
     String name,
@@ -8,7 +8,7 @@ public record TeamDTO(
     String logo,
     String colors,
     Integer skill,
-    List<String> players
+    String[] players
 ) {
     public TeamDTO(Team team) {
         this(team.getName(),
@@ -16,10 +16,15 @@ public record TeamDTO(
             team.getLogo(),
             team.getColors(),
             team.getSkill(),
-            team.getPlayers());
+            team.getPlayers().toArray(new String[0]));
     }
 
-    public String getNombre() {
-        return name;
+    public Team asTeam() {
+        Team team = new Team(name, captain);
+        team.setLogo(logo);
+        team.setColors(colors);
+        team.setSkill(skill);
+        team.setPlayers(Arrays.asList(players));
+        return team;
     }
 }

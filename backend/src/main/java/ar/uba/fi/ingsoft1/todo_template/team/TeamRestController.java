@@ -32,7 +32,6 @@ public class TeamRestController {
     @ApiResponse(responseCode = "409",
                 description = "Team with that name already exists",
                 content = @Content)
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<TeamDTO> createTeam(
         @Valid
         @RequestBody
@@ -47,16 +46,15 @@ public class TeamRestController {
         }
     }
 
-    @GetMapping(value = "/",
+    @GetMapping(value = "/{teamName}",
                 produces = "application/json")
     @Operation(summary = "Search for a team by name")
     @ApiResponse(responseCode = "200",
                 description = "Team obtained successfully")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TeamDTO> getTeam(
-        @Valid
+        @PathVariable
         String teamName
     ) {
         try {
@@ -74,7 +72,6 @@ public class TeamRestController {
                 description = "Teams obtained successfully")
     @ApiResponse(responseCode = "404",
                 description = "Teams not found")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<TeamDTO>> getTeams() {
         try {
             List<TeamDTO> teams = teamService.getTeams();
@@ -85,7 +82,8 @@ public class TeamRestController {
         }
     }
 
-    @PatchMapping(consumes = "application/json",
+    @PatchMapping(value = "/{teamName}",
+                consumes = "application/json",
                 produces = "application/json")
     @Operation(summary = "Update a team")
     @ApiResponse(responseCode = "200",
@@ -94,9 +92,8 @@ public class TeamRestController {
                 description = "Team with that name already exists")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<TeamDTO> updateTeam(
-        @Valid
+        @PathVariable
         String teamName,
         @Valid
         @RequestBody
@@ -116,7 +113,7 @@ public class TeamRestController {
         }
     }
 
-    @PatchMapping(value = "/")
+    @PatchMapping(value = "/{teamName}/player")
     @Operation(summary = "Add player to a team")
     @ApiResponse(responseCode = "200",
                 description = "Added player to team successfully")
@@ -126,11 +123,10 @@ public class TeamRestController {
                 description = "Team is full")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> addplayer(
-        @Valid
+    public ResponseEntity<String> addPlayer(
+        @PathVariable
         String teamName,
-        @Valid
+        @RequestParam
         String playerName
     ) {
         try {
@@ -150,21 +146,20 @@ public class TeamRestController {
         }
     }
 
-    @DeleteMapping(value = "/")
-    @Operation(summary = "Delete a player")
+    @DeleteMapping(value = "/{teamName}/player")
+    @Operation(summary = "Remove a player")
     @ApiResponse(responseCode = "204",
-                description = "Player deleted successfully")
+                description = "Player removed successfully")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
     @ApiResponse(responseCode = "409",
                 description = "Player does not exist")
     @ApiResponse(responseCode = "400",
                 description = "Captain can not be removed")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> removePlayer(
-        @Valid
+    public ResponseEntity<Void> removePlayer(
+        @PathVariable
         String teamName,
-        @Valid
+        @RequestParam
         String playerName
     ) {
         try {
@@ -183,19 +178,18 @@ public class TeamRestController {
         }
     }
 
-    @DeleteMapping(value = "/")
+    @DeleteMapping(value = "/{teamName}")
     @Operation(summary = "Delete a team")
     @ApiResponse(responseCode = "204",
                 description = "Team deleted successfully")
     @ApiResponse(responseCode = "404",
                 description = "Team not found")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Team> delateTeam(
-        @Valid
-        String name
+    public ResponseEntity<Void> deleteTeam(
+        @PathVariable
+        String teamName
     ) {
         try {
-            teamService.deleteTeam(name);
+            teamService.deleteTeam(teamName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

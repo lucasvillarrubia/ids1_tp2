@@ -13,7 +13,7 @@ public class TeamService {
     TeamRepository teamRepository;
 
     public TeamDTO createTeam(TeamCreateDTO teamCreateDTO) {
-        Team team = teamCreateDTO.asEquipo();
+        Team team = teamCreateDTO.asTeam();
 
         teamRepository.findById(team.getName()).ifPresent(existingTeam -> {
             throw new IllegalArgumentException("Team with that name already exists");
@@ -44,7 +44,7 @@ public class TeamService {
     public TeamDTO updateTeams(String teamName, TeamCreateDTO equipoCreateDTO) {
         Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
 
-        Team newTeam = equipoCreateDTO.asEquipo();
+        Team newTeam = equipoCreateDTO.asTeam();
 
         if (teamRepository.existsById(newTeam.getName()) && !team.getName().equals(newTeam.getName())) {
             throw new IllegalArgumentException("Team with that name already exists");
@@ -54,11 +54,7 @@ public class TeamService {
         team.setLogo(newTeam.getLogo());
         team.setColors(newTeam.getColors());
         team.setSkill(newTeam.getSkill());
-        for (String player : newTeam.getPlayers()) {
-            if (!team.getPlayers().contains(player)) {
-                team.getPlayers().add(player);
-            }
-        }
+        team.setPlayers(newTeam.getPlayers());
 
         teamRepository.save(team);
         return new TeamDTO(team);
@@ -71,28 +67,32 @@ public class TeamService {
             throw new IllegalArgumentException("Team is already complete");
         }
 
-        if (team.getPlayers().contains(playerName)) {
-            throw new IllegalArgumentException("Player already exists in the team");
+        if (!playerName.isEmpty()) {
+            throw new IllegalArgumentException("Player name can not be empty");
         }
 
-        team.addPlayer(playerName);
-        teamRepository.save(team);
-        return playerName;
+        if (team.addPlayer(playerName)) {
+            teamRepository.save(team);
+            return playerName;
+        }
+        else {
+            throw new IllegalArgumentException("Player already exists in the team");
+        }
     }
 
     public void removePlayer(String teamName, String playerName) {
         Team team = teamRepository.findById(teamName).orElseThrow(() -> new IllegalArgumentException("Team not found"));
 
-        if (!team.getPlayers().contains(playerName)) {
-            throw new IllegalArgumentException("Player not found in the team");
-        }
-
         if (team.getCaptain().equals(playerName)) {
             throw new IllegalArgumentException("Can not remove the captain player from the team");
         }
 
-        team.getPlayers().remove(playerName);
-        teamRepository.save(team);
+        if (team.removePlayer(playerName)) {
+            teamRepository.save(team);
+        }
+        else {
+            throw new IllegalArgumentException("Player not found in the team");
+        }
     }
 
     public void deleteTeam(String teamName) {

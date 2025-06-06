@@ -2,6 +2,9 @@ package ar.uba.fi.ingsoft1.todo_template.team;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import jakarta.persistence.*;
 
 @Entity(name = "teams")
@@ -26,6 +29,16 @@ public class Team {
     private List<String> players;
 
     public Team() {}
+
+    public Team(String name) {
+        this.name = name;
+        this.captain = getUser();
+        this.logo = null;
+        this.colors = null;
+        this.skill = null;
+        this.players = new ArrayList<>();
+        this.players.add(captain);
+    }
 
     public Team(String name, String captain) {
         this.name = name;
@@ -77,23 +90,41 @@ public class Team {
         this.skill = nivel;
     }
 
+    public void setPlayers(List<String> players) {
+        for (String player : players) {
+            if (!this.isComplete()) {
+                this.addPlayer(player);
+            }
+            else {
+                break;
+            }
+        }
+    }
+
     public boolean addPlayer(String player) {
-        if (!players.contains(player)) {
-            players.add(player);
+        if (!this.players.contains(player)) {
+            this.players.add(player);
             return true;
         }
         return false;
     }
 
     public boolean removePlayer(String player) {
-        if (players.contains(player)) {
-            players.remove(player);
+        if (this.players.contains(player)) {
+            this.players.remove(player);
             return true;
         }
         return false;
     }
 
     public boolean isComplete() {
-        return players.size() >= 5;
+        return this.players.size() == 5;
     }
+
+    private String getUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        return userDetails.username();
+            
+    }    
 }
