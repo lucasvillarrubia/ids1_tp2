@@ -1,4 +1,10 @@
 package ar.uba.fi.ingsoft1.todo_template.team;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import jakarta.persistence.*;
 
 @Entity(name = "teams")
@@ -19,7 +25,20 @@ public class Team {
     @Column(nullable = true)
     private Integer skill;
 
+    @ElementCollection
+    private List<String> players;
+
     public Team() {}
+
+    public Team(String name) {
+        this.name = name;
+        this.captain = getUser();
+        this.logo = null;
+        this.colors = null;
+        this.skill = null;
+        this.players = new ArrayList<>();
+        this.players.add(captain);
+    }
 
     public Team(String name, String captain) {
         this.name = name;
@@ -27,6 +46,8 @@ public class Team {
         this.logo = null;
         this.colors = null;
         this.skill = null;
+        this.players = new ArrayList<>();
+        this.players.add(captain);
     }
 
     public String getName() {
@@ -49,6 +70,10 @@ public class Team {
         return skill;
     }
 
+    public List<String> getPlayers() {
+        return players;
+    }
+
     public void setName(String nombre) {
         this.name = nombre;
     }
@@ -64,4 +89,42 @@ public class Team {
     public void setSkill(Integer nivel) {
         this.skill = nivel;
     }
+
+    public void setPlayers(List<String> players) {
+        for (String player : players) {
+            if (!this.isComplete()) {
+                this.addPlayer(player);
+            }
+            else {
+                break;
+            }
+        }
+    }
+
+    public boolean addPlayer(String player) {
+        if (!this.players.contains(player)) {
+            this.players.add(player);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removePlayer(String player) {
+        if (this.players.contains(player)) {
+            this.players.remove(player);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isComplete() {
+        return this.players.size() == 5;
+    }
+
+    private String getUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        return userDetails.username();
+            
+    }    
 }

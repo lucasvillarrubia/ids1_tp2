@@ -15,7 +15,7 @@ public class TeamService {
     TeamRepository teamRepository;
 
     public TeamDTO createTeam(TeamCreateDTO teamCreateDTO) {
-        Team team = teamCreateDTO.asEquipo();
+        Team team = teamCreateDTO.asTeam();
 
         teamRepository.findById(team.getName()).ifPresent(existingTeam -> {
             throw new DuplicateEntityException("Team", "name");
@@ -25,41 +25,83 @@ public class TeamService {
         return new TeamDTO(team);
     }
 
-    public TeamDTO searchTeam(String name) {
+    public TeamDTO getTeam(String name) {
         Team team = teamRepository.findById(name).orElseThrow(() -> new EntityNotFoundException("Team not found"));
         return new TeamDTO(team);
     }
 
-    public List<TeamDTO> searchTeams() {
-        return teamRepository.findAll().stream()
-                .map(TeamDTO::new)
-                .toList();
+    public List<TeamDTO> getTeams() {
+        List<TeamDTO> teams = teamRepository.findAll()
+                                        .stream()
+                                    .map(TeamDTO::new)
+                                .toList();
+        
+        if (teams.isEmpty()) {
+            throw new EntityNotFoundException("Teams not found");
+        }
+
+        return teams;
     }
     
-    public TeamDTO updateTeams(String nombre, TeamCreateDTO equipoCreateDTO) {
-        Team team = teamRepository.findById(nombre).orElseThrow(() -> new EntityNotFoundException("Team not found"));
+    public TeamDTO updateTeams(String teamName, TeamCreateDTO teamCreateDTO) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new EntityNotFoundException("Team not found"));
 
-        Team nuevoEquipo = equipoCreateDTO.asEquipo();
+        Team newTeam = teamCreateDTO.asTeam();
 
-        if (teamRepository.existsById(nuevoEquipo.getName()) && !team.getName().equals(nuevoEquipo.getName())) {
+        if (teamRepository.existsById(newTeam.getName()) && !team.getName().equals(newTeam.getName())) {
             throw new DuplicateEntityException("Team", "name");
         }
         
-        team.setName(nuevoEquipo.getName());    
-        team.setLogo(nuevoEquipo.getLogo());
-        team.setColors(nuevoEquipo.getColors());
-        team.setSkill(nuevoEquipo.getSkill());
+        team.setName(newTeam.getName());    
+        team.setLogo(newTeam.getLogo());
+        team.setColors(newTeam.getColors());
+        team.setSkill(newTeam.getSkill());
+        team.setPlayers(newTeam.getPlayers());
 
         teamRepository.save(team);
         return new TeamDTO(team);
     }
 
-    public boolean deleteTeam(String name) {
-        if (!teamRepository.existsById(name)) {
-            return false;
+    public String addPlayer(String teamName, String playerName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new EntityNotFoundException("Team not found"));
+
+        if (team.isComplete()) {
+            throw new IllegalArgumentException("Team is already complete");
         }
 
-        teamRepository.deleteById(name);
-        return true;
+        if (!playerName.isEmpty()) {
+            throw new IllegalArgumentException("Player name can not be empty");
+        }
+
+        if (team.addPlayer(playerName)) {
+            teamRepository.save(team);
+            return playerName;
+        }
+        else {
+            throw new DuplicateEntityException("Player", "name");
+        }
+    }
+
+    public void removePlayer(String teamName, String playerName) {
+        Team team = teamRepository.findById(teamName).orElseThrow(() -> new EntityNotFoundException("Team not found"));
+
+        if (team.getCaptain().equals(playerName)) {
+            throw new IllegalArgumentException("Can not remove the captain player from the team");
+        }
+
+        if (team.removePlayer(playerName)) {
+            teamRepository.save(team);
+        }
+        else {
+            throw new EntityNotFoundException("Player not found in the team");
+        }
+    }
+
+    public void deleteTeam(String teamName) {
+        if (!teamRepository.existsById(teamName)) {
+            throw new EntityNotFoundException("Team not found");
+        }
+
+        teamRepository.deleteById(teamName);
     }
 }
