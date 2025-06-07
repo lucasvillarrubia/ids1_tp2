@@ -1,6 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.util.List;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -210,15 +211,15 @@ public class Field {
         this.schedule = schedule;
     }
 
-    public void setStartHour(int startHour) {
+    public void setStartHour(String startHour) {
         this.schedule.setStartHour(startHour);
     }
 
-    public void setEndHour(int endHour) {
+    public void setEndHour(String endHour) {
         this.schedule.setEndHour(endHour);
     }
 
-    public void setDays(List<String> days) {
+    public void setDays(List<DayOfWeek> days) {
         this.schedule.setDays(days);
     }
 
