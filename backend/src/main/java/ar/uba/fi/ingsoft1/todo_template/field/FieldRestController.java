@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,6 +95,14 @@ public class FieldRestController {
         return fieldService.getReviewsByFieldId(id).stream().toList();
     }
 
+    @GetMapping(value = "/reservations/field/{id}", produces = "application/json")
+    @Operation(summary = "Get all reservations for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<ReservationDTO> getReservationsByFieldId(@PathVariable @Positive Long id) {
+        return fieldService.getReservationsByFieldId(id).stream().toList();
+    }
+
     /* ejemplo del body para crear una cancha
 {
     owner_id: 1,
@@ -131,6 +141,18 @@ public class FieldRestController {
             @Valid @RequestBody ReviewCreateDTO reviewCreateDTO
     ) {
         return fieldService.addReviewToField(reviewCreateDTO);
+    }
+
+    @PostMapping(consumes = "application/json", produces = "application/json", value = "/reservations/field/{id}")
+    @Operation(summary = "Create a new reservation for a field")
+    @ApiResponse(responseCode = "201", description = "Reservation created", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('USER')") // cualquier usuario puede crear una reserva
+    public ReservationDTO createReservation(
+            @Valid @RequestBody ReservationCreateDTO reservationCreateDTO
+    ) {
+        return fieldService.addReservationToField(reservationCreateDTO);
     }
 
     @DeleteMapping(value = "/{id}")

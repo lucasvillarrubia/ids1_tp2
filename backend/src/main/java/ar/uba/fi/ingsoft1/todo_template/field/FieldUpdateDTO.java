@@ -2,6 +2,8 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.util.List;
 
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleCreateDTO;
+
 public record FieldUpdateDTO(
     String name,
     String description,
@@ -9,9 +11,8 @@ public record FieldUpdateDTO(
     String zone,
     Integer price,
     List<String> features,
-    List<Long> reviews,
-    List<Long> reservations,
-    List<String> images
+    List<String> images,
+    FieldScheduleCreateDTO schedule
 ) {
     public String getName() {
         return name;
@@ -35,14 +36,6 @@ public record FieldUpdateDTO(
 
     public List<String> getFeatures() {
         return features;
-    }
-
-    public List<Long> getReviews() {
-        return reviews;
-    }
-
-    public List<Long> getReservations() {
-        return reservations;
     }
 
     public List<String> getImages() {
