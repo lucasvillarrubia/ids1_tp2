@@ -51,7 +51,7 @@ public class TeamRestController {
         }
     }
 
-    @GetMapping(value = "/{teamName}",
+    @GetMapping(value = "/{id}",
                 produces = "application/json")
     @Operation(summary = "Search for a team by name")
     @ApiResponse(responseCode = "200",
@@ -60,10 +60,10 @@ public class TeamRestController {
                 description = "Team not found")
     public ResponseEntity<?> getTeam(
         @PathVariable
-        String teamName
+        String id
     ) {
         try {
-            TeamDTO teamDTO = teamService.getTeam(teamName);
+            TeamDTO teamDTO = teamService.getTeam(id);
             return new ResponseEntity<>(teamDTO, HttpStatus.OK);
         }
         catch (EntityNotFoundException exception) {
@@ -87,7 +87,7 @@ public class TeamRestController {
         }
     }
 
-    @PatchMapping(value = "/{teamName}",
+    @PatchMapping(value = "/{id}",
                 consumes = "application/json",
                 produces = "application/json")
     @Operation(summary = "Update a team")
@@ -99,13 +99,13 @@ public class TeamRestController {
                 description = "Team not found")
     public ResponseEntity<?> updateTeam(
         @PathVariable
-        String teamName,
+        String id,
         @Valid
         @RequestBody
         TeamCreateDTO teamCreateDTO
     ) {
         try {
-            TeamDTO teamDTO = teamService.updateTeams(teamName, teamCreateDTO);
+            TeamDTO teamDTO = teamService.updateTeams(id, teamCreateDTO);
             return new ResponseEntity<>(teamDTO, HttpStatus.OK);
         }
         catch (EntityNotFoundException exception) {
@@ -116,7 +116,7 @@ public class TeamRestController {
         }
     }
 
-    @PatchMapping(value = "/{teamName}/player")
+    @PatchMapping(value = "/{id}/player")
     @Operation(summary = "Add player to a team")
     @ApiResponse(responseCode = "200",
                 description = "Added player to team successfully")
@@ -128,12 +128,12 @@ public class TeamRestController {
                 description = "Team not found")
     public ResponseEntity<?> addPlayer(
         @PathVariable
-        String teamName,
+        String id,
         @RequestParam
         String playerName
     ) {
         try {
-            String newPlayer = teamService.addPlayer(teamName, playerName);
+            String newPlayer = teamService.addPlayer(id, playerName);
             return new ResponseEntity<>(newPlayer, HttpStatus.OK);
         }
         catch (EntityNotFoundException exception) {
@@ -147,7 +147,7 @@ public class TeamRestController {
         }
     }
 
-    @DeleteMapping(value = "/{teamName}/player")
+    @DeleteMapping(value = "/{id}/player")
     @Operation(summary = "Remove a player")
     @ApiResponse(responseCode = "204",
                 description = "Player removed successfully")
@@ -157,12 +157,12 @@ public class TeamRestController {
                 description = "Captain can not be removed")
     public ResponseEntity<?> removePlayer(
         @PathVariable
-        String teamName,
+        String id,
         @RequestParam
         String playerName
     ) {
         try {
-            teamService.removePlayer(teamName, playerName);
+            teamService.removePlayer(id, playerName);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch (EntityNotFoundException exception) {
@@ -173,7 +173,7 @@ public class TeamRestController {
         }
     }
 
-    @DeleteMapping(value = "/{teamName}")
+    @DeleteMapping(value = "/{id}")
     @Operation(summary = "Delete a team")
     @ApiResponse(responseCode = "204",
                 description = "Team deleted successfully")
@@ -181,10 +181,10 @@ public class TeamRestController {
                 description = "Team not found")
     public ResponseEntity<?> deleteTeam(
         @PathVariable
-        String teamName
+        String id
     ) {
         try {
-            teamService.deleteTeam(teamName);
+            teamService.deleteTeam(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (EntityNotFoundException excpetion) {
             return globalExceptionHandler.handleEntityNotFoundException(excpetion);
