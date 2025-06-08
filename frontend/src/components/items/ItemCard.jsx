@@ -1,9 +1,9 @@
 import React from 'react'
-import { ProductCardUI, ProductTitle, ProductInfo, ProductAuthor, ProductPrice, ProductButton } from './ProductStyles';
+import { ProductCardUI, ProductTitle, ProductInfo, ProductAuthor, ProductPrice, ProductButton } from './ItemStyles.js';
 import { useDispatch } from 'react-redux';
 import {formatDate} from "../../utils/formatDate.js";
 
-const ProductCard = (product) => {
+const ItemCard = (product) => {
         const dispatch = useDispatch();
         return (
                 <ProductCardUI>
@@ -25,4 +25,4 @@ const ProductCard = (product) => {
         )
 }
 
-export default ProductCard
+export default ItemCard
