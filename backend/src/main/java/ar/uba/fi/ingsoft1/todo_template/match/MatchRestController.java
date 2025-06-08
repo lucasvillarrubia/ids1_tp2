@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
 
 @RestController
-@RequestMapping("/match")
-@Tag(name = "matches")
+@RequestMapping("/matches")
+@Tag(name = "Matches")
 public class MatchRestController {
     private final MatchService matchService;
     private final MatchOrganizerService matchOrganizerService;
@@ -33,13 +33,13 @@ public class MatchRestController {
         this.matchOrganizerService = matchOrganizerService;
     }
 
-    @GetMapping(value = "/Match", produces = "application/json")
+    @GetMapping(value = "/{id}", produces = "application/json")
     @Operation(summary = "Get a Match given the specified Id")
     @ApiResponse(responseCode = "200", description = "Matchs found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Matchs not found", content = @Content)
     @ResponseStatus(HttpStatus.OK)
     MatchDTO getMatch(
-            @Valid @Positive Long id
+            @Valid @PathVariable @Positive Long id
     ) throws MethodArgumentNotValidException {
         return matchService.getMatch(id);
     }
@@ -55,7 +55,7 @@ public class MatchRestController {
         return matchService.getAllAvailableMatches(pageable);
     }
 
-    @GetMapping(value = "/OrganizedMatches", produces = "application/json")
+    @GetMapping(value = "/organizedMatches", produces = "application/json")
     @Operation(summary = "Get all Matches manage by actual user")
     @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Matches not found", content = @Content)
@@ -66,7 +66,7 @@ public class MatchRestController {
         return matchService.getSelfOrganizedMatches(pageable);
     }
 
-    @GetMapping(value = "/SelfRegisteredMatches", produces = "application/json")
+    @GetMapping(value = "/selfRegisteredMatches", produces = "application/json")
     @Operation(summary = "Get all Matches the actual user is going to play")
     @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Matches not found", content = @Content)
@@ -120,54 +120,49 @@ public class MatchRestController {
         return this.matchService.createMatch(matchCreateDTO);
     }
 
-    @PatchMapping(value = "/", consumes = "application/json", produces = "application/json")
+    @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Update a Match by its id")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponse(responseCode = "200", description = "Match updated successfully", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Match not found, Invalid Match ID or you don't have permissions to access the Match")
-    //@PreAuthorize("hasRole('USER')")
-    //@Valid @PathVariable @Positive Long id,
     ResponseEntity<MatchDTO> updateMatch(
-            @Valid @Positive Long id,
+            @Valid @PathVariable @Positive Long id,
             @Valid @RequestBody MatchCreateDTO matchCreateDTO
     ) {
         MatchDTO updatedMatch = matchService.updateMatch(id, matchCreateDTO);
         return ResponseEntity.ok(updatedMatch);
     }
 
-    //@DeleteMapping(value = "/{id}")
-    @DeleteMapping(value = "/")
+    @DeleteMapping(value = "/{id}")
     @Operation(summary = "Delete a Match by its id")
     @ApiResponse(responseCode = "200", description = "Match deleted successfully")
     @ApiResponse(responseCode = "404", description = "Match not found, Invalid Match ID or you don't have permissions to access the Match")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    //@PreAuthorize("hasRole('USER')")
-    //void deleteMatch(@Valid @PathVariable @Positive Long id) throws MethodArgumentNotValidException {
-    void deleteMatch(@Valid @Positive Long id){
+    void deleteMatch(@Valid @PathVariable @Positive Long id){
         matchService.deleteMatch(id);
     }
 
-    @PostMapping(value = "/join")
+    @PostMapping(value = "/join/{id}")
     @Operation(summary = "Join a match")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponse(responseCode = "200", description = "Joined matched successfully", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Could not join match")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<MatchDTO> joinMatch(
-            @Valid @Positive Long id
+            @Valid @PathVariable @Positive Long id
     ) {
         MatchDTO updatedMatch = matchService.joinMatch(id);
         return ResponseEntity.ok(updatedMatch);
     }
 
-    @PostMapping(value = "/leave")
+    @PostMapping(value = "/leave/{id}")
     @Operation(summary = "Leave a match")
     @ResponseStatus(HttpStatus.OK)
     @ApiResponse(responseCode = "200", description = "Left match successfully", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Could not leave match")
     @PreAuthorize("hasRole('USER')")
     void leaveMatch(
-            @Valid @Positive Long id
+            @Valid @PathVariable @Positive Long id
     ) {  matchService.leaveMatch(id);
     }
 

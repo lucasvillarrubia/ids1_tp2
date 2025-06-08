@@ -3,7 +3,7 @@ import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import categoriesReducer from "../features/categories/categoriesSlice";
-import productsReducer from "../features/products/productsSlice";
+import productsReducer from "../features/items/itemsSlice.js";
 import usersReducer from "../features/users/usersSlice";
 
 const reducers = combineReducers({

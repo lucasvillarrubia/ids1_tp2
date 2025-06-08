@@ -5,6 +5,8 @@ import Signup from '../pages/signup/Signup';
 import NotFound from '../pages/notFound/NotFound';
 import Home from '../pages/home/Home';
 import ProtectedRoute from '../components/globalComponents/ProtectedRoute/ProtectedRoute';
+import Create from '../pages/create/Create';
+import Success from '../pages/success/Success';
 
 
 function Routes () {
@@ -13,6 +15,12 @@ function Routes () {
                         <Route path='/' element={<Home />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='/signup' element={<Signup />} />
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path='/create' element={<Create />} />
+                        </Route>
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path='/congratulations' element={<Success />} />
+                        </Route>
                         <Route path='*' element={<NotFound />} />
                 </AllRoutes>
         )

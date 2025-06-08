@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ProductCardsContainer, ProductsSectionButton, ButtonContainer } from "./ProductStyles";
-import ProductCard from "./ProductCard";
+import { ProductCardsContainer, ProductsSectionButton, ButtonContainer } from "./ItemStyles.js";
+import ItemCard from "./ItemCard.jsx";
 import { HomeTitle, HomeSection } from "../../pages/home/HomeStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { INITIAL_LIMIT } from "../../utils/constants"
 import AddInstanceButton from "./AddInstanceButton";
-import { loadProductsByGenre } from "../../features/products/productsAPI.js";
+import { loadProductsByGenre } from "../../features/items/itemsAPI.js";
 
-const Products = () => {
+const Items = () => {
     const dispatch = useDispatch();
     let renderCount = 0;
     let products = useSelector(state => state.products.products);
@@ -36,7 +36,7 @@ const Products = () => {
       <ProductCardsContainer>
           {products.length > 0 ? (
               products.slice(0, limit).map(product => (
-                  <ProductCard key={product.id} {...product} />
+                  <ItemCard key={product.id} {...product} />
               ))
           ) : (
               <p>Todavía no hay resultados de esto. Creá uno!</p>
@@ -63,4 +63,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Items;
