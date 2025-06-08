@@ -12,4 +12,16 @@ public class MatchOrganizerDTO {
         this.teamAPlayers = matchOrganizer.getTeamAPlayers();
         this.teamBPlayers = matchOrganizer.getTeamBPlayers();
     }
+
+    public Set<Long> getAvailablePlayers(){
+        return availablePlayers;
+    }
+
+    public Set<Long> getTeamAPlayers(){
+        return teamAPlayers;
+    }
+
+    public Set<Long> getTeamBPlayers(){
+        return teamBPlayers;
+    }
 }

@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
 
 @RestController
-@RequestMapping("/Match")
-@Tag(name = "Matches")
+@RequestMapping("/match")
+@Tag(name = "matches")
 public class MatchRestController {
     private final MatchService matchService;
     private final MatchOrganizerService matchOrganizerService;
@@ -219,7 +219,9 @@ public class MatchRestController {
     @ApiResponse(responseCode = "403", description = "You don't have permissions to do that")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<MatchOrganizerDTO> movePlayer(
-            @Valid @Positive Long id, @Valid @Positive Long playerId, @Valid @PositiveOrZero Short team
+            @RequestParam @Valid @Positive Long id,
+            @RequestParam @Valid @Positive Long playerId,
+            @RequestParam @Valid @PositiveOrZero Short team
     ) {
         MatchOrganizerDTO matchOrganizer = matchOrganizerService.movePlayer(id, playerId, team);
         return ResponseEntity.ok(matchOrganizer);

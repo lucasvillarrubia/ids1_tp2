@@ -3,32 +3,35 @@ package ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer;
 import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
 @Table(name = "matches_teams")
-public class MatchOrganizer {
+public class MatchOrganizer implements Serializable {
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @ElementCollection
+    @CollectionTable(name = "match_available_players", joinColumns = @JoinColumn(name = "match_organizer_id"))
+    @Column(name = "player_id")
     private Set<Long> availablePlayers;
 
-    @Column
+    @ElementCollection
+    @CollectionTable(name = "match_team_a_players", joinColumns = @JoinColumn(name = "match_organizer_id"))
+    @Column(name = "player_id")
     private Set<Long> teamAPlayers;
 
-    @Column
+    @ElementCollection
+    @CollectionTable(name = "match_team_b_players", joinColumns = @JoinColumn(name = "match_organizer_id"))
+    @Column(name = "player_id")
     private Set<Long> teamBPlayers;
 
-    public MatchOrganizer(Long id){
-        this.id = id;
+    public MatchOrganizer() {
         this.availablePlayers = new HashSet<>();
         this.teamAPlayers = new HashSet<>();
         this.teamBPlayers = new HashSet<>();
-    }
-
-    public MatchOrganizer() {
     }
 
     public Set<Long> getAvailablePlayers() {return this.availablePlayers;}
@@ -40,7 +43,9 @@ public class MatchOrganizer {
     public void addPlayer(Long playerId) {
         this.availablePlayers.add(playerId);
     }
-    public void removePlayer(Long playerId) {}
+    public void removePlayer(Long playerId) {
+        this.availablePlayers.remove(playerId);
+    }
 
     public void movePlayer(Long id, Short team){
         // 0 team A, 1 AvailablePlayers, 2 teamB
@@ -52,10 +57,10 @@ public class MatchOrganizer {
         if (team == 1){
             availablePlayers.add(id);
             teamAPlayers.remove(id);
-            teamBPlayers.add(id);
+            teamBPlayers.remove(id);
         }
         if (team == 2){
-            availablePlayers.add(id);
+            availablePlayers.remove(id);
             teamAPlayers.remove(id);
             teamBPlayers.add(id);
         }
@@ -81,5 +86,7 @@ public class MatchOrganizer {
 
         teamAPlayers.addAll(listAvailablePlayers.subList(0, halfSize));
         teamBPlayers.addAll(listAvailablePlayers.subList(halfSize, listAvailablePlayers.size()));
+
+        availablePlayers.clear();
     }
 }

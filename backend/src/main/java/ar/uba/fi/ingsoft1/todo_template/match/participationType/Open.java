@@ -23,6 +23,7 @@ public class Open extends ParticipationType {
             joinColumns = @JoinColumn(name = "open_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    //TODO: fix leak of players
     private Set<User> players;
 
     public Open(){}
@@ -58,6 +59,9 @@ public class Open extends ParticipationType {
     @Override
     public boolean addPlayer(User user) {
         if (players.size() == maxPlayersCount) {
+            return false;
+        }
+        if (players.contains(user)) {
             return false;
         }
         players.add(user);
