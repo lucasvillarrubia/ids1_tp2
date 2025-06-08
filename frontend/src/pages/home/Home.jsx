@@ -1,14 +1,14 @@
 import React from 'react'
 import Hero from '../../components/hero/Hero'
 import Categories from '../../components/categories/Categories'
-import Products from '../../components/products/Products'
+import Items from '../../components/items/Items.jsx'
 
 const Home = () => {
   return (
         <>
                 <Hero />
                 <Categories />
-                <Products />
+                <Items />
         </>
   )
 }

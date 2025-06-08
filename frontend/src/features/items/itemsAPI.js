@@ -1,7 +1,7 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/constants"
-import { Product } from '../../staticData/Products.jsx'
-import { setProducts } from './productsSlice'
+import { Product } from '../../staticData/Items.jsx'
+import { setProducts } from './itemsSlice.js'
 
 export const loadProductsByGenre = (genre) => async (dispatch) => {
         try {

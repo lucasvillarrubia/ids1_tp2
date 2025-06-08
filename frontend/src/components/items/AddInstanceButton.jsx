@@ -1,5 +1,5 @@
 import React from 'react'
-import { AddInstanceButtonUI } from './ProductStyles';
+import { AddInstanceButtonUI } from './ItemStyles.js';
 import { useDispatch } from 'react-redux';
 
 const AddInstanceButton = () => {
