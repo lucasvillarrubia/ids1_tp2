@@ -14,14 +14,16 @@ const LoginForm = () => {
         const navigate = useNavigate();
         const { currentUser } = useSelector(state => state.users);
         useEffect(() => {
-                if (currentUser) { navigate('/'); }
+                if (currentUser) { navigate('/');
+                alert ("Ya estás logueado!");
+                }
         }, [currentUser, navigate]);
 
         const handleSubmit = async (values, { setSubmitting }) => {
                 try {
-                        const user = await loginUser(values.email, values.password);
-                        if (user) {
-                                dispatch(setCurrentUser({ ...user.user, token: user.token }));
+                        const { token, name } = await loginUser(values.email, values.password);
+                        if (token) {
+                                dispatch(setCurrentUser({ name, token }));
                                 console.log(currentUser);
                                 alert("Entraste!");
                                 navigate('/');
