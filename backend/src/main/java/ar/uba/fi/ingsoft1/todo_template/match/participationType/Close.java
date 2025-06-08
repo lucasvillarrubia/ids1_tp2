@@ -52,4 +52,6 @@ public class Close extends ParticipationType{
 
     @Override
     public Integer getPlayerCount() { throw new UnsupportedOperationException("Not supported yet."); }
+
+    public void checkStart() { throw new UnsupportedOperationException("Not supported yet."); }
 }

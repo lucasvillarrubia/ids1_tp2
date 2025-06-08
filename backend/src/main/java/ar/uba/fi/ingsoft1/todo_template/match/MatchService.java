@@ -46,7 +46,7 @@ public class MatchService {
     public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) {
         Match newMatch = buildMatch(matchCreateDTO);
         Match savedMatch = matchRepository.save(newMatch);
-        matchOrganizerService.create(newMatch.getId());
+        matchOrganizerService.create();
         return new MatchDTO(savedMatch);
     }
 
@@ -143,14 +143,14 @@ public class MatchService {
         Match match = getMatchById(id);
 
         if(!match.isOrganizer(userService.getUserByEmail(email))){
-            throw new InvalidActionException("You don't have permissions to start the match");
+            throw new InvalidActionException("You don't have permissions to close the match");
         }
         ParticipationType participationType = match.getParticipationType();
         if (participationType.getPlayerCount() < participationType.getMinPlayersCount()){
-            throw new InvalidActionException("The match does not have enough players to start");
+            throw new InvalidActionException("The match does not have enough players to close");
 
         }
-        match.start();
+        match.close();
         matchRepository.save(match);
     }
     // Hay que validar que el usuario tenga permiso?
@@ -164,6 +164,7 @@ public class MatchService {
         if (!match.isOrganizer(userService.getUserByEmail(email))){
             throw new InvalidActionException("You don't have permissions to start the match");
         }
+        matchOrganizerService.finish(match.getId());
         match.start();
         return new MatchDTO(match);
     }

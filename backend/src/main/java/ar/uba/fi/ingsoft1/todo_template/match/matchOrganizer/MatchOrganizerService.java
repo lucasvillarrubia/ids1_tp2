@@ -12,12 +12,16 @@ public class MatchOrganizerService {
 
     MatchOrganizerRepository matchOrganizerRepository;
 
+    MatchOrganizerService(MatchOrganizerRepository matchOrganizerRepository) {
+        this.matchOrganizerRepository = matchOrganizerRepository;
+    }
+
     public MatchOrganizerDTO getMatchPlayers(Long matchId){
         return new MatchOrganizerDTO(getMatchOrganizer(matchId));
     }
 
-    public void create(Long id){
-        matchOrganizerRepository.save(new MatchOrganizer(id));
+    public void create(){
+        matchOrganizerRepository.save(new MatchOrganizer());
     }
 
     public void addPlayer(Long id, Long playerId){

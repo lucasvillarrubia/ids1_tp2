@@ -6,10 +6,13 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTyp
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 public class Match {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "match_id")
     private Long matchId;
 
     @ManyToOne
@@ -68,21 +71,35 @@ public class Match {
     }
 
     public void start(){
+        if (!Objects.equals(this.state, "Closed")){
+            throw new IllegalStateException("Cannot start match yet");
+        }
         this.state = "Started";
     }
 
-    public void close() { this.state = "Closed";}
-
-    public boolean canJoin() {
-        return this.state.equals("Active");
-    }
+    public void close() {
+        if (!Objects.equals(this.state, "Active")){
+            throw new IllegalStateException("Cannot close match");
+        }
+        checkStart();
+        this.state = "Closed";}
 
     public boolean leaveMatch(User user) {
+        if (!Objects.equals(this.state, "Active")){
+            throw new IllegalStateException("Cannot leave match");
+        }
         return this.participationType.leaveMatch(user);
     }
 
     public boolean join(User user) {
+        if (!Objects.equals(this.state, "Active")){
+            throw new IllegalStateException("Cannot join match");
+        }
         return participationType.addPlayer(user);
+    }
+    
+    private void checkStart(){
+        participationType.checkStart();
     }
 
     public void setParticipationType(ParticipationType partType) {

@@ -214,7 +214,9 @@ public class MatchRestController {
     @ApiResponse(responseCode = "403", description = "You don't have permissions to do that")
     @PreAuthorize("hasRole('USER')")
     ResponseEntity<MatchOrganizerDTO> movePlayer(
-            @Valid @Positive Long id, @Valid @Positive Long playerId, @Valid @PositiveOrZero Short team
+            @RequestParam @Valid @Positive Long id,
+            @RequestParam @Valid @Positive Long playerId,
+            @RequestParam @Valid @PositiveOrZero Short team
     ) {
         MatchOrganizerDTO matchOrganizer = matchOrganizerService.movePlayer(id, playerId, team);
         return ResponseEntity.ok(matchOrganizer);

@@ -23,6 +23,7 @@ public class Open extends ParticipationType {
             joinColumns = @JoinColumn(name = "open_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    //TODO: fix leak of players
     private Set<User> players;
 
     public Open(){}
@@ -60,6 +61,9 @@ public class Open extends ParticipationType {
         if (players.size() == maxPlayersCount) {
             return false;
         }
+        if (players.contains(user)) {
+            return false;
+        }
         players.add(user);
         return true;
     }
@@ -71,6 +75,16 @@ public class Open extends ParticipationType {
         }
         players.remove(user);
         return true;
+    }
+
+    @Override
+    public void checkStart(){
+        if (players.size() < minPlayersCount){
+            throw new IllegalStateException("Not enough players!");
+        }
+        if (players.size() % 2 != 0){
+            throw new IllegalStateException("The number of players must be even!");
+        }
     }
 
 
