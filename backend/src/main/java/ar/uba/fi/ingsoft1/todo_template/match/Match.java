@@ -79,8 +79,9 @@ public class Match {
 
     public void close() {
         if (!Objects.equals(this.state, "Active")){
-            throw new IllegalStateException("Cannot close match yet");
+            throw new IllegalStateException("Cannot close match");
         }
+        checkStart();
         this.state = "Closed";}
 
     public boolean leaveMatch(User user) {
@@ -95,6 +96,10 @@ public class Match {
             throw new IllegalStateException("Cannot join match");
         }
         return participationType.addPlayer(user);
+    }
+    
+    private void checkStart(){
+        participationType.checkStart();
     }
 
     public void setParticipationType(ParticipationType partType) {

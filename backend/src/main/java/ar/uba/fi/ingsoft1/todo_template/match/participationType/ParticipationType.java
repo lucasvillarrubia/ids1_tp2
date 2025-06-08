@@ -43,6 +43,8 @@ public abstract class ParticipationType implements Serializable {
     public abstract Integer getMinPlayersCount();
 
     public abstract Integer getPlayerCount();
+
+    public abstract void checkStart();
 }
 
 

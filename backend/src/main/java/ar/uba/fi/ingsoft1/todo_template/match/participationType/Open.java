@@ -77,6 +77,16 @@ public class Open extends ParticipationType {
         return true;
     }
 
+    @Override
+    public void checkStart(){
+        if (players.size() < minPlayersCount){
+            throw new IllegalStateException("Not enough players!");
+        }
+        if (players.size() % 2 != 0){
+            throw new IllegalStateException("The number of players must be even!");
+        }
+    }
+
 
 
 }
