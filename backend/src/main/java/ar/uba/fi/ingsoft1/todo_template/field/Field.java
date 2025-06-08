@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -42,7 +43,7 @@ public class Field {
 
     private String location;
 
-    private String zone;
+    private UserZones zone;
 
     @Positive(message = "El precio debe ser un valor positivo")
     @Column
@@ -78,7 +79,7 @@ public class Field {
 
     public Field() {}
 
-    public Field(Long id, String name, Long ownerId, String location, String zone, List<FieldFeatures> features, Optional<List<String>> images) {
+    public Field(Long id, String name, Long ownerId, String location, UserZones zone, List<FieldFeatures> features, Optional<List<String>> images) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -92,7 +93,7 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long id, Long ownerId, String name, String location, String zone, List<FieldFeatures> features) {
+    public Field(Long id, Long ownerId, String name, String location, UserZones zone, List<FieldFeatures> features) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -106,7 +107,7 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long ownerId, String name, String location, String zone, List<FieldFeatures> features, List<String> images) {
+    public Field(Long ownerId, String name, String location, UserZones zone, List<FieldFeatures> features, List<String> images) {
         this.name = name;
         this.ownerId = ownerId;
         this.location = location;
@@ -139,7 +140,7 @@ public class Field {
         return location;
     }
 
-    public String getZone() {
+    public UserZones getZone() {
         return zone;
     }
 
@@ -191,7 +192,7 @@ public class Field {
         this.location = location;
     }
     
-    public void setZone(String zone) {
+    public void setZone(UserZones zone) {
         this.zone = zone;
     }
 

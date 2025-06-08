@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +67,7 @@ public class FieldService {
         return fieldRepository.findByOwnerId(ownerId).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
-    public List<FieldDTO> getFieldsByZone(String zone) {
+    public List<FieldDTO> getFieldsByZone(UserZones zone) {
         return fieldRepository.findByZone(zone).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
