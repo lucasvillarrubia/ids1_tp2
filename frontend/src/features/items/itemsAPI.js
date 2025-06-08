@@ -4,6 +4,10 @@ import { Item } from '../../staticData/Items.jsx'
 import { setItems } from './itemsSlice.js'
 
 export const loadItemsByGenre = (genre) => async (dispatch) => {
+        if (!genre) {
+                dispatch(setItems([]));
+                return;
+        }
         try {
                 console.log(genre);
                 const res = await axios.get(`${BASE_URL}/${genre}`);

@@ -6,16 +6,18 @@ import { useSelector } from "react-redux";
 
 
 const Create = () => {
-    const selectedCat = useSelector(state => state.categories.selectedCategory);
-
+    let selectedCat = useSelector(state => state.categories.selectedCategory);
+    if (!selectedCat) {
+        selectedCat = 'teams';
+    }
         return (
                 <CreateBG>
-                        <CreateTitle>Nuevo Item</CreateTitle>
+                        <CreateTitle>Nuevo ItemHOLA</CreateTitle>
                         <CreateContainer>
                                 <CreateInfo>
                                         <CreateSubtitle>Completá el formulario</CreateSubtitle>
                                         <Categories fromPage='create' />
-                                        <ItemsForm key={selectedCat.category} itemCategory={selectedCat.category}/>
+                                        <ItemsForm key={selectedCat} itemCategory={selectedCat}/>
                                 </CreateInfo>
                         </CreateContainer>
                 </CreateBG>

@@ -4,17 +4,17 @@ import {fieldFields, matchFields, teamFields} from "./itemsFields.js";
 
 export const getFormConfig = (type) => {
     switch (type) {
-        case 'team':
+        case 'teams':
             return {
                 initialValues: teamInitialValues,
                 validationSchema: teamValidationSchema,
             };
-        case 'field':
+        case 'fields':
             return {
                 initialValues: fieldInitialValues,
                 validationSchema: fieldValidationSchema
             };
-        case 'match':
+        case 'matches':
             return {
                 initialValues: matchInitialValues,
                 validationSchema: matchValidationSchema
@@ -26,11 +26,11 @@ export const getFormConfig = (type) => {
 
 export const getFormFields = (type) => {
     switch (type) {
-        case 'team':
+        case 'teams':
             return teamFields;
-        case 'field':
+        case 'fields':
             return fieldFields;
-        case 'match':
+        case 'matches':
             return matchFields;
         default:
             throw new Error(`Unknown form type for fields: ${type}`);

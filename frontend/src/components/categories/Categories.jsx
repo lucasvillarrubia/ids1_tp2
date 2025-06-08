@@ -12,7 +12,7 @@ const Categories = ({ fromPage }) => {
       <CategoryCardsContainer>
         {
             categories
-                .filter(category => fromPage !== 'create' || category.name !== 'Usuarios')
+                .filter(category => fromPage !== 'create' || category.name !== 'Usuarios' && category.name !== 'Partidos Cerrados' && category.name !== 'Torneos')
                 .map(category => <CategoryCard key={category.id} {...category} />)
         }
       </CategoryCardsContainer>
