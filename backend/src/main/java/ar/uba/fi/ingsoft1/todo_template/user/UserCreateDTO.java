@@ -3,6 +3,7 @@ package ar.uba.fi.ingsoft1.todo_template.user;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
+import java.util.List;
 import java.util.function.Function;
 
 public record UserCreateDTO(
@@ -23,8 +24,8 @@ public record UserCreateDTO(
         String email,
 
         @NotBlank(message = "Zone is mandatory")
-        @Schema(description = "Zone is mandatory", example = "US", required = true)
-        String zone,
+        @Schema(description = "Zone is mandatory", example = "Vicente lopez", required = true)
+        List<String> zones,
 
         @NotBlank(message = "Password is mandatory")
         @Schema(description = "Password is mandatory", required = true)
@@ -46,6 +47,8 @@ public record UserCreateDTO(
 
 ) implements UserCredentials {
     public User asUser(Function<String, String> encryptPassword) {
-        return new User(name, lastname, email, zone, encryptPassword.apply(password), gender, photo, age);
+        return new User(name, lastname, email, zones.stream()
+                .map(UserZones::valueOf)
+                .toList(), encryptPassword.apply(password), gender, photo, age);
     }
 }

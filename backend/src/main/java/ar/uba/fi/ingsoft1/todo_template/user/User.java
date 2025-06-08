@@ -1,6 +1,8 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity(name = "users")
 public class User implements UserCredentials {
@@ -19,7 +21,7 @@ public class User implements UserCredentials {
     private String email;
 
     @Column(nullable = false)
-    private String zone;
+    private List<UserZones> zones;
 
     @Column(nullable = false)
     private String password;
@@ -34,17 +36,19 @@ public class User implements UserCredentials {
 
     @Column(name = "email-verified")
     private boolean emailVerified;
+
     @Column(name = "token-verified")
     private String tokenVerified;
+
     private String role = "USER";
 
     public User() {}
 
-    public User(String name, String lastname, String email, String zone, String password, String gender, String photo, Short age) {
+    public User(String name, String lastname, String email, List<UserZones> zones, String password, String gender, String photo, Short age) {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
-        this.zone = zone;
+        this.zones = zones;
         this.password = password;
         this.gender = gender;
         this.photo = photo;
@@ -66,7 +70,7 @@ public class User implements UserCredentials {
 
     public String getEmail() { return this.email;}
 
-    public String getZone() { return this.zone;}
+    public List<UserZones> getZones() { return this.zones;}
 
     public String getPassword() { return this.password;}
 
@@ -79,8 +83,11 @@ public class User implements UserCredentials {
     public Short getAge() { return this.age;}
 
     public boolean isEmailVerified() { return this.emailVerified;}
+
     public String getTokenVerified() { return this.tokenVerified;}
+
     public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified;}
+
     public void setTokenVerified(String tokenVerified) { this.tokenVerified = tokenVerified;}
 
     public Long getId() { return this.id;}
