@@ -1,6 +1,6 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/constants"
-import { setCurrentUser } from "./usersSlice.js";
+import {logout, setCurrentUser} from "./usersSlice.js";
 
 
 /**
@@ -70,5 +70,5 @@ export const loginUser = async (email, password) => {
 
 export const logoutUser = (dispatch) => {
         delete axios.defaults.headers.common["Authorization"];
-        dispatch(setCurrentUser(null));
+        dispatch(logout());
 };

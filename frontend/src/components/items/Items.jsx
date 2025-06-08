@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { INITIAL_LIMIT } from "../../utils/constants"
 import AddInstanceButton from "./AddInstanceButton";
 import { loadItemsByGenre } from "../../features/items/itemsAPI.js";
+import { setItems } from "../../features/items/itemsSlice.js";
 
 const Items = () => {
     const dispatch = useDispatch();
@@ -15,16 +16,12 @@ const Items = () => {
     let items = useSelector(state => state.items.items);
     const selectedCat = useSelector(state => state.categories.selectedCategory);
     const [limit, setLimit] = useState(INITIAL_LIMIT);
-    // if (selectedCat && items[selectedCat]) {
-    // items = { [selectedCat]: items[selectedCat] };
-    // }
-    // else if (selectedCat && !items[selectedCat]) {
-    // items = [];
-    // }
 
     useEffect(() => {
         if (selectedCat) {
             dispatch(loadItemsByGenre(selectedCat));
+        } else {
+            dispatch(setItems([]));
         }
     }, [selectedCat]);
 

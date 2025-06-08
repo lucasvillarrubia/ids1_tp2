@@ -23,6 +23,7 @@ export const loadItemsByGenre = (genre) => async (dispatch) => {
                 });
                 dispatch(setItems(items));
         } catch (err) {
+                dispatch(setItems([]));
                 console.error("Falló el fetch de ítems:", err);
         }
 };

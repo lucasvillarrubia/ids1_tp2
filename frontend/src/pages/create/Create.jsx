@@ -12,7 +12,7 @@ const Create = () => {
     }
         return (
                 <CreateBG>
-                        <CreateTitle>Nuevo ItemHOLA</CreateTitle>
+                        <CreateTitle>Nuevo Item</CreateTitle>
                         <CreateContainer>
                                 <CreateInfo>
                                         <CreateSubtitle>Completá el formulario</CreateSubtitle>
