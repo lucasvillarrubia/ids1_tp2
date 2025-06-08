@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 // task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
 
 @RestController
-@RequestMapping("/Match")
+@RequestMapping("/matches")
 @Tag(name = "Matches")
 public class MatchRestController {
     private final MatchService matchService;
@@ -38,7 +38,7 @@ public class MatchRestController {
         return matchService.getMatch(id);
     }
 
-    @GetMapping(value = "/availableMatches", produces = "application/json")
+    @GetMapping(produces = "application/json")
     @Operation(summary = "Get all available Matches")
     @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Matches not found", content = @Content)

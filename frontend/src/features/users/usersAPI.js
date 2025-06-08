@@ -4,7 +4,7 @@ import { setCurrentUser } from "./usersSlice.js";
 
 
 /**
- * Create a new user (signup)
+ * Crea un nuevo usuario (signup)
  * @param {Object} userData
  * @param {string} userData.name
  * @param {string} userData.lastname

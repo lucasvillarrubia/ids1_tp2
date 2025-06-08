@@ -6,7 +6,7 @@ export const CategoryCollection = [
         {
                 id: 1,
                 name: 'Partidos Abiertos',
-                category: 'open',
+                category: 'matches',
         },
         {
                 id: 2,
@@ -16,7 +16,7 @@ export const CategoryCollection = [
         {
                 id: 3,
                 name: 'Equipos',
-                category: 'team',
+                category: 'teams',
         },
         {
                 id: 4,
@@ -26,20 +26,20 @@ export const CategoryCollection = [
         {
                 id: 5,
                 name: 'Canchas',
-                category: 'field',
+                category: 'fields',
         },
         {
                 id: 6,
                 name: 'Usuarios',
-                category: 'user',
+                category: 'users',
         }
 ]; 
 
 export const IconByCat = {
-        open: <FaLockOpen />,
+        matches: <FaLockOpen />,
         closed: <FaLock />,
-        team: <RiTeamFill />,
+        teams: <RiTeamFill />,
         tournament: <FaTrophy />,
-        field: <TbSoccerField />,
-        user: <FaUser />
+        fields: <TbSoccerField />,
+        users: <FaUser />
       }
