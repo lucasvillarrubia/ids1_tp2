@@ -38,6 +38,7 @@ public class FieldRestController {
         this.fieldService = fieldService;
     }
 
+//    @GetMapping(value = "/all", produces = "application/json")
     @GetMapping(produces = "application/json")
     @Operation(summary = "Get all fields")
 //    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))

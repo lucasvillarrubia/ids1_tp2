@@ -38,6 +38,7 @@ public class MatchRestController {
         return matchService.getMatch(id);
     }
 
+//    @GetMapping(value = "/availableMatches", produces = "application/json")
     @GetMapping(produces = "application/json")
     @Operation(summary = "Get all available Matches")
     @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
