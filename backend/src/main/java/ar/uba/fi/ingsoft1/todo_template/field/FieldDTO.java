@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 
 public class FieldDTO {
     private Long id;
@@ -11,7 +12,7 @@ public class FieldDTO {
     private String name;
     private String description;
     private String location;
-    private String zone;
+    private UserZones zone;
     private Integer price;
     private List<String> features;
     private FieldScheduleDTO schedule;
@@ -61,7 +62,7 @@ public class FieldDTO {
         return location;
     }
 
-    public String getZone() {
+    public UserZones getZone() {
         return zone;
     }
 
@@ -109,7 +110,7 @@ public class FieldDTO {
         this.location = location;
     }
 
-    public void setZone(String zone) {
+    public void setZone(UserZones zone) {
         this.zone = zone;
     }
 

@@ -46,4 +46,10 @@ public class Close extends ParticipationType{
     public boolean addPlayer(User user){
         return false;
     }
+
+    @Override
+    public Integer getMinPlayersCount() { throw new UnsupportedOperationException("Not supported yet."); }
+
+    @Override
+    public Integer getPlayerCount() { throw new UnsupportedOperationException("Not supported yet."); }
 }

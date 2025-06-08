@@ -2,6 +2,7 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.util.List;
 
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,7 +68,7 @@ public class FieldRestController {
     @Operation(summary = "Get all fields by zone")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFieldsByZone(@PathVariable String zone) {
+    public List<FieldDTO> getFieldsByZone(@PathVariable UserZones zone) {
         return fieldService.getFieldsByZone(zone).stream().toList();
     }
 

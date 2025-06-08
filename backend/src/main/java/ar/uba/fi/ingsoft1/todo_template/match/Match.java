@@ -67,13 +67,11 @@ public class Match {
         return timeRange;
     }
 
-    public void closeMatch(){
-        this.state = "Closed";
+    public void start(){
+        this.state = "Started";
     }
 
-    public void endMatch() {
-        this.state = "Ended";
-    }
+    public void close() { this.state = "Closed";}
 
     public boolean canJoin() {
         return this.state.equals("Active");
