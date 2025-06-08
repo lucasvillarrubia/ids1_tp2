@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -18,6 +19,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
@@ -31,9 +33,9 @@ public class Field {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Positive 
-    @Column(nullable = false)
-    private Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner", nullable = false)
+    private User owner;
 
     @NotEmpty(message = "La cancha debe tener un nombre")
     @Column(nullable = false)
@@ -79,10 +81,10 @@ public class Field {
 
     public Field() {}
 
-    public Field(Long id, String name, Long ownerId, String location, UserZones zone, List<FieldFeatures> features, Optional<List<String>> images) {
+    public Field(Long id, String name, User owner, String location, UserZones zone, List<FieldFeatures> features, Optional<List<String>> images) {
         this.id = id;
         this.name = name;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.location = location;
         this.zone = zone;
         this.features = features;
@@ -93,10 +95,10 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long id, Long ownerId, String name, String location, UserZones zone, List<FieldFeatures> features) {
+    public Field(Long id, User owner, String name, String location, UserZones zone, List<FieldFeatures> features) {
         this.id = id;
         this.name = name;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.location = location;
         this.zone = zone;
         this.features = features;
@@ -107,9 +109,9 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long ownerId, String name, String location, UserZones zone, List<FieldFeatures> features, List<String> images) {
+    public Field(User owner, String name, String location, UserZones zone, List<FieldFeatures> features, List<String> images) {
         this.name = name;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.location = location;
         this.zone = zone;
         this.features = features;
@@ -124,8 +126,8 @@ public class Field {
         return id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public User getOwner() {
+        return owner;
     }
 
     public String getName() {

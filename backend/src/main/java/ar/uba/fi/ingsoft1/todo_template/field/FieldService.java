@@ -2,11 +2,16 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
+import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
@@ -30,17 +35,30 @@ public class FieldService {
     private final FieldRepository fieldRepository;
     private final ReviewRepository reviewRepository;
     private final ReservationRepository reservationRepository;
+    private final UserService userService;
 
     public FieldService(FieldRepository fieldRepository, 
                         ReviewRepository reviewRepository,
-                        ReservationRepository reservationRepository) {
+                        ReservationRepository reservationRepository,
+                        UserService userService) {
         this.fieldRepository = fieldRepository;
         this.reviewRepository = reviewRepository;
         this.reservationRepository = reservationRepository;
+        this.userService = userService;
+    }
+
+    public User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof JwtUserDetails)) {
+            throw new EntityNotFoundException("No se ha encontrado el usuario actual");
+        }
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        User currentUser = userService.getUserByEmail(userDetails.username());
+        return currentUser;
     }
 
     public FieldDTO createField(FieldCreateDTO fieldCreate) {
-        Field newField = fieldCreate.asField();
+        Field newField = fieldCreate.asField(getCurrentUser());
         if (!fieldRepository.findByName(newField.getName()).isEmpty()) {
             throw new DuplicateEntityException("Field", "name");
         }
@@ -63,7 +81,7 @@ public class FieldService {
         return fieldRepository.findAll().stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
-    public List<FieldDTO> getFieldsByOwnerId(Long ownerId) {
+    public List<FieldDTO> getFieldsByOwner(Long ownerId) {
         return fieldRepository.findByOwnerId(ownerId).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 

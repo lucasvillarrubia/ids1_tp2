@@ -125,9 +125,6 @@ public class FieldRestController {
             @Valid @RequestBody FieldCreateDTO fieldCreateDTO
     ) {
         System.out.println("CONTROLLER Creating Field with DTO: " + fieldCreateDTO);
-        if (fieldCreateDTO.getOwnerId() == null || fieldCreateDTO.getName() == null || fieldCreateDTO.getZone() == null) {
-            throw new IllegalArgumentException("Owner ID and Name are required to create a field.");
-        }
         FieldDTO createdField = this.fieldService.createField(fieldCreateDTO);
         return createdField;
     }
