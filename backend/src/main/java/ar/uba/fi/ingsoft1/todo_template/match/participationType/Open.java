@@ -33,6 +33,7 @@ public class Open extends ParticipationType {
         this.players = players != null ? players : new HashSet<>();
     }
 
+    @Override
     public Integer getMinPlayersCount() {
         return this.minPlayersCount;
     }

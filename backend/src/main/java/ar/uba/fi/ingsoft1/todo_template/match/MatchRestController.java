@@ -1,11 +1,14 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
+import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerDTO;
+import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +25,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Matches")
 public class MatchRestController {
     private final MatchService matchService;
+    private final MatchOrganizerService matchOrganizerService;
 
-    public MatchRestController(MatchService matchService) {
+    public MatchRestController(MatchService matchService, MatchOrganizerService matchOrganizerService) {
+
         this.matchService = matchService;
+        this.matchOrganizerService = matchOrganizerService;
     }
 
     @GetMapping(value = "/Match", produces = "application/json")
@@ -111,7 +117,6 @@ public class MatchRestController {
     MatchDTO createMatch(
             @Valid @RequestBody MatchCreateDTO matchCreateDTO
     ) {
-        System.out.println(matchCreateDTO);
         return this.matchService.createMatch(matchCreateDTO);
     }
 
@@ -165,6 +170,77 @@ public class MatchRestController {
             @Valid @Positive Long id
     ) {  matchService.leaveMatch(id);
     }
+
+    @PostMapping(value = "/close")
+    @Operation(summary = "Close a match")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Closed match successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Could not close match")
+    @ApiResponse(responseCode = "403", description = "You don't have permissions to do that")
+    @PreAuthorize("hasRole('USER')")
+    void closeMatch(
+            @Valid @Positive Long id
+    ) {  matchService.closeMatch(id);
+    }
+
+    @GetMapping(value = "/teams")
+    @Operation(summary = "Get match teams")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Got players in match successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Could not get players in match")
+    @ApiResponse(responseCode = "403", description = "You don't have permissions to do that")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<MatchOrganizerDTO> getMatchPlayers(
+            @Valid @Positive Long id
+    ) {
+        MatchOrganizerDTO matchOrganizer = matchOrganizerService.getMatchPlayers(id);
+        return ResponseEntity.ok(matchOrganizer);
+    }
+
+    @GetMapping(value = "/teams/generate")
+    @Operation(summary = "Automatically generate teams")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Generated teams successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Could not generate teams")
+    @ApiResponse(responseCode = "403", description = "You don't have permissions to do that")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<MatchOrganizerDTO> generateMatchTeams(
+            @Valid @Positive Long id
+    ) {
+        MatchOrganizerDTO matchOrganizer = matchOrganizerService.generateMatchTeams(id);
+        return ResponseEntity.ok(matchOrganizer);
+    }
+
+    @PostMapping(value = "/teams/player")
+    @Operation(summary = "Move player")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Moved player successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Could not move player")
+    @ApiResponse(responseCode = "403", description = "You don't have permissions to do that")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<MatchOrganizerDTO> movePlayer(
+            @Valid @Positive Long id, @Valid @Positive Long playerId, @Valid @PositiveOrZero Short team
+    ) {
+        MatchOrganizerDTO matchOrganizer = matchOrganizerService.movePlayer(id, playerId, team);
+        return ResponseEntity.ok(matchOrganizer);
+    }
+
+    @PostMapping(value = "/start")
+    @Operation(summary = "Start match")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Started match successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Could not start match")
+    @ApiResponse(responseCode = "403", description = "You don't have permissions to do that")
+    @PreAuthorize("hasRole('USER')")
+    ResponseEntity<MatchDTO> startMatch(
+            @Valid @Positive Long id
+    ) {
+        MatchDTO matchDTO = matchService.startMatch(id);
+        return ResponseEntity.ok(matchDTO);
+    }
+
+
+
 
 
 }

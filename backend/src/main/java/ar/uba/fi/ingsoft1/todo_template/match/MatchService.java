@@ -5,9 +5,11 @@ package ar.uba.fi.ingsoft1.todo_template.match;
 import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
+import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerService;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,17 +33,20 @@ public class MatchService {
     private final UserService userService;
     private final FieldService fieldService;
     private final ParticipationTypeService participationTypeService;
+    private final MatchOrganizerService matchOrganizerService;
 
-    public MatchService(MatchRepository matchRepository, UserService userService,FieldService fieldService, ParticipationTypeService participationTypeService) {
+    public MatchService(MatchRepository matchRepository, UserService userService,FieldService fieldService, ParticipationTypeService participationTypeService, MatchOrganizerService matchOrganizerService) {
         this.matchRepository = matchRepository;
         this.userService = userService;
         this.fieldService = fieldService;
         this.participationTypeService = participationTypeService;
+        this.matchOrganizerService = matchOrganizerService;
     }
 
     public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) {
         Match newMatch = buildMatch(matchCreateDTO);
         Match savedMatch = matchRepository.save(newMatch);
+        matchOrganizerService.create(newMatch.getId());
         return new MatchDTO(savedMatch);
     }
 
@@ -106,12 +111,14 @@ public class MatchService {
         JwtUserDetails userDetails = (JwtUserDetails) principal;
         String email = userDetails.username();
         Match match = getMatchById(id);
+        User user = userService.getUserByEmail(email);
 
-        if (!match.join(userService.getUserByEmail(email))){
+        if (!match.join(user)){
             throw new InvalidActionException("Can't join match");
         }
 
         Match savedMatch = matchRepository.save(match);
+        matchOrganizerService.addPlayer(match.getId(), user.getId());
         return new MatchDTO(savedMatch);
     }
 
@@ -120,12 +127,45 @@ public class MatchService {
         JwtUserDetails userDetails = (JwtUserDetails) principal;
         String email = userDetails.username();
         Match match = getMatchById(id);
+        User user = userService.getUserByEmail(email);
 
-        if (!match.leaveMatch(userService.getUserByEmail(email))){
+        if (!match.leaveMatch(user)){
             throw new InvalidActionException("Can't leave match");
         }
-
+        matchOrganizerService.removePlayer(match.getId(), user.getId());
         matchRepository.save(match);
+    }
+
+    public void closeMatch(Long id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        String email = userDetails.username();
+        Match match = getMatchById(id);
+
+        if(!match.isOrganizer(userService.getUserByEmail(email))){
+            throw new InvalidActionException("You don't have permissions to start the match");
+        }
+        ParticipationType participationType = match.getParticipationType();
+        if (participationType.getPlayerCount() < participationType.getMinPlayersCount()){
+            throw new InvalidActionException("The match does not have enough players to start");
+
+        }
+        match.start();
+        matchRepository.save(match);
+    }
+    // Hay que validar que el usuario tenga permiso?
+    // Front puede hacer que algo no aparezca si no tiene permiso?
+    public MatchDTO startMatch(Long id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        String email = userDetails.username();
+        Match match = getMatchById(id);
+
+        if (!match.isOrganizer(userService.getUserByEmail(email))){
+            throw new InvalidActionException("You don't have permissions to start the match");
+        }
+        match.start();
+        return new MatchDTO(match);
     }
 
     private Match getMatchById(Long id){
