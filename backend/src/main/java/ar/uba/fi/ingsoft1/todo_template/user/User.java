@@ -1,5 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -20,7 +21,11 @@ public class User implements UserCredentials {
     @Column(unique= true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @NotEmpty(message = "La cancha debe tener al menos una característica como el tipo de superficie")
+    @ElementCollection
+    @CollectionTable(name = "user_zones", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "zone", nullable = false)
+    @Enumerated(EnumType.STRING)
     private List<UserZones> zones;
 
     @Column(nullable = false)

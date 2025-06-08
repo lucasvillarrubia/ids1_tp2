@@ -23,8 +23,7 @@ public record UserCreateDTO(
         @Schema(description = "Email is mandatory and must be valid", maxLength = 255, example = "john@example.com", required = true)
         String email,
 
-        @NotBlank(message = "Zone is mandatory")
-        @Schema(description = "Zone is mandatory", example = "Vicente lopez", required = true)
+        @NotNull @NotEmpty
         List<String> zones,
 
         @NotBlank(message = "Password is mandatory")
