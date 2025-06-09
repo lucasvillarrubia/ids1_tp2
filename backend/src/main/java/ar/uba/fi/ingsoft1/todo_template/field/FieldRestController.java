@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -111,6 +112,15 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public List<ReservationDTO> getReservationsByFieldId(@PathVariable @Positive Long id) {
         return fieldService.getReservationsByFieldId(id).stream().toList();
+    }
+
+    @GetMapping(value = "{id}/reservations/availableSlots", produces = "application/json")
+    @Operation(summary = "Get all available time slots for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Available time slots found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<String> getAvailableTimeSlotsByFieldId(@PathVariable @Positive Long id, 
+                                                       @RequestParam(required = true) String date) {
+        return fieldService.getAvailableSlotsForReservations(date, id).stream().map(Object::toString).toList();
     }
 
     @GetMapping(value = "/reservations/organizer/{organizerEmail}", produces = "application/json")

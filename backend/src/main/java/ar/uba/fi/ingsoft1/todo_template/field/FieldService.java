@@ -1,5 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleCreateDTO;
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlot;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
@@ -176,9 +179,24 @@ public class FieldService {
         return new ReservationDTO(newReservation);
     }
 
+    public List<String> getAvailableSlotsForReservations(String date, Long fieldId) {
+        LocalDate parsedDate = LocalDate.parse(date);
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(fieldId, parsedDate);
+        List<TimeSlot> timeSlots = field.getSchedule().getTimeSlotsForDate(parsedDate, reservations);
+
+        return timeSlots.stream()
+                .map(slot -> slot.toString())
+                .collect(Collectors.toList());
+    }
+
     // edit field
     public FieldDTO updateField(Long fieldId, FieldUpdateDTO fieldEdit) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        User currentUser = getCurrentUser();
+        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede editarlo");
+        }
 
         if (fieldEdit.getDescription() != null) {
             field.setDescription(fieldEdit.getDescription());

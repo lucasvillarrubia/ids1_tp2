@@ -2,10 +2,12 @@ package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -90,6 +92,35 @@ public class FieldSchedule implements Serializable{
     
     public int getPredefDuration() {
         return predefDuration;
+    }
+
+    public List<TimeSlot> getTimeSlotsForDate(LocalDate date, List<Reservation> reservations) {
+        DayOfWeek day = date.getDayOfWeek();
+        if (!days.contains(day)) {
+            return new ArrayList<>();
+        }
+
+        List<TimeSlot> timeSlots = new ArrayList<>();
+        LocalTime actualTimeSlotStart = this.startHour;
+        
+        while (actualTimeSlotStart.plusMinutes(this.predefDuration).compareTo(this.endHour) <= 0) {
+            LocalTime nextTimeSlotStart = actualTimeSlotStart.plusMinutes(this.predefDuration);
+            TimeSlot timeSlot = new TimeSlot(actualTimeSlotStart, nextTimeSlotStart);
+
+            timeSlots.add(timeSlot);
+            actualTimeSlotStart = nextTimeSlotStart;
+        }
+
+        System.out.println("Reserved time slots for " + date + ": " + reservations.stream().map(res -> res.getStart() + " - " + res.getEnd()).toList());
+
+        timeSlots.removeIf(slot -> reservations.stream()
+            .anyMatch(reservation -> 
+                slot.getStartHour().isBefore(reservation.getEnd()) &&
+                slot.getEndHour().isAfter(reservation.getStart())
+            )
+        );
+
+        return timeSlots;
     }
 
     // public ArrayList<TimeSlot> getTimeSlots() {
