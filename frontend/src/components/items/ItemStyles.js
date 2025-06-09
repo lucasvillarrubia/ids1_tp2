@@ -2,7 +2,7 @@
 import styled from "styled-components";
 
 
-export const ProductCardsContainer = styled.div`
+export const ItemCardsContainer = styled.div`
         /* background-color: var(--rosa); */
         display: grid;
         width: 100%;
@@ -13,7 +13,7 @@ export const ProductCardsContainer = styled.div`
         padding: 50px;
 `;
 
-export const ProductCardUI = styled.div`
+export const ItemCardUI = styled.div`
         width: 300px;
         /* min-height: 500px; */
         /* background-color: var(--marroncito); */
@@ -47,7 +47,7 @@ export const AddInstanceButtonUI = styled.button`
         }
 `;
 
-export const ProductInfo = styled.div`
+export const ItemInfo = styled.div`
         background-color: black;
         width: 100%;
         border-radius: 10px;
@@ -66,7 +66,7 @@ export const ProductInfo = styled.div`
 `;
 
 
-export const ProductTitle = styled.h3`
+export const ItemTitle = styled.h3`
         font-size: 30px;
         width: 100%;
         text-align: left;
@@ -76,7 +76,7 @@ export const ProductTitle = styled.h3`
         line-height: 30px;
 `;
 
-export const ProductAuthor = styled.h4`
+export const ItemAuthor = styled.h4`
         font-size: 15px;
         width: 100%;
         text-align: left;
@@ -85,7 +85,7 @@ export const ProductAuthor = styled.h4`
         letter-spacing: 2px;
 `;
 
-export const ProductPrice = styled.h4`
+export const ItemPrice = styled.h4`
         font-size: 20px;
         color: black;
         background-color: white;
@@ -96,7 +96,7 @@ export const ProductPrice = styled.h4`
         width: 100%;
 `;
 
-export const ProductButton = styled.button`
+export const ItemButton = styled.button`
         width: 90%;
         height: 40px;
         background-color: black;
@@ -119,7 +119,7 @@ export const ProductButton = styled.button`
         }
 `;
 
-export const ProductsSectionButton = styled.button`
+export const ItemsSectionButton = styled.button`
         padding: 10px 15px;
         font-family: 'Shrikhand', sans-serif;
         font-size: 15px;
