@@ -8,7 +8,7 @@ import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 
 public class FieldDTO {
     private Long id;
-    private Long ownerId;
+    private String ownerEmail;
     private String name;
     private String description;
     private String location;
@@ -22,7 +22,7 @@ public class FieldDTO {
 
     public FieldDTO(Field field) {
         this.id = field.getId();
-        this.ownerId = field.getOwnerId();
+        this.ownerEmail = field.getOwner().getEmail();
         this.name = field.getName();
         this.description = field.getDescription();
         this.location = field.getLocation();
@@ -38,16 +38,12 @@ public class FieldDTO {
         this.images = new ArrayList<>(field.getImages());
     }
 
-    public Field asField() {
-        return new Field(this.id, this.ownerId, this.name, this.location, this.zone, this.features.stream().map(FieldFeatures::valueOf).toList());
-    }
-
     public Long getId() {
         return id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public String getOwnerEmail() {
+        return ownerEmail;
     }
 
     public String getName() {
@@ -94,8 +90,8 @@ public class FieldDTO {
         this.id = id;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
     }
 
     public void setName(String name) {

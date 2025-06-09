@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +23,10 @@ public class Reservation {
     @JoinColumn(name = "field_id", nullable = false)
     private Field field;
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer", nullable = false)
+    private User organizer;
+
     private LocalDate date;
 
     private LocalTime startHour;
@@ -30,7 +35,8 @@ public class Reservation {
 
     public Reservation() {}
 
-    public Reservation(Field field, LocalDate date, LocalTime startHour, LocalTime endHour) {
+    public Reservation(Field field, LocalDate date, LocalTime startHour, LocalTime endHour, User organizer) {
+        this.organizer = organizer;
         this.field = field;
         this.date = date;
         this.startHour = startHour;
@@ -43,6 +49,10 @@ public class Reservation {
 
     public Field getField() {
         return field;
+    }
+
+    public User getOrganizer() {
+        return organizer;
     }
 
     public LocalDate getDate() {
@@ -59,6 +69,10 @@ public class Reservation {
 
     public void setField(Field field) {
         this.field = field;
+    }
+
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
     }
 
     public void setDate(LocalDate date) {
