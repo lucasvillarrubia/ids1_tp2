@@ -125,6 +125,7 @@ public class FieldSchedule implements Serializable{
         timeSlots.removeIf(slot -> 
             unavailableTimeSlots.stream()
                 .anyMatch(unavailable -> 
+                    slot.getDate().equals(unavailable.getDate()) &&
                     slot.getStartHour().isBefore(unavailable.getEndHour()) &&
                     slot.getEndHour().isAfter(unavailable.getStartHour())
                 )
