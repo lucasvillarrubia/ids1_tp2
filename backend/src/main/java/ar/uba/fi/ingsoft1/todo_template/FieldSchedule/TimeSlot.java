@@ -1,20 +1,27 @@
 package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class TimeSlot implements Serializable{
+    private LocalDate date;
     private LocalTime startHour;
     private LocalTime endHour;
 
     public TimeSlot() {}
 
-    public TimeSlot(LocalTime startHour, LocalTime endHour) {
+    public TimeSlot(LocalDate date, LocalTime startHour, LocalTime endHour) {
+        this.date = date;
         this.startHour = startHour;
         this.endHour = endHour;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 
     public LocalTime getStartHour() {
@@ -27,6 +34,6 @@ public class TimeSlot implements Serializable{
 
     @Override
     public String toString() {
-        return startHour + " - " + endHour;
+        return date + " " + startHour + " - " + endHour;
     }
 }

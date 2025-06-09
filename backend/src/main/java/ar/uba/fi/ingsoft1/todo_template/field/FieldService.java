@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleCreateDTO;
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlot;
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlotDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
@@ -186,8 +188,38 @@ public class FieldService {
         List<TimeSlot> timeSlots = field.getSchedule().getTimeSlotsForDate(parsedDate, reservations);
 
         return timeSlots.stream()
-                .map(slot -> slot.toString())
+                .map(slot -> slot.getStartHour() + " - " + slot.getEndHour())
                 .collect(Collectors.toList());
+    }
+
+    public FieldDTO addUnavailbleTimeSlotToField(Long fieldId, TimeSlotDTO timeSlot) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+
+        User currentUser = getCurrentUser();
+        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede editarlo");
+        }
+
+        TimeSlot timeSlotEntity = timeSlot.asTimeSlot();
+        List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(fieldId, timeSlotEntity.getDate());
+        if (reservations.stream().anyMatch(reservation ->
+                timeSlotEntity.getStartHour().isBefore(reservation.getEnd()) &&
+                timeSlotEntity.getEndHour().isAfter(reservation.getStart())
+            )) {
+            throw new IllegalArgumentException("El horario ya está reservado, no se puede bloquear.");
+        }
+
+        if (field.getSchedule().getUnavailableTimeSlots().stream()
+                .anyMatch(unavailable -> 
+                    timeSlotEntity.getStartHour().isBefore(unavailable.getEndHour()) &&
+                    timeSlotEntity.getEndHour().isAfter(unavailable.getStartHour())
+                )) {
+            throw new IllegalArgumentException("El horario ya está bloqueado, no se puede agregar.");
+        }
+
+        field.getSchedule().addUnavailableTimeSlot(timeSlotEntity);
+        
+        return new FieldDTO(fieldRepository.save(field));
     }
 
     // edit field

@@ -43,10 +43,10 @@ public class FieldSchedule implements Serializable{
     @Positive(message = "La duración predefinida debe ser un valor positivo")
     private Integer predefDuration;
 
-    // @ElementCollection
-    // @CollectionTable(name = "available_time_slots", joinColumns = @JoinColumn(name = "schedule_id"))
-    // private List<TimeSlot> availableTimeSlots;
-
+    @ElementCollection
+    @CollectionTable(name = "schedule_unavailable_timeslots", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "unavailable_timeslots", nullable = false)
+    List<TimeSlot> unavailableTimeSlots;
 
     public FieldSchedule() {
         this.days = new ArrayList<>();
@@ -54,15 +54,14 @@ public class FieldSchedule implements Serializable{
         this.startHour = LocalTime.of(8, 0); // seteo un default para que no sea null
         this.endHour = LocalTime.of(22, 0); 
         this.predefDuration =  60; // tiempo en minutos
-        //setAvailableTimeSlots();
     }
 
     public FieldSchedule(List<DayOfWeek> days, String startHour, String endHour, Integer predefDuration) {
         this.days = days;
         this.predefDuration = predefDuration;
+        this.unavailableTimeSlots = new ArrayList<>();
         setStartHour(startHour);
         setEndHour(endHour);
-        //setAvailableTimeSlots();
     }
 
     public FieldSchedule(List<DayOfWeek> days, LocalTime startHour, LocalTime endHour,
@@ -71,7 +70,6 @@ public class FieldSchedule implements Serializable{
         this.startHour = startHour;
         this.endHour = endHour;
         this.predefDuration = predefDuration;
-        //setAvailableTimeSlots();
     }
 
     public List<DayOfWeek> getDays() {
@@ -86,12 +84,16 @@ public class FieldSchedule implements Serializable{
         return endHour;
     }
 
-    // public List<TimeSlot> getAvailableTimeSlots() {
-    //     return availableTimeSlots;
-    // }
-    
     public int getPredefDuration() {
         return predefDuration;
+    }
+
+    public List<TimeSlot> getUnavailableTimeSlots() {
+        return unavailableTimeSlots;
+    }
+
+    public void addUnavailableTimeSlot(TimeSlot timeSlot) {
+        this.unavailableTimeSlots.add(timeSlot);
     }
 
     public List<TimeSlot> getTimeSlotsForDate(LocalDate date, List<Reservation> reservations) {
@@ -105,7 +107,7 @@ public class FieldSchedule implements Serializable{
         
         while (actualTimeSlotStart.plusMinutes(this.predefDuration).compareTo(this.endHour) <= 0) {
             LocalTime nextTimeSlotStart = actualTimeSlotStart.plusMinutes(this.predefDuration);
-            TimeSlot timeSlot = new TimeSlot(actualTimeSlotStart, nextTimeSlotStart);
+            TimeSlot timeSlot = new TimeSlot(date, actualTimeSlotStart, nextTimeSlotStart);
 
             timeSlots.add(timeSlot);
             actualTimeSlotStart = nextTimeSlotStart;
@@ -120,33 +122,16 @@ public class FieldSchedule implements Serializable{
             )
         );
 
+        timeSlots.removeIf(slot -> 
+            unavailableTimeSlots.stream()
+                .anyMatch(unavailable -> 
+                    slot.getStartHour().isBefore(unavailable.getEndHour()) &&
+                    slot.getEndHour().isAfter(unavailable.getStartHour())
+                )
+        );
+
         return timeSlots;
     }
-
-    // public ArrayList<TimeSlot> getTimeSlots() {
-    //     ArrayList<TimeSlot> timeSlots = new ArrayList<>();
-    //     LocalTime actualTimeSlotStart = this.startHour;
-    //     LocalDate today = LocalDate.now();
-                
-    //     for (DayOfWeek day : this.days) {
-    //         LocalDate nextDay = today.with(TemporalAdjusters.nextOrSame(day));
-    //         while (actualTimeSlotStart.plusMinutes(this.predefDuration).compareTo(this.endHour) <= 0) {
-    //             LocalTime nextTimeSlotStart = actualTimeSlotStart.plusMinutes(this.predefDuration);
-
-    //             timeSlots.add(new TimeSlot(nextDay, actualTimeSlotStart, nextTimeSlotStart));
-    //             actualTimeSlotStart = nextTimeSlotStart;
-    //         }
-
-    //         actualTimeSlotStart = this.startHour; 
-    //     }
-    //     System.out.println("Time slots generated: " + timeSlots.size());
-    //     if (timeSlots.isEmpty()) {
-    //         System.out.println("No time slots available for the given schedule.");
-    //     } else {
-    //         System.out.println("Available time slots: " + timeSlots);
-    //     }
-    //     return timeSlots;
-    // }
 
     public Long getId() {
         return id;
@@ -177,8 +162,4 @@ public class FieldSchedule implements Serializable{
     public void setPredefDuration(Integer predefDuration) {
         this.predefDuration = predefDuration;
     }
-
-    // public void setAvailableTimeSlots() {
-    //     this.availableTimeSlots = getTimeSlots();
-    // }
 }

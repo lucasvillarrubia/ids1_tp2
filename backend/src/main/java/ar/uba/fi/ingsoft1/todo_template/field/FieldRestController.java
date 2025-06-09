@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlotDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
@@ -140,6 +141,19 @@ public class FieldRestController {
         return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
     }
 
+    @PostMapping(value = "/{id}/reservations/unavailableSlots", produces = "application/json")
+    @Operation(summary = "Block time slots for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Unavailable time slots blocked", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')") 
+    public ResponseEntity<Void> blockTimeSlots(
+            @PathVariable @Positive Long id,
+            @Valid @RequestBody TimeSlotDTO unavailableTimeSlots
+    ) {
+        fieldService.addUnavailbleTimeSlotToField(id, unavailableTimeSlots);
+        return ResponseEntity.ok().build();
+    }
     /* ejemplo del body para crear una cancha
 {
     owner_id: 1,

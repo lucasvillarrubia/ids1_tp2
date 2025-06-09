@@ -9,8 +9,8 @@ public record FieldScheduleDTO(
     List<String> days,
     LocalTime startHour,
     LocalTime endHour,
-    Integer predefDuration
-    //List<String> availableFieldSchedules
+    Integer predefDuration,
+    List<String> unavailableFieldSchedules
     ){
 
     public FieldScheduleDTO(FieldSchedule fieldSchedule) {
@@ -19,8 +19,8 @@ public record FieldScheduleDTO(
                 fieldSchedule.getDays().stream().map(DayOfWeek::toString).toList(),
                 fieldSchedule.getStartHour(), 
                 fieldSchedule.getEndHour(),
-                fieldSchedule.getPredefDuration()
-                //fieldSchedule.getAvailableTimeSlots().stream().map(timeSlot -> timeSlot.toString()).toList()
+                fieldSchedule.getPredefDuration(),
+                fieldSchedule.getUnavailableTimeSlots().stream().map(timeSlot -> timeSlot.toString()).toList()
             );
     }
 }
