@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
 
 public record ReservationCreateDTO(
     Long fieldId,
@@ -11,12 +12,13 @@ public record ReservationCreateDTO(
     LocalTime start,
     LocalTime end
 ) {
-    public Reservation asReservation(Field field) {
+    public Reservation asReservation(Field field, User organizer) {
         return new Reservation(
             field, 
             date,
             start,
-            end
+            end,
+            organizer
         );
     }
 

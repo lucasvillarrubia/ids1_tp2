@@ -69,6 +69,10 @@ public class FieldService {
 
     public void deleteField(Long fieldId) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        if (!field.getOwner().getEmail().equals(getCurrentUser().getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede eliminarlo");
+        }
+
         fieldRepository.delete(field);
     }
 
@@ -110,6 +114,12 @@ public class FieldService {
     public List<ReservationDTO> getReservationsByFieldId(Long fieldId) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
         return reservationRepository.findByFieldId(field.getId()).stream()
+                .map(ReservationDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReservationDTO> getReservationByOrganizerEmail(String organizerEmail) {
+        return reservationRepository.findByOrganizerEmail(organizerEmail).stream()
                 .map(ReservationDTO::new)
                 .collect(Collectors.toList());
     }
@@ -158,7 +168,8 @@ public class FieldService {
             throw new IllegalArgumentException("Reservation time slot is already taken.");
         }
 
-        Reservation newReservation = reservationRepository.save(reservation.asReservation(field));
+        User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
+        Reservation newReservation = reservationRepository.save(reservation.asReservation(field, organizer));
 
         field.addReservation(newReservation.getId());
         fieldRepository.save(field);

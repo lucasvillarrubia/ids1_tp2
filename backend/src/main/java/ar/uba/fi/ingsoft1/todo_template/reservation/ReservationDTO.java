@@ -6,6 +6,7 @@ import java.time.LocalTime;
 public record ReservationDTO(
     Long id,
     Long fieldId,
+    String organizerEmail,
     LocalDate date,
     LocalTime start,
     LocalTime end
@@ -14,6 +15,7 @@ public record ReservationDTO(
         this(
             reservation.getId(),
             reservation.getField().getId(),
+            reservation.getOrganizer().getEmail(),
             reservation.getDate(),
             reservation.getStart(),
             reservation.getEnd()

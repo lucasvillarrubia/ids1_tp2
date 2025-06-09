@@ -68,7 +68,7 @@ public class FieldRestController {
     @Operation(summary = "Get all fields owned by the current user")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFieldsByOwnerId() {
+    public List<FieldDTO> getFieldsOwns() {
         String ownerEmail = fieldService.getCurrentUser().getEmail();
         return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
@@ -111,6 +111,23 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public List<ReservationDTO> getReservationsByFieldId(@PathVariable @Positive Long id) {
         return fieldService.getReservationsByFieldId(id).stream().toList();
+    }
+
+    @GetMapping(value = "/reservations/organizer/{organizerEmail}", produces = "application/json")
+    @Operation(summary = "Get all reservations for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<ReservationDTO> getReservationsByOrganizer(@PathVariable @Positive String organizerEmail) {
+        return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
+    }
+
+    @GetMapping(value = "/reservations/organizer/me", produces = "application/json")
+    @Operation(summary = "Get all reservations for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<ReservationDTO> getMyReservations() {
+        String organizerEmail = fieldService.getCurrentUser().getEmail();
+        return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
     }
 
     /* ejemplo del body para crear una cancha
