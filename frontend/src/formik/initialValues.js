@@ -39,8 +39,8 @@ export const fieldInitialValues = {
     name: '',
     location: '',
     zone: '',
-    features: '',
-    images: '',
+    features: [],
+    images: []
 };
 
 export const matchInitialValues = {

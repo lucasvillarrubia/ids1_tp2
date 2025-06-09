@@ -14,9 +14,9 @@ const Create = () => {
                 <CreateBG>
                         <CreateTitle>Nuevo Item</CreateTitle>
                         <CreateContainer>
+                                <Categories fromPage='create' />
                                 <CreateInfo>
                                         <CreateSubtitle>Completá el formulario</CreateSubtitle>
-                                        <Categories fromPage='create' />
                                         <ItemsForm key={selectedCat} itemCategory={selectedCat}/>
                                 </CreateInfo>
                         </CreateContainer>

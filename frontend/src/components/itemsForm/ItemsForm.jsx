@@ -14,6 +14,7 @@ const ItemsForm = ({ itemCategory }) => {
 
         const handleSubmit = async (values, { setSubmitting }) => {
             try {
+                console.log("📦 Form output:", JSON.stringify(values, null, 2));
                 await createItem(itemCategory, values);
                 await loadItemsByGenre(dispatch);
                 navigate('/congratulations');
@@ -34,12 +35,13 @@ const ItemsForm = ({ itemCategory }) => {
                                 <Form>
                                         {formFields.map(field => (
                                             <ItemsInput
-                                                key={field.name}
-                                                name={field.name}
-                                                type={field.type}
-                                                id={field.id}
-                                                htmlFor={field.htmlFor}
-                                                placeholder={field.placeholder}
+                                                // key={field.name}
+                                                // name={field.name}
+                                                // type={field.type}
+                                                // id={field.id}
+                                                // htmlFor={field.htmlFor}
+                                                // placeholder={field.placeholder}
+                                                {...field}
                                             >
                                                 {field.label}
                                             </ItemsInput>

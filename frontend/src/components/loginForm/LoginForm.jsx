@@ -60,13 +60,15 @@ const LoginForm = () => {
                 // }
         };
 
+        let message_duration = redirectAfterClose ? 5000 : 0;
+
         return (
             <>
                     {msg && (
                         <FlashMessage
                             message={msg}
                             type={type}
-                            duration={5000}
+                            duration={message_duration}
                             onClose={handleCloseMessage}
                             fromLogin={true}
                         />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { UserMenuBG, UserMenuUI } from './UserStyles'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentUser, toggleUserMenuDisplay } from '../../features/users/usersSlice';
+import {logout, setCurrentUser, toggleUserMenuDisplay} from '../../features/users/usersSlice';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from "../../features/users/usersAPI.js";
 
@@ -50,8 +50,8 @@ const UserMenu = () => {
                                                 Tus reviews
                                         </p>
                                         <p onClick={() => {
-                                                        logoutUser(dispatch);
                                                         dispatch(toggleUserMenuDisplay());
+                                                        logoutUser(dispatch);
                                                         navigate('/');
                                                 }}
                                         >

@@ -35,7 +35,7 @@ export const verifyValidationSchema = Yup.object({
 
 export const teamValidationSchema = Yup.object({
     name: Yup.string().required('Nombre obligatorio'),
-    logo: Yup.string().nullable(), // if this were a file, use Yup.mixed()
+    logo: Yup.string().nullable(),
     colors: Yup.string().required('Colores obligatorios'),
     skill: Yup.number()
         .min(1, 'Mínimo 1')
@@ -55,8 +55,8 @@ export const fieldValidationSchema = Yup.object({
     name: Yup.string().required('Nombre requerido'),
     location: Yup.string().required('Ubicación requerida'),
     zone: Yup.string().required('Zona requerida'),
-    features: Yup.string().nullable(), // comma-separated string
-    images: Yup.string().nullable(),   // comma-separated string or list of URLs
+    features: Yup.array().of(Yup.string()).nullable(),
+    images: Yup.array().of(Yup.string()).nullable()
 });
 
 export const matchValidationSchema = Yup.object({

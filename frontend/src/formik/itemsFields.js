@@ -81,7 +81,8 @@ export const fieldFields = [
         id: 'field-features',
         htmlFor: 'field-features',
         placeholder: 'Características (separadas por comas)',
-        label: 'Características de la cancha'
+        label: 'Características de la cancha',
+        isList: true
     },
     {
         name: 'images',
@@ -90,7 +91,7 @@ export const fieldFields = [
         htmlFor: 'field-images',
         placeholder: 'Imágenes (separadas por comas)',
         label: 'Imágenes de la cancha',
-        multiple: true
+        isList: true
     }
 ];
 
