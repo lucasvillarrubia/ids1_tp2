@@ -1,10 +1,10 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/constants"
-import { setCurrentUser } from "./usersSlice.js";
+import {logout, setCurrentUser} from "./usersSlice.js";
 
 
 /**
- * Create a new user (signup)
+ * Crea un nuevo usuario (signup)
  * @param {Object} userData
  * @param {string} userData.name
  * @param {string} userData.lastname
@@ -70,5 +70,5 @@ export const loginUser = async (email, password) => {
 
 export const logoutUser = (dispatch) => {
         delete axios.defaults.headers.common["Authorization"];
-        dispatch(setCurrentUser(null));
+        dispatch(logout());
 };

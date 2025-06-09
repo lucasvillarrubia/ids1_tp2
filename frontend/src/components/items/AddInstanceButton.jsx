@@ -2,10 +2,10 @@ import React from 'react'
 import { AddInstanceButtonUI } from './ItemStyles.js';
 import { useDispatch } from 'react-redux';
 
-const AddInstanceButton = () => {
+const AddInstanceButton = ({ onClick }) => {
         const dispatch = useDispatch();
         return (
-                <AddInstanceButtonUI /*onClick={() => dispatch(addToCart())}*/>
+                <AddInstanceButtonUI onClick={onClick}>
                         CREAR
                 </AddInstanceButtonUI>
         )

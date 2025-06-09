@@ -4,14 +4,16 @@ import CategoryCard from './CategoryCard';
 import { CategoryCardsContainer } from './CategoryStyles';
 import { useSelector } from 'react-redux';
 
-const Categories = () => {
+const Categories = ({ fromPage }) => {
   const categories = useSelector(state => state.categories.categories);
   return (
     <HomeSection>
-      <HomeTitle>MIRÁ LO QUE HAY</HomeTitle>
+      <HomeTitle>{(fromPage === 'create') ? "Elegí entre estas categorías" : "MIRÁ LO QUE HAY"}</HomeTitle>
       <CategoryCardsContainer>
         {
-          categories.map((category) => <CategoryCard key={category.id} {...category} />)
+            categories
+                .filter(category => fromPage !== 'create' || category.name !== 'Usuarios' && category.name !== 'Partidos Cerrados' && category.name !== 'Torneos')
+                .map(category => <CategoryCard key={category.id} {...category} />)
         }
       </CategoryCardsContainer>
     </HomeSection>
