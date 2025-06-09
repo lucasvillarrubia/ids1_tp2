@@ -1,37 +1,50 @@
 import React from 'react'
 import { Form, Formik, ItemSubmit } from './ItemsFormStyles.js'
-import { createInitialValues } from '../../formik/initialValues'
-import { createValidationSchema } from '../../formik/validationSchema'
 import ItemsInput from './ItemsInput.jsx'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import {getFormConfig, getFormFields} from "../../formik/index.js";
+import {createItem, loadItemsByGenre} from "../../features/items/itemsAPI.js";
 
-const ItemsForm = () => {
+const ItemsForm = ({ itemCategory }) => {
         const dispatch = useDispatch();
         const navigate = useNavigate();
-        const { currentUser } = useSelector(state => state.users);
+        const { initialValues, validationSchema } = getFormConfig(itemCategory);
+        const formFields = getFormFields(itemCategory);
+
+        const handleSubmit = async (values, { setSubmitting }) => {
+            try {
+                await createItem(itemCategory, values);
+                await loadItemsByGenre(dispatch);
+                navigate('/congratulations');
+            } catch (error) {
+                alert('No se pudo crear el ítem: error visible en consola');
+            } finally {
+                setSubmitting(false);
+            }
+        };
+
         return (
-                <Formik 
-                        initialValues={createInitialValues}
-                        validationSchema={createValidationSchema}
-                        onSubmit={
-                                async values => {
-                                        try {
-                                                // await createItem para crear el item
-                                                // await getItems para actualizar la lista de items
-                                                navigate('/congratulations');
-                                        } catch (error) {
-                                                alert('No se pudo crear la orden');
-                                        }
-                                }
-                        }
+                <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
                 >
                         {({isSubmitting}) => (
                                 <Form>
-                                        <ItemsInput name='name' type='text' id='nombre' htmlFor='nombre' placeholder='Tu nombre completo'>
-                                                Nombre
-                                        </ItemsInput>
-                                        <ItemSubmit type='submit' disabled={!cartItems.length || isSubmitting}>Continuar al pago</ItemSubmit>
+                                        {formFields.map(field => (
+                                            <ItemsInput
+                                                key={field.name}
+                                                name={field.name}
+                                                type={field.type}
+                                                id={field.id}
+                                                htmlFor={field.htmlFor}
+                                                placeholder={field.placeholder}
+                                            >
+                                                {field.label}
+                                            </ItemsInput>
+                                        ))}
+                                        <ItemSubmit type='submit' disabled={isSubmitting}>CREAR</ItemSubmit>
                                 </Form>
                         )}
                 </Formik>

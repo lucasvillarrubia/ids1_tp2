@@ -38,6 +38,16 @@ export const MenuUI = styled.ul`
                         padding-right: 20px;
                 }
         }
+        & p {
+            font-size: 30px;
+            font-family: 'Kanit', sans-serif;
+            color: white;
+            padding-right: 50px;
+            @media screen and (max-width: 768px) {
+                width: 100%;
+                padding-right: 20px;
+            }
+        }
         /* & li {
                 font-size: 30px;
                 font-family: 'Kanit', sans-serif;
@@ -55,6 +65,14 @@ export const MenuUI = styled.ul`
                         color: black;
                         text-decoration: none;
                 }
+        }
+        & p:hover {
+            text-decoration: underline;
+            @media screen and (max-width: 768px) {
+                background-color: white;
+                color: black;
+                text-decoration: none;
+            }
         }
         /* & li:hover {
                 text-decoration: underline;
