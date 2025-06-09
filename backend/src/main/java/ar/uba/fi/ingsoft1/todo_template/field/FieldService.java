@@ -173,6 +173,14 @@ public class FieldService {
             throw new IllegalArgumentException("Reservation time slot is already taken.");
         }
 
+        if (field.getSchedule().getUnavailableTimeSlots().stream()
+                .anyMatch(unavailable -> 
+                    reservation.getStart().isBefore(unavailable.getEndHour()) &&
+                    reservation.getEnd().isAfter(unavailable.getStartHour())
+                )) {
+            throw new IllegalArgumentException("Reservation time slot is blocked.");
+        }
+
         User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
         Reservation newReservation = reservationRepository.save(reservation.asReservation(field, organizer));
 
