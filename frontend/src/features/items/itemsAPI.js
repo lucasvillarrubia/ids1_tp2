@@ -11,7 +11,16 @@ export const loadItemsByGenre = (genre) => async (dispatch) => {
         try {
                 console.log(genre);
                 const res = await axios.get(`${BASE_URL}/${genre}`);
-                const data = res.data;
+                // const data = res.data;
+                // const data = Array.isArray(res.data.content) ? res.data.content : [];
+                let data = [];
+                if (Array.isArray(res.data)) {
+                        data = res.data;
+                } else if (Array.isArray(res.data.content)) {
+                        data = res.data.content;
+                } else {
+                        console.warn("API envió una forma de respuesta no soportada", res.data);
+                }
                 const allKeys = new Set();
                 data.forEach(item => {
                         Object.keys(item).forEach(key => allKeys.add(key));
