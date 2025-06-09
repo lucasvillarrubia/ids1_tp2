@@ -39,7 +39,7 @@ public class FieldRestController {
         this.fieldService = fieldService;
     }
 
-    @GetMapping(value = "/all", produces = "application/json")
+    @GetMapping(value = "/", produces = "application/json")
     @Operation(summary = "Get all fields")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
@@ -97,7 +97,7 @@ public class FieldRestController {
         return fieldService.getFieldsByFeature(feature).stream().toList();
     }
 
-    @GetMapping(value = "/reviews/{id}", produces = "application/json")
+    @GetMapping(value = "{id}/reviews/", produces = "application/json")
     @Operation(summary = "Get all reviews for a field by its id")
     @ApiResponse(responseCode = "200", description = "Reviews found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
@@ -105,7 +105,7 @@ public class FieldRestController {
         return fieldService.getReviewsByFieldId(id).stream().toList();
     }
 
-    @GetMapping(value = "/reservations/field/{id}", produces = "application/json")
+    @GetMapping(value = "{id}/reservations/", produces = "application/json")
     @Operation(summary = "Get all reservations for a field by its id")
     @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
@@ -146,7 +146,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "201", description = "Field created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')") // esto imagino que solo los administradores de cancha pueden crearlas
+    @PreAuthorize("hasRole('ADMIN')")
     public FieldDTO createField(
             @Valid @RequestBody FieldCreateDTO fieldCreateDTO
     ) {
@@ -160,19 +160,19 @@ public class FieldRestController {
     @ApiResponse(responseCode = "201", description = "Review created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('USER')") // cualquier usuario puede crear una reseña
+    @PreAuthorize("hasRole('USER')") 
     public ReviewDTO createReview(
             @Valid @RequestBody ReviewCreateDTO reviewCreateDTO
     ) {
         return fieldService.addReviewToField(reviewCreateDTO);
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json", value = "/reservations/field/{id}")
+    @PostMapping(consumes = "application/json", produces = "application/json", value = "/{id}/reservations")
     @Operation(summary = "Create a new reservation for a field")
     @ApiResponse(responseCode = "201", description = "Reservation created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('USER')") // cualquier usuario puede crear una reserva
+    @PreAuthorize("hasRole('USER')")
     public ReservationDTO createReservation(
             @Valid @RequestBody ReservationCreateDTO reservationCreateDTO
     ) {
@@ -183,7 +183,7 @@ public class FieldRestController {
     @Operation(summary = "Delete a field by its id")
     @ApiResponse(responseCode = "200", description = "Field deleted successfully")
     @ApiResponse(responseCode = "404", description = "Field not found")
-    //@PreAuthorize("hasRole('ADMIN')") // esto representa a un administrador de cancha no de app ?
+    @PreAuthorize("hasRole('ADMIN')") 
     public ResponseEntity<Void> deleteField(@PathVariable @Positive long id) {
         fieldService.deleteField(id);
         return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
