@@ -56,12 +56,21 @@ public class FieldRestController {
         return fieldService.getFieldById(id);
     }
 
-    @GetMapping(value = "/owner/{ownerId}", produces = "application/json")
-    @Operation(summary = "Get all fields by owner id")
+    @GetMapping(value = "/owner/{ownerEmail}", produces = "application/json")
+    @Operation(summary = "Get all fields by owner email")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFieldsByOwnerId(@PathVariable @Positive Long ownerId) {
-        return fieldService.getFieldsByOwnerId(ownerId).stream().toList();
+    public List<FieldDTO> getFieldsByOwnerId(@PathVariable @Positive String ownerEmail) {
+        return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
+    }
+
+    @GetMapping(value = "/owner/me", produces = "application/json")
+    @Operation(summary = "Get all fields owned by the current user")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldsByOwnerId() {
+        String ownerEmail = fieldService.getCurrentUser().getEmail();
+        return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
 
     @GetMapping(value = "/zone/{zone}", produces = "application/json")

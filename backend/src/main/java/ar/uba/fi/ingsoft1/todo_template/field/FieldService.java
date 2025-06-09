@@ -81,8 +81,8 @@ public class FieldService {
         return fieldRepository.findAll().stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
-    public List<FieldDTO> getFieldsByOwner(Long ownerId) {
-        return fieldRepository.findByOwnerId(ownerId).stream().map(FieldDTO::new).collect(Collectors.toList());
+    public List<FieldDTO> getFieldsByOwner(String ownerEmail) {
+        return fieldRepository.findByOwnerEmail(ownerEmail).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
     public List<FieldDTO> getFieldsByZone(UserZones zone) {
