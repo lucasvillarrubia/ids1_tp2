@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import jakarta.persistence.CascadeType;
@@ -252,5 +253,25 @@ public class Field {
 
     public void removeReservation(Long id2) {
         this.reservations.remove(id2);
+    }
+
+    public double getWeeklyOcupation(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int total_hours = this.schedule.getTotalHours();
+        int occupiedHours = this.schedule.getOccupiedHoursThisWeek(reservations);
+        return occupiedHours / (double) total_hours;
+    }
+
+    public double getMonthlyOcupation(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int total_hours = this.schedule.getTotalHours() * 4; 
+        int occupiedHours = this.schedule.getOccupiedHoursThisMonth(reservations);
+        return occupiedHours / (double) total_hours;
     }
 }

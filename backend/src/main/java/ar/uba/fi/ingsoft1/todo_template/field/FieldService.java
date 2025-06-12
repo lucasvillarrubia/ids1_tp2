@@ -12,6 +12,8 @@ import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
+import io.swagger.v3.core.util.Json;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -131,6 +133,23 @@ public class FieldService {
         return reservationRepository.findByOrganizerEmail(organizerEmail).stream()
                 .map(ReservationDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    public java.util.Map<String, Object> getStaticticsByFieldId(Long fieldId) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        List<Reservation> reservations = reservationRepository.findByFieldId(fieldId);
+        
+        double weekly = field.getWeeklyOcupation(reservations);
+        double monthly = field.getMonthlyOcupation(reservations);
+        int totalReservations = reservations.stream().filter(r -> r.getDate().isAfter(LocalDate.now())).collect(Collectors.toList()).size();
+        totalReservations += reservations.stream().filter(r -> r.getDate().isEqual(LocalDate.now())).collect(Collectors.toList()).size();
+
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("weeklyOccupation", weekly);
+        response.put("monthlyOccupation", monthly);
+        response.put("totalReservations", totalReservations);
+
+        return response;
     }
 
     public List<ReservationDTO> deleteReservationByOwner(Long fieldId, Long reservationId) {
