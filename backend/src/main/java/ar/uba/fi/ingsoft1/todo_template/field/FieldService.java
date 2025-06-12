@@ -133,6 +133,28 @@ public class FieldService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReservationDTO> deleteReservationByOwner(Long fieldId, Long reservationId) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        User currentUser = getCurrentUser();
+        
+        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede eliminar reservas");
+        }
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
+
+        if (!reservation.getField().getId().equals(fieldId)) {
+            throw new EntityNotFoundException("Reservation does not belong to this field");
+        }
+
+        reservationRepository.delete(reservation);
+        field.removeReservation(reservation.getId());
+        fieldRepository.save(field);
+
+        return getReservationsByFieldId(fieldId);
+    }
+
     // UPDATE
     public FieldDTO updateFieldDescription(Long fieldId, String description) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));

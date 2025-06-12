@@ -215,6 +215,19 @@ public class FieldRestController {
         return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
     }
 
+    @DeleteMapping(value = "/{fieldId}/reservations/{reservationId}")
+    @Operation(summary = "Delete a reservation by its id")
+    @ApiResponse(responseCode = "200", description = "Reservation deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Reservation not found")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable @Positive Long fieldId,
+            @PathVariable @Positive Long reservationId
+    ) {
+        fieldService.deleteReservationByOwner(fieldId, reservationId);
+        return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
+    }
+
     // PATCH
 
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")

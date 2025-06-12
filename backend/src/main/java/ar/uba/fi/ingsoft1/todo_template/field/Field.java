@@ -249,4 +249,8 @@ public class Field {
     public void addReview(Long review) {
         this.reviews.add(review);
     }
+
+    public void removeReservation(Long id2) {
+        this.reservations.remove(id2);
+    }
 }
