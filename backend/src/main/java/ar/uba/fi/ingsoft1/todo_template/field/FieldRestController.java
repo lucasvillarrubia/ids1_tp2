@@ -1,6 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.util.List;
+import java.util.Map;
 
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -143,6 +145,14 @@ public class FieldRestController {
         return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
     }
 
+    @GetMapping(value = "/{id}/reservations/statistics", produces = "application/json")
+    @Operation(summary = "Get reservation statistics for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reservation statistics found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public Map<String, Object> getReservationStatistics(@PathVariable @Positive Long id) {
+        return fieldService.getStaticticsByFieldId(id);
+    }
+
     @PostMapping(value = "/{id}/reservations/unavailableSlots", produces = "application/json")
     @Operation(summary = "Block time slots for a field by its id")
     @ApiResponse(responseCode = "200", description = "Unavailable time slots blocked", content = @Content(mediaType = "application/json"))
@@ -212,6 +222,19 @@ public class FieldRestController {
     @PreAuthorize("hasRole('ADMIN')") 
     public ResponseEntity<Void> deleteField(@PathVariable @Positive long id) {
         fieldService.deleteField(id);
+        return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
+    }
+
+    @DeleteMapping(value = "/{fieldId}/reservations/{reservationId}")
+    @Operation(summary = "Delete a reservation by its id")
+    @ApiResponse(responseCode = "200", description = "Reservation deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Reservation not found")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable @Positive Long fieldId,
+            @PathVariable @Positive Long reservationId
+    ) {
+        fieldService.deleteReservationByOwner(fieldId, reservationId);
         return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
     }
 

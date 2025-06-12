@@ -54,6 +54,7 @@ public class FieldSchedule implements Serializable{
         this.startHour = LocalTime.of(8, 0); // seteo un default para que no sea null
         this.endHour = LocalTime.of(22, 0); 
         this.predefDuration =  60; // tiempo en minutos
+        this.unavailableTimeSlots = new ArrayList<>();
     }
 
     public FieldSchedule(List<DayOfWeek> days, String startHour, String endHour, Integer predefDuration) {
@@ -162,5 +163,44 @@ public class FieldSchedule implements Serializable{
 
     public void setPredefDuration(Integer predefDuration) {
         this.predefDuration = predefDuration;
+    }
+
+    public int getTotalHours() {
+        int open_hours = this.endHour.getHour() - this.startHour.getHour();
+        int open_days = this.days.size();
+        int total_hours = open_hours * open_days;
+        return total_hours;
+    }
+
+    public int getOccupiedHoursThisWeek(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int occupied_hours = 0;
+        for (Reservation reservation : reservations) {
+            if (reservation.getDate().isBefore(LocalDate.now()) ||
+                reservation.getDate().isAfter(LocalDate.now().plusDays(7))) {
+                continue;
+            }
+            occupied_hours += reservation.getEnd().getHour() - reservation.getStart().getHour();
+        }
+        return occupied_hours;
+    }
+
+    public int getOccupiedHoursThisMonth(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int occupied_hours = 0;
+        for (Reservation reservation : reservations) {
+            if (reservation.getDate().getMonth() != LocalDate.now().getMonth() ||
+                reservation.getDate().getYear() != LocalDate.now().getYear()) {
+                continue;
+            }
+            occupied_hours += reservation.getEnd().getHour() - reservation.getStart().getHour();
+        }
+        return occupied_hours;
     }
 }
