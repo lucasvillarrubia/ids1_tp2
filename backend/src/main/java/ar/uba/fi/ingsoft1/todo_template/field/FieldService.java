@@ -78,6 +78,10 @@ public class FieldService {
             throw new EntityNotFoundException("Solo el propietario del campo puede eliminarlo");
         }
 
+        if (!field.getReservations().isEmpty()) {
+            throw new IllegalArgumentException("No se puede eliminar un campo con reservas asociadas");
+        }
+
         fieldRepository.delete(field);
     }
 
