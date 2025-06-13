@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -20,5 +21,4 @@ import java.io.Serializable;
         @JsonSubTypes.Type(value = CloseDTO.class, name = "Close")
 })
 public abstract class ParticipationTypeDTO implements Serializable {
-
 }

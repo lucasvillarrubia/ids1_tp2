@@ -1,19 +1,21 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
+import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeDTO;
+import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeDTOFactory;
 
 public record MatchDTO(
     Long id,
     String organizer,
     Long fieldId,
-    ParticipationType participationType,
+    ParticipationTypeDTO participationTypeDTO,
     TimeRange timeRange,
     String state
 )
 {
 
     public MatchDTO(Match match)  {
-        this(match.getId(), match.getOrganizer().email(), match.getField().getId(), match.getParticipationType() , match.getTimeRange(), match.getState());
+        this(match.getId(), match.getOrganizer().email(), match.getField().getId(), ParticipationTypeDTOFactory.createParticipationTypeDTO(match.getParticipationType()), match.getTimeRange(), match.getState());
     }
 
     public Long getId() {
@@ -28,8 +30,8 @@ public record MatchDTO(
         return fieldId;
     }
 
-    public ParticipationType getParticipationType() {
-        return participationType;
+    public ParticipationTypeDTO getParticipationType() {
+        return participationTypeDTO;
     }
 
     public TimeRange getTimeRange(){

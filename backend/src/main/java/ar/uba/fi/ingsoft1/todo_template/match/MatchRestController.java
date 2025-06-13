@@ -95,17 +95,6 @@ public class MatchRestController {
 
     Close Match creation example:
 
-
-
-{
-    "ownerId": "11",
-    "name": "Cancha 1",
-    "description": "Cancha de futbol 5",
-    "location": "Calle Falsa 123",
-    "zone": "San Telmo",
-    "features": ["GRASS", "LIGHTS", "RESTROOMS"]
-}
-
 */
 
     @PostMapping(consumes = "application/json", produces = "application/json")

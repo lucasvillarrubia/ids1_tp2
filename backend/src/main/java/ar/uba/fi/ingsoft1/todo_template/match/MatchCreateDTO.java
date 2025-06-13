@@ -15,7 +15,6 @@ public record MatchCreateDTO(
 ){
 
     public Match asMatch(User organizer, Field field, ParticipationType participationType) {
-        System.out.println("mail del creador: " + organizer.email());
         return new Match(organizer, field, participationType, timeRange);
     }
 

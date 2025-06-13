@@ -23,7 +23,6 @@ public class Open extends ParticipationType {
             joinColumns = @JoinColumn(name = "open_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    //TODO: fix leak of players
     private Set<User> players;
 
     public Open(){}
