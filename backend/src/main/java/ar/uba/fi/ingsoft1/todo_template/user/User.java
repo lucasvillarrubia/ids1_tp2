@@ -22,7 +22,7 @@ public class User implements UserCredentials {
     private String email;
 
     @NotEmpty(message = "La cancha debe tener al menos una característica como el tipo de superficie")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_zones", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "zone", nullable = false)
     @Enumerated(EnumType.STRING)

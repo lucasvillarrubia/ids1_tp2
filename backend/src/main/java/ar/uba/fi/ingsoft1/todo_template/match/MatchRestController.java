@@ -99,7 +99,6 @@ public class MatchRestController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new Match")
-    //TO DO CREAR NOTIFICACION VISUAL DE CORRECTA CREACION
     @ApiResponse(responseCode = "201", description = "Match created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @PreAuthorize("hasRole('USER')")

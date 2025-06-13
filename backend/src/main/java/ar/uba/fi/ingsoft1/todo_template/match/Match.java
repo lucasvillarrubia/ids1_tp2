@@ -3,6 +3,7 @@ package ar.uba.fi.ingsoft1.todo_template.match;
 
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
 
@@ -19,10 +20,6 @@ public class Match {
     @JoinColumn(name = "organizer", nullable = false)
     private User organizer;
 
-    @ManyToOne
-    @JoinColumn(name = "fieldId", nullable = false)
-    private Field field;
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     @JoinColumn(name = "participationTypeId", nullable = false)
     private ParticipationType participationType;
@@ -30,14 +27,14 @@ public class Match {
     @Column
     private String state = "Active";
 
-    @Embedded
-    private TimeRange timeRange;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    @JoinColumn(name = "reservationId", nullable = false)
+    private Reservation reservation;
 
-    public Match(User organizer, Field field, ParticipationType pt, TimeRange fh) {
+    public Match(User organizer, ParticipationType pt, Reservation reserv) {
         this.organizer = organizer;
-        this.field = field;
         this.participationType = pt;
-        this.timeRange = fh;
+        this.reservation = reserv;
     }
 
     public Match(){}
@@ -56,18 +53,14 @@ public class Match {
         return organizer;
     }
 
-    public Field getField() {
-        return this.field;
-    }
-
     public String getState() { return state; }
 
     public ParticipationType getParticipationType() {
         return participationType;
     }
 
-    public TimeRange getTimeRange() {
-        return timeRange;
+    public Reservation getReservation() {
+        return reservation;
     }
 
     public void start(){

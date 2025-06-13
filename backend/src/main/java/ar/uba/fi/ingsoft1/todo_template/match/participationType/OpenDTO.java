@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class OpenDTO extends ParticipationTypeDTO {
         @Positive @NotNull private Integer minPlayersCount;
         @Positive @NotNull private Integer maxPlayersCount;
-        private Set<String> players; // Ver de guardar como
+        private Set<String> players;
 
     public Integer getMaxPlayersCount() {
         return maxPlayersCount;

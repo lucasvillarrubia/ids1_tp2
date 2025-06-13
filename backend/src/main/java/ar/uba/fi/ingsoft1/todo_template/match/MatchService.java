@@ -8,6 +8,7 @@ import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerServi
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
@@ -30,16 +31,16 @@ public class MatchService {
 
     private final MatchRepository matchRepository;
     private final UserService userService;
-    // private final FieldService fieldService;
-    private final FieldRepository fieldRepository;
     private final ParticipationTypeService participationTypeService;
     private final MatchOrganizerService matchOrganizerService;
 
-    public MatchService(MatchRepository matchRepository, UserService userService, FieldRepository fieldRepository,
+    @Autowired
+    private FieldService fieldService;
+
+    public MatchService(MatchRepository matchRepository, UserService userService,
             ParticipationTypeService participationTypeService, MatchOrganizerService matchOrganizerService) {
         this.matchRepository = matchRepository;
         this.userService = userService;
-        this.fieldRepository = fieldRepository;
         this.participationTypeService = participationTypeService;
         this.matchOrganizerService = matchOrganizerService;
     }
@@ -52,11 +53,11 @@ public class MatchService {
     }
 
     private Match buildMatch(MatchCreateDTO matchCreateDTO) {
-        Field field = getField(matchCreateDTO.getFieldId());
-
         ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
+        // may be seria mejor tener un reservation service solo se usa field service para esto muy impra
+        Reservation reservation = matchCreateDTO.getReservation().asReservation(fieldService.getFieldById(),userService.getUserByEmail(getUserEmail()));
 
-        Match newMatch = matchCreateDTO.asMatch(userService.getUserByEmail(getUserEmail()), field, partType);
+        Match newMatch = matchCreateDTO.asMatch(userService.getUserByEmail(getUserEmail()), partType, reservation);
 
         if (!validateMatchCreationInputs(new MatchDTO(newMatch))) {
             throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
@@ -65,8 +66,6 @@ public class MatchService {
     }
 
     boolean validateMatchCreationInputs(MatchDTO matchDTO) {
-        // verif valid userId
-        // existe este user.....
 
         // verif cancha dispo (hace falta el id a menos q el check de dispo devuelva
         // error en caso de cancha inexistente)
@@ -193,19 +192,6 @@ public class MatchService {
 
     public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {
         return matchRepository.findAllWithOpenParticipation(pageable).map(MatchDTO::new);
-    }
-
-    private Field getField(Long fieldId) {
-        Field field;
-        // no tenía sentido que fuera un método del fieldService, ya que no se usa
-        // en ningún otro lugar y es raro crear un Field desde un FieldDTO en vez del CreateDTO
-        try {
-            field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        } catch (EntityNotFoundException e) {
-        //} catch (MethodArgumentNotValidException e) {
-            throw new EntityNotFoundException(e);
-        }
-        return field;
     }
 
     // ver si se puede meter en otro file con otras funciones para conseguir data

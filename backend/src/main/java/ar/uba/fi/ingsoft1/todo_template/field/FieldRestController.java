@@ -168,12 +168,12 @@ public class FieldRestController {
     }
     /* ejemplo del body para crear una cancha
 {
-    owner_id: 1,
-    name: "Cancha 1",
-    description: "Cancha de futbol 5",
-    location: "Calle Falsa 123",
-    zone: "San Telmo",
-    features: ["GRASS", "LIGHTS", "RESTROOMS"]
+    "owner_id": 1,
+    "name": "Cancha 1",
+    "description": "Cancha de futbol 5",
+    "location": "Calle Falsa 123",
+    "zone": EZEIZA,
+    "features": ["GRASS", "LIGHTS", "RESTROOMS"]
 }
     */
 

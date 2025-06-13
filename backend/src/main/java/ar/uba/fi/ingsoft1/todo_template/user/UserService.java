@@ -49,6 +49,7 @@ public class UserService {
         //String verificationToken = UUID.randomUUID().toString();
         //user.setTokenVerified(verificationToken);
         //user.setEmailVerified(false);
+        user.getZones().size(); // si esto no se crea correctamnete la tabla de zonas
         userRepository.save(user);
         //emailService.sendValidationEmail(user.getEmail(), verificationToken);
         return Optional.of(generateTokens(user));
