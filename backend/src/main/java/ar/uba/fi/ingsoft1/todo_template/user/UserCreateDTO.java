@@ -47,6 +47,6 @@ public record UserCreateDTO(
 
 ) implements UserCredentials {
     public User asUser(Function<String, String> encryptPassword) {
-        return new User(name, lastname, email, zones, encryptPassword.apply(password), gender, photo, age);
+        return new User(name, lastname, email, zones.toString(), encryptPassword.apply(password), gender, photo, age);
     }
 }
