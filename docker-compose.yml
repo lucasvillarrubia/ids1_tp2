@@ -41,3 +41,13 @@ services:
     restart: "on-failure:3"
     ports:
       - "${ADMINER_EXTERNAL_PORT}:8080"
+    
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    volumes:
+      - ./mailpit_data:/data
+    ports:
+      - "1026:1025"  # SMTP
+      - "8026:8025"  # Web UI
+    

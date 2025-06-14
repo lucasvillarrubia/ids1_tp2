@@ -1,6 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.user.email_validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -11,25 +12,30 @@ import org.springframework.mail.javamail.JavaMailSender;
 public class EmailService {
 
     private JavaMailSender mailSender;
+
+    @Value("${app.frontend.url.dev}")
+    private String frontendBaseUrl;
     @Autowired
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
-    public  void sendEmail(String to, String subject, String body){
+    public  void sendEmail(String to, String subject, String validationLink){
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("ejemplo@gmail.com");
+        message.setFrom("bievenida@futbolapp.com");
         message.setTo(to);
         message.setSubject(subject);
-        message.setText(body);
+        message.setText(validationLink);
         mailSender.send(message);
     }
 
     @Async
-
     public void sendValidationEmail(String to, String validationToken){
         String subject = "Validation Email";
-        String validationLink = "http://localhost:8080/api/v1/users/" + to + "/validations/" + validationToken;
+        String validationLink = "Te damos la bienvenida a FutbolApp\n" +
+                frontendBaseUrl + "/verify-email?" + to + "&token=" + validationToken
+                +  "\n\n¡Gracias por unirte a FutbolApp!";;
+        System.out.println("Enviando mail a: " + to + " con token de acceso: " + validationToken);
         sendEmail(to, subject, validationLink);
     }
 

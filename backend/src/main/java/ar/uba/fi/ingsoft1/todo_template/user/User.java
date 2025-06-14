@@ -24,7 +24,7 @@ public class User implements UserCredentials {
     @NotEmpty(message = "La cancha debe tener al menos una característica como el tipo de superficie")
     @ElementCollection
     @CollectionTable(name = "user_zones", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "zone", nullable = false)
+    @Column(name = "zone")
     @Enumerated(EnumType.STRING)
     private List<UserZones> zones;
 
@@ -49,7 +49,7 @@ public class User implements UserCredentials {
 
     public User() {}
 
-    public User(String name, String lastname, String email, List<UserZones> zones, String password, String gender, String photo, Short age) {
+    public User(String name, String lastname, String email, String zone, String password, String gender, String photo, Short age) {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
@@ -58,7 +58,7 @@ public class User implements UserCredentials {
         this.gender = gender;
         this.photo = photo;
         this.age = age;
-        this.emailVerified = false;
+        //this.emailVerified = false;
     }
 
     @Override
@@ -94,6 +94,7 @@ public class User implements UserCredentials {
     public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified;}
 
     public void setTokenVerified(String tokenVerified) { this.tokenVerified = tokenVerified;}
+    public void setPassword(String newPassword) { this.password = newPassword;}
 
     public Long getId() { return this.id;}
 }
