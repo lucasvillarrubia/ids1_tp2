@@ -59,7 +59,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
     public FieldDTO getFieldById(@PathVariable @Positive Long id) throws MethodArgumentNotValidException {
-        return fieldService.getFieldById(id);
+        return new FieldDTO(fieldService.getFieldById(id));
     }
 
     @GetMapping(value = "/owner/{ownerEmail}", produces = "application/json")
@@ -225,17 +225,16 @@ public class FieldRestController {
         return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
     }
 
-    @DeleteMapping(value = "/{fieldId}/reservations/{reservationId}")
+    @DeleteMapping(value = "/reservations/{reservationId}")
     @Operation(summary = "Delete a reservation by its id")
     @ApiResponse(responseCode = "200", description = "Reservation deleted successfully")
     @ApiResponse(responseCode = "404", description = "Reservation not found")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteReservation(
-            @PathVariable @Positive Long fieldId,
             @PathVariable @Positive Long reservationId
     ) {
-        fieldService.deleteReservationByOwner(fieldId, reservationId);
-        return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
+        fieldService.deleteReservationByOwner(reservationId);
+        return ResponseEntity.ok().build();
     }
 
     // PATCH

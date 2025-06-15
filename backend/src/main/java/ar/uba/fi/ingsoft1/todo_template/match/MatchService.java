@@ -9,6 +9,7 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
@@ -16,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,16 +35,15 @@ public class MatchService {
     private final UserService userService;
     private final ParticipationTypeService participationTypeService;
     private final MatchOrganizerService matchOrganizerService;
-
-    @Autowired
-    private FieldService fieldService;
+    private final FieldService fieldService;
 
     public MatchService(MatchRepository matchRepository, UserService userService,
-            ParticipationTypeService participationTypeService, MatchOrganizerService matchOrganizerService) {
+            ParticipationTypeService participationTypeService, FieldService fieldService, MatchOrganizerService matchOrganizerService) {
         this.matchRepository = matchRepository;
         this.userService = userService;
         this.participationTypeService = participationTypeService;
         this.matchOrganizerService = matchOrganizerService;
+        this.fieldService = fieldService;
     }
 
     public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) {
@@ -54,27 +55,16 @@ public class MatchService {
 
     private Match buildMatch(MatchCreateDTO matchCreateDTO) {
         ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
-        // may be seria mejor tener un reservation service solo se usa field service para esto muy impra
-        Reservation reservation = matchCreateDTO.getReservation().asReservation(fieldService.getFieldById(),userService.getUserByEmail(getUserEmail()));
 
-        Match newMatch = matchCreateDTO.asMatch(userService.getUserByEmail(getUserEmail()), partType, reservation);
+        ReservationDTO reservationDTO = fieldService.addReservationToField(matchCreateDTO.getReservation());
+        Reservation reservation = fieldService.getReservationById(reservationDTO.getId());
 
-        if (!validateMatchCreationInputs(new MatchDTO(newMatch))) {
-            throw new UsernameNotFoundException("Invalid inputs"); // despues cambiar por errores mas representativos
-        }
-        return newMatch;
-    }
-
-    boolean validateMatchCreationInputs(MatchDTO matchDTO) {
-
-        // verif cancha dispo (hace falta el id a menos q el check de dispo devuelva
-        // error en caso de cancha inexistente)
-
-        return true;
+        return matchCreateDTO.asMatch(partType, reservation);
     }
 
     public void deleteMatch(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
+        fieldService.deleteReservationByOwner(match.getReservation().getId());
 
         if (match != null && match.isOrganizer(userService.getUserByEmail(getUserEmail()))) {
             matchRepository.deleteById(id);
@@ -85,16 +75,12 @@ public class MatchService {
         Match existingMatch = matchRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Match not found"));
 
-        if (!existingMatch.isOrganizer(userService.getUserByEmail(getUserEmail()))) {
-            throw new InvalidActionException("Permissions denied");
-        }
-
-        Match match = buildMatch(matchCreateDTO);
-        match.setId(id);
+        ParticipationType newPartType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
         participationTypeService.updateParticipationType(existingMatch.getParticipationType(),
-                match.getParticipationType());
-        Match savedMatch = matchRepository.save(match);
-        return new MatchDTO(savedMatch);
+                newPartType);
+        existingMatch.setParticipationType(newPartType);
+
+        return new MatchDTO(matchRepository.save(existingMatch));
     }
 
     MatchDTO getMatch(Long id) {
@@ -182,12 +168,33 @@ public class MatchService {
     }
 
     public Page<MatchDTO> getSelfOrganizedMatches(@Valid Pageable pageable) {
-        return matchRepository.findByOrganizer(pageable, userService.getUserByEmail(getUserEmail())).map(MatchDTO::new);
+        return matchRepository.findAllMatchesOrganizedByActualUser(pageable, getUserEmail()).map(MatchDTO::new);
     }
 
     public Page<MatchDTO> getMatchesActualPlayerParticipatesIn(@Valid Pageable pageable) {
-        return matchRepository.findAllMatchesUserPlaysIn(pageable, userService.getUserByEmail(getUserEmail()).getId())
-                .map(MatchDTO::new);
+        String email = getUserEmail();
+
+        // Open Matches where the user is in
+        Page<Match> openMatches = matchRepository.findAllOpenMatchesTheUserIsIn(pageable, userService.getUserByEmail(getUserEmail()).getId());
+
+        // Matches where the user is in a Team
+        Page<Match> closeMatches = matchRepository.findAllCloseMatchesTheUserIsIn(pageable, email);
+
+        List<Match> allMatches = new ArrayList<>();
+        allMatches.addAll(openMatches.getContent());
+        allMatches.addAll(closeMatches.getContent());
+
+        // Sort by date and time from reservation
+        allMatches.sort(Comparator
+                .comparing((Match m) -> m.getReservation().getDate())
+                .thenComparing(m -> m.getReservation().getStart()));
+
+        // Apply manual pagination
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), allMatches.size());
+        List<MatchDTO> pagedMatches = allMatches.subList(start, end).stream().map(MatchDTO::new).toList();
+
+        return new PageImpl<>(pagedMatches, pageable, allMatches.size());
     }
 
     public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {

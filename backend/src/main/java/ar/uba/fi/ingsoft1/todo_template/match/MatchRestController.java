@@ -28,7 +28,6 @@ public class MatchRestController {
     private final MatchOrganizerService matchOrganizerService;
 
     public MatchRestController(MatchService matchService, MatchOrganizerService matchOrganizerService) {
-
         this.matchService = matchService;
         this.matchOrganizerService = matchOrganizerService;
     }
@@ -77,17 +76,21 @@ public class MatchRestController {
     ) {
         return matchService.getMatchesActualPlayerParticipatesIn(pageable);
     }
+
+
+
     /*
    Open Match creation example:
 {
-  "fieldId": 2,
   "participationType": {
     "type": "Open",
     "minPlayersCount": 2,
     "maxPlayersCount": 6,
     "players": []
   },
-  "timeRange": {
+  "reservation": {
+    "fieldId": 1,
+    "date": "2025-06-13",
     "start": "08:00:00",
     "end": "09:00:00"
   }
@@ -102,11 +105,10 @@ public class MatchRestController {
     @ApiResponse(responseCode = "201", description = "Match created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @PreAuthorize("hasRole('USER')")
-    @ResponseStatus(HttpStatus.CREATED)
-    MatchDTO createMatch(
+    ResponseEntity<MatchDTO> createMatch(
             @Valid @RequestBody MatchCreateDTO matchCreateDTO
     ) {
-        return this.matchService.createMatch(matchCreateDTO);
+        return ResponseEntity.ok(this.matchService.createMatch(matchCreateDTO));
     }
 
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")

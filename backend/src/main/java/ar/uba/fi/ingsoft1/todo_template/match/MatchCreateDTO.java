@@ -13,8 +13,8 @@ public record MatchCreateDTO(
         @NotNull ReservationCreateDTO reservation
 ){
 
-    public Match asMatch(User organizer, ParticipationType participationType, Reservation reserv) {
-        return new Match(organizer, participationType, reserv);
+    public Match asMatch(ParticipationType participationType, Reservation reserv) {
+        return new Match(participationType, reserv);
     }
 
     public ParticipationTypeDTO getParticipationType() {

@@ -6,8 +6,8 @@ import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 
 public record MatchDTO(
     Long id,
-    ParticipationTypeDTO participationTypeDTO,
-    ReservationDTO reservationDTO,
+    ParticipationTypeDTO participationType,
+    ReservationDTO reservation,
     String state
 )
 {
@@ -21,11 +21,11 @@ public record MatchDTO(
     }
 
     public ParticipationTypeDTO getParticipationType() {
-        return participationTypeDTO;
+        return participationType;
     }
 
     public ReservationDTO getReservation(){
-        return reservationDTO;
+        return reservation;
     }
 
     public String getState() { return state; }

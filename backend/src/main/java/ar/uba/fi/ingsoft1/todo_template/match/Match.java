@@ -16,10 +16,6 @@ public class Match {
     @Column(name = "match_id")
     private Long matchId;
 
-    @ManyToOne
-    @JoinColumn(name = "organizer", nullable = false)
-    private User organizer;
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     @JoinColumn(name = "participationTypeId", nullable = false)
     private ParticipationType participationType;
@@ -27,12 +23,11 @@ public class Match {
     @Column
     private String state = "Active";
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservationId", nullable = false)
     private Reservation reservation;
 
-    public Match(User organizer, ParticipationType pt, Reservation reserv) {
-        this.organizer = organizer;
+    public Match(ParticipationType pt, Reservation reserv) {
         this.participationType = pt;
         this.reservation = reserv;
     }
@@ -40,17 +35,13 @@ public class Match {
     public Match(){}
 
     public boolean isOrganizer(User actualUser){
-        return actualUser.equals(this.organizer);
+        return actualUser.equals(this.reservation.getOrganizer());
     }
 
     protected void setId(Long id){this.matchId = id;}
 
     public Long getId() {
         return matchId;
-    }
-
-    public User getOrganizer() {
-        return organizer;
     }
 
     public String getState() { return state; }
@@ -97,5 +88,9 @@ public class Match {
 
     public void setParticipationType(ParticipationType partType) {
         this.participationType = partType;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 }
