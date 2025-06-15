@@ -21,10 +21,10 @@ public class User implements UserCredentials {
     @Column(unique= true, nullable = false)
     private String email;
 
-    @NotEmpty(message = "La cancha debe tener al menos una característica como el tipo de superficie")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @NotEmpty(message = "El usuario debe tener asociado al menos una zona")
+    @ElementCollection
     @CollectionTable(name = "user_zones", joinColumns = @JoinColumn(name = "id"))
-    @Column(name = "zone", nullable = false)
+    @Column(name = "zone")
     @Enumerated(EnumType.STRING)
     private List<UserZones> zones;
 
@@ -94,6 +94,7 @@ public class User implements UserCredentials {
     public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified;}
 
     public void setTokenVerified(String tokenVerified) { this.tokenVerified = tokenVerified;}
+    public void setPassword(String newPassword) { this.password = newPassword;}
 
     public Long getId() { return this.id;}
 }

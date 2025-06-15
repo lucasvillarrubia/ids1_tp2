@@ -20,7 +20,10 @@ export const signupValidationSchema = Yup.object({
         .required('Campo obligatorio'),
     photo: Yup.string().url('URL inválida').nullable(),
     role: Yup.string().nullable(),
-    zone: Yup.string().required('Campo obligatorio'),
+    zones: Yup.array()
+        .of(Yup.string()) // or validate against enum keys if needed
+        .min(1, 'Seleccioná al menos una zona') // optional
+        .required('Campo obligatorio')
 });
 
 export const loginValidationSchema = Yup.object({
