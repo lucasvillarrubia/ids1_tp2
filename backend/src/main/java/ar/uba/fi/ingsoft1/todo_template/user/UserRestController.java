@@ -1,6 +1,8 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -24,6 +26,9 @@ class UserRestController {
         this.userService = userService;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponse(responseCode = "409", description = "Email already in use")
+    @ApiResponse(responseCode = "400", description = "Invalid request")
     @PostMapping(produces = "application/json")
     @Operation(summary = "Create a new user")
     public ResponseEntity<TokenDTO> createUser(@Valid @RequestBody UserCreateDTO data) {
