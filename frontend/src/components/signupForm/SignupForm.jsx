@@ -59,24 +59,20 @@ const SignupForm = () => {
                                                 {msg => <ErrorMessageUI>{msg}</ErrorMessageUI>}
                                         </ErrorMessage>
                                 </div>
-                                {/*
+                                {
                                 <div>
                                         <label htmlFor="zones">Zonas de Interés</label>
                                         <Field
-                                          as="select"
-                                          name="zones"
-                                          id="zones"
-                                          multiple
-                                          style={{
-                                                  minHeight: '80px',
-                                                  width: '25%'
-                                          }}
+                                            as="select"
+                                            name="zones"
+                                            id="zones"
+                                            multiple
+                                            style={{ minHeight: '80px', width: '25%' }}
                                         >
                                                 {AVAILABLE_ZONES_DISPLAY.map((zone) => (
-
-                                                  <option key={zone.value} value={zone.value}>
-                                                          {zone.label}
-                                                  </option>
+                                                    <option key={zone.value} value={zone.value}>
+                                                            {zone.label}
+                                                    </option>
                                                 ))}
                                         </Field>
                                         <ErrorMessage name="zones">
@@ -86,7 +82,7 @@ const SignupForm = () => {
                                                 Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples zonas.
                                         </small>
                                 </div>
-                                */}
+                                }
 
                                 <SignupSubmit type='submit'>Crear usuario</SignupSubmit>
                         </Form>
