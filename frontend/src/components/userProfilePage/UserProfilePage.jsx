@@ -81,16 +81,18 @@ const UserProfilePage = () => {
           <ProfileDetailRow><strong>EDAD:</strong> {fullUserData.data.age|| 'N/A'}</ProfileDetailRow>
           <ProfileDetailRow><strong>GÉNERO:</strong> {fullUserData.data.gender || 'N/A'}</ProfileDetailRow>
           <ProfileDetailRow>
-             <strong>ZONAS:</strong> {fullUserData.data.zone}
-          </ProfileDetailRow>
-          <ProfileDetailRow>
-            <strong>FOTO:</strong> {fullUserData.data.photo}
+            <strong>ZONAS:</strong>{" "}
+            {fullUserData.data.zones
+                .map(zone =>
+                    zone
+                        .toLowerCase()
+                        .split("_")
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(" ")
+                )
+                .join(", ")}
           </ProfileDetailRow>
         </ProfileSection>
-
-      <PrimaryButton onClick={() => navigate('/password_reset')}>
-        Cambio de contraseña
-      </PrimaryButton>
     </ProfileContainer>
 
     </>
