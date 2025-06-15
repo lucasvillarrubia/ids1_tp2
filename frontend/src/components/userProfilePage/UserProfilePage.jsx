@@ -5,9 +5,6 @@ import {getUserProfile } from '../../features/users/usersAPI'
 
 import {ProfileContainer, ProfileSection, ProfileTitle,ProfileSubtitle,ProfileInputField,
   ProfileDetailRow, PrimaryButton,SecondaryButton,ErrorMessageUI,SectionSeparator} from './userProfileStyles';
-import { signupInitialValues as fullUserData } from "../../formik/initialValues.js";
-import { setAuth } from "../../features/users/usersSlice.js";
-import {EditableField} from "./EditableField"
 
 const UserProfilePage = () => {
   const navigate = useNavigate();

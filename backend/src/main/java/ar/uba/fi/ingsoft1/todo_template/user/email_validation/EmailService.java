@@ -13,7 +13,7 @@ public class EmailService {
 
     private JavaMailSender mailSender;
 
-    @Value("${app.frontend.url.dev}")
+    @Value("http://localhost:30003")
     private String frontendBaseUrl;
     @Autowired
     public EmailService(JavaMailSender mailSender) {

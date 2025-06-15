@@ -46,6 +46,7 @@ public class PasswordResetController {
     @PostMapping("/new-password")
     public ResponseEntity<String> resetParam (@RequestParam("token") String token, @RequestParam String newPassword) {
         try{
+            logger.info("Hola");
         passwordChangeService.resetPassword(token, newPassword);
         return ResponseEntity.ok("Password update successful");
         } catch (UsernameNotFoundException e) {
@@ -54,7 +55,7 @@ public class PasswordResetController {
         } catch (Exception ex) {
         logger.error("Error inesperado al restablecer clave con token: {}", ex.getMessage(),ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Hay ocurrido un error inesperado al restablecer la clave ");
+                .body("Ha ocurrido un error inesperado al restablecer la clave ");
         }
     }
 

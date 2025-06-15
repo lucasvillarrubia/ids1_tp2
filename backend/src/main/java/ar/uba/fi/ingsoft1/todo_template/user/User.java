@@ -21,7 +21,7 @@ public class User implements UserCredentials {
     @Column(unique= true, nullable = false)
     private String email;
 
-    @NotEmpty(message = "La cancha debe tener al menos una característica como el tipo de superficie")
+    @NotEmpty(message = "El usuario debe tener asociado al menos una zona")
     @ElementCollection
     @CollectionTable(name = "user_zones", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "zone")
@@ -49,7 +49,7 @@ public class User implements UserCredentials {
 
     public User() {}
 
-    public User(String name, String lastname, String email, String zone, String password, String gender, String photo, Short age) {
+    public User(String name, String lastname, String email, List<UserZones> zones, String password, String gender, String photo, Short age) {
         this.name = name;
         this.lastname = lastname;
         this.email = email;
@@ -58,7 +58,7 @@ public class User implements UserCredentials {
         this.gender = gender;
         this.photo = photo;
         this.age = age;
-        //this.emailVerified = false;
+        this.emailVerified = false;
     }
 
     @Override

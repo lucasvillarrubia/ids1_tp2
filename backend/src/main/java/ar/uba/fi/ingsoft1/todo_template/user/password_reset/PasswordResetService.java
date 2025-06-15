@@ -18,7 +18,7 @@ public class PasswordResetService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
 
-    @Value("${app.frontend.url.dev}")
+    @Value("http://localhost:30003")
     private String frontendBaseUrl;
 
     @Autowired
