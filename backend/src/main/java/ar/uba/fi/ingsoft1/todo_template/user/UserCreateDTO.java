@@ -7,40 +7,41 @@ import java.util.List;
 import java.util.function.Function;
 
 public record UserCreateDTO(
-        @NotBlank(message = "Name is mandatory")
+        @NotBlank(message = "El nombre es obligatorio")
         @Size(max = 255)
-        @Schema(description = "Name is mandatory", maxLength = 255, example = "John", required = true)
+        @Schema(description = "El nombre es obligatorio", maxLength = 255, example = "Juan", required = true)
         String name,
 
-        @NotBlank(message = "Last name is mandatory")
+        @NotBlank(message = "El apellido es obligatorio")
         @Size(max = 255)
-        @Schema(description = "Last name is mandatory", maxLength = 255, example = "Doe", required = true)
+        @Schema(description = "El apellido es obligatorio", maxLength = 255, example = "Pérez", required = true)
         String lastname,
 
-        @NotBlank(message = "Email is mandatory")
-        @Email(message = "Invalid email format")
+        @NotBlank(message = "El correo electrónico es obligatorio")
+        @Email(message = "Formato de correo electrónico inválido")
         @Size(max = 255)
-        @Schema(description = "Email is mandatory and must be valid", maxLength = 255, example = "john@example.com", required = true)
+        @Schema(description = "El correo electrónico es obligatorio y debe ser válido", maxLength = 255, example = "juan@ejemplo.com", required = true)
         String email,
 
-        @NotNull
-        @NotEmpty
+        @NotNull(message = "Debe especificar al menos una zona")
+        @NotEmpty(message = "Debe especificar al menos una zona")
         List<UserZones> zones,
 
-        @NotBlank(message = "Password is mandatory")
-        @Schema(description = "Password is mandatory", required = true)
+        @NotBlank(message = "Contraseña es obligatoria")
+        @Schema(description = "Contraseña es obligatoria", required = true, example = "ejemplo123")
         String password,
 
-        @Schema(description = "User photo URL", example = "http://example.com/photo.jpg")
+        @Schema(description = "URL de la foto", example = "http://example.com/photo.jpg")
         String photo,
 
-        @NotBlank(message = "Gender is mandatory")
-        @Schema(description = "Gender of the user", example = "male")
+        @NotBlank(message = "Género es obligatorio")
+        @Schema(description = "Género del usuario", example = "hombre")
         String gender,
 
         @NotNull(message = "Age is required")
-        @Min(value = 0, message = "Age must be a non-negative number")
-        @Max(value = 150, message = "Age must be a reasonable number")
+        @Min(value = 14, message = "La edad debe ser un número positivo y válido")
+        @Max(value = 150, message = "La edad debe ser un número válido")
+        @Schema(description = "Edad del usuario", example = "18")
         Short age
 
 
