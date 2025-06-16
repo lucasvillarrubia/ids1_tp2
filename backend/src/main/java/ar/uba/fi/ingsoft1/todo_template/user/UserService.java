@@ -102,12 +102,10 @@ public class UserService {
 
     public User getUserByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
-        System.out.println("Fetching user by email: " + email + ", found: " + user.isPresent() + ", user: " + user.orElse(null));
         if (user.isEmpty()) {
             throw new EntityNotFoundException("User does not exist");
         }
 
-        System.out.println("User found: " + user.get());
         return user.get();
     }
 

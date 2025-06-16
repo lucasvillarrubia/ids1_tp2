@@ -92,14 +92,11 @@ public class FieldService {
     }
 
     public List<FieldDTO> getFieldsByOwner(String ownerEmail) {
-        System.out.println("Fetching fields for owner: " + ownerEmail);
         User user = userService.getUserByEmail(ownerEmail);
         if (user == null) {
-            System.out.println("User not found with email: " + ownerEmail);
             throw new EntityNotFoundException("User not found with email: " + ownerEmail);
         }
 
-        System.out.println("Fetching fields for user: " + user.getEmail() + " with ID: " + user.getId());
         return fieldRepository.findByOwnerId(user.getId()).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 

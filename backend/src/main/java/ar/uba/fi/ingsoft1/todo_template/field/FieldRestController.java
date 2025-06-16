@@ -67,7 +67,6 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
     public List<FieldDTO> getFieldsByOwnerId(@PathVariable String ownerEmail) {
-        System.out.println("Fetching fields for owner: " + ownerEmail);
         return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
 
@@ -77,7 +76,6 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
     public List<FieldDTO> getFieldsOwns() {
         String ownerEmail = fieldService.getCurrentUser().getEmail();
-        System.out.println("Fetching fields for owner: " + ownerEmail);
         return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
 
