@@ -88,8 +88,8 @@ public class FieldService {
     }
 
     // GET
-    public FieldDTO getFieldById(Long fieldId) throws MethodArgumentNotValidException {
-        return new FieldDTO(fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found")));
+    public Field getFieldById(Long fieldId) {
+        return fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
     }
 
     public List<FieldDTO> getAllFields() {
@@ -152,26 +152,21 @@ public class FieldService {
         return response;
     }
 
-    public List<ReservationDTO> deleteReservationByOwner(Long fieldId, Long reservationId) {
-        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        User currentUser = getCurrentUser();
-        
-        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
-            throw new EntityNotFoundException("Solo el propietario del campo puede eliminar reservas");
-        }
-
+    public void deleteReservationByOwner(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
 
-        if (!reservation.getField().getId().equals(fieldId)) {
-            throw new EntityNotFoundException("Reservation does not belong to this field");
+        Field field = reservation.getField();
+        User currentUser = getCurrentUser();
+        
+        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede eliminar reservas"); // raro
         }
 
-        reservationRepository.delete(reservation);
-        field.removeReservation(reservation.getId());
-        fieldRepository.save(field);
+        field.removeReservation(reservationId);
+        reservationRepository.deleteById(reservationId);
 
-        return getReservationsByFieldId(fieldId);
+        fieldRepository.save(field);
     }
 
     // UPDATE
@@ -227,10 +222,11 @@ public class FieldService {
         }
 
         User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
+        System.out.println("en 'addreservation..' se va a guardar en la db: " + reservation);
         Reservation newReservation = reservationRepository.save(reservation.asReservation(field, organizer));
-
-        field.addReservation(newReservation.getId());
-        fieldRepository.save(field);
+        System.out.println("reserva guardada en db");
+        field.addReservation(newReservation);
+        //fieldRepository.save(field);
         return new ReservationDTO(newReservation);
     }
 
@@ -335,6 +331,10 @@ public class FieldService {
         }
 
         return new FieldDTO(fieldRepository.save(field));
+    }
+
+    public Reservation getReservationById(Long id) {
+        return reservationRepository.getReferenceById(id);
     }
 
 }

@@ -14,7 +14,6 @@ import java.util.Set;
 public class Open extends ParticipationType {
 
     private Integer minPlayersCount;
-
     private Integer maxPlayersCount;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -44,11 +43,7 @@ public class Open extends ParticipationType {
 
     public Integer getPlayerCount() { return players.size(); }
 
-    //public void deletePlayer(id) {}
-
     public Set<User> getPlayers() { return this.players; }
-
-    public void setPlayers(Set<User> players) { this.players = players; }
 
     @Override
     public String toString() {

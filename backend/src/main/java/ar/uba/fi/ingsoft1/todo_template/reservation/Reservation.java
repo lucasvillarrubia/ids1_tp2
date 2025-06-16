@@ -20,7 +20,6 @@ public class Reservation {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "field_id", nullable = false)
     private Field field;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

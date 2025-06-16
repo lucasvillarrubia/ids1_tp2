@@ -9,20 +9,7 @@ import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
@@ -71,10 +58,8 @@ public class Field {
     @Column(name = "image")
     private List<String> images;
 
-    @ElementCollection
-    @CollectionTable(name = "field_reservations", joinColumns = @JoinColumn(name = "field_id"))
-    @Column(name = "reservation_id")
-    private List<Long> reservations;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Reservation> reservations;
 
     @ElementCollection
     @CollectionTable(name = "field_reviews", joinColumns = @JoinColumn(name = "field_id"))
@@ -163,7 +148,7 @@ public class Field {
         return schedule;
     }
 
-    public List<Long> getReservations() {
+    public List<Reservation> getReservations() {
         return reservations;
     }
 
@@ -231,7 +216,7 @@ public class Field {
         this.schedule.setPredefDuration(predefDuration);
     }
 
-    public void setReservations(List<Long> reservations) {
+    public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 
@@ -243,7 +228,7 @@ public class Field {
         this.isAvailable = isAvailable;
     }
 
-    public void addReservation(Long reservation) { // TODO: Que se modifique el schedule
+    public void addReservation(Reservation reservation) { // TODO: Que se modifique el schedule
         this.reservations.add(reservation);
     }
 

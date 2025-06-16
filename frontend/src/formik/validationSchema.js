@@ -9,7 +9,7 @@ export const signupValidationSchema = Yup.object({
         .matches(REG_EMAIL, 'Correo inválido')
         .required('Campo obligatorio'),
     password: Yup.string()
-        .min(8, 'La contraseña debe tener por lo menos 8 caracteres')
+        .min(0, 'La contraseña debe tener por lo menos 8 caracteres')
         .required('Campo obligatorio'),
     age: Yup.number()
         .min(0, 'Edad no válida')
@@ -28,7 +28,7 @@ export const signupValidationSchema = Yup.object({
 
 export const loginValidationSchema = Yup.object({
         email: Yup.string().matches(REG_EMAIL, 'Correo inválido').required('Campo obligatorio'),
-        password: Yup.string().min(8, 'La contraseña debe tener por lo menos 8 caracteres').required('Campo obligatorio')
+        password: Yup.string().min(0, 'La contraseña debe tener por lo menos 8 caracteres').required('Campo obligatorio')
 });
 
 export const verifyValidationSchema = Yup.object({
