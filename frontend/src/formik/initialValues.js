@@ -35,12 +35,10 @@ export const teamInitialValues = {
 };
 
 export const fieldInitialValues = {
-    ownerId: '',
     name: '',
     location: '',
     zone: '',
-    features: '',
-    images: '',
+    features: [],
 };
 
 export const matchInitialValues = {
