@@ -1,7 +1,5 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
-
-import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.User;

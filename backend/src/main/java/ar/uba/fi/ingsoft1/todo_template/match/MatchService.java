@@ -64,7 +64,7 @@ public class MatchService {
 
     public void deleteMatch(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
-        fieldService.deleteReservationByOwner(match.getReservation().getId());
+        fieldService.deleteReservationByOrganizer(match.getReservation().getId());
 
         if (match != null && match.isOrganizer(userService.getUserByEmail(getUserEmail()))) {
             matchRepository.deleteById(id);

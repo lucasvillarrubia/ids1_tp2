@@ -11,6 +11,7 @@ import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @Entity
@@ -33,6 +34,8 @@ public class Field {
 
     private String location;
 
+    @NotNull(message = "La cancha debe tener una zona asignada")
+    @Enumerated(EnumType.STRING)
     private UserZones zone;
 
     @Positive(message = "El precio debe ser un valor positivo")
@@ -228,7 +231,7 @@ public class Field {
         this.isAvailable = isAvailable;
     }
 
-    public void addReservation(Reservation reservation) { // TODO: Que se modifique el schedule
+    public void addReservation(Reservation reservation) { 
         this.reservations.add(reservation);
     }
 
@@ -236,8 +239,8 @@ public class Field {
         this.reviews.add(review);
     }
 
-    public void removeReservation(Long id2) {
-        this.reservations.remove(id2);
+    public void removeReservation(Long id) {
+        this.reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 
     public double getWeeklyOcupation(List<Reservation> reservations) {

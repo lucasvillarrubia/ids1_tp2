@@ -4,8 +4,6 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTyp
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
-import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
-import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.validation.constraints.NotNull;
 
 public record MatchCreateDTO(

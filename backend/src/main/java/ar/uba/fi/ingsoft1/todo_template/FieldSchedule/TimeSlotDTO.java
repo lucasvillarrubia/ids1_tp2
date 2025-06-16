@@ -3,10 +3,12 @@ package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import jakarta.validation.constraints.NotNull;
+
 public record TimeSlotDTO(
-    String date,
-    String startHour,
-    String endHour
+    @NotNull String date,
+    @NotNull String startHour,
+    @NotNull String endHour
 ) {
     public TimeSlot asTimeSlot() {
         return new TimeSlot(
