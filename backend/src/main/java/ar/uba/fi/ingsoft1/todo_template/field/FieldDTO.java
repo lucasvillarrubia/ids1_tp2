@@ -1,9 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;

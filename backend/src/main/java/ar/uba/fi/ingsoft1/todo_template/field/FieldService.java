@@ -1,10 +1,8 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
@@ -12,7 +10,6 @@ import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
-import io.swagger.v3.core.util.Json;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleCreateDTO;
-import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlot;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlotDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
@@ -33,7 +29,6 @@ import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 @Transactional
@@ -88,8 +83,8 @@ public class FieldService {
     }
 
     // GET
-    public Field getFieldById(Long fieldId) {
-        return fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+    public FieldDTO getFieldById(Long fieldId) {
+        return fieldRepository.findById(fieldId).map(FieldDTO::new).orElseThrow(() -> new EntityNotFoundException("Field not found"));
     }
 
     public List<FieldDTO> getAllFields() {
@@ -97,7 +92,15 @@ public class FieldService {
     }
 
     public List<FieldDTO> getFieldsByOwner(String ownerEmail) {
-        return fieldRepository.findByOwnerEmail(ownerEmail).stream().map(FieldDTO::new).collect(Collectors.toList());
+        System.out.println("Fetching fields for owner: " + ownerEmail);
+        User user = userService.getUserByEmail(ownerEmail);
+        if (user == null) {
+            System.out.println("User not found with email: " + ownerEmail);
+            throw new EntityNotFoundException("User not found with email: " + ownerEmail);
+        }
+
+        System.out.println("Fetching fields for user: " + user.getEmail() + " with ID: " + user.getId());
+        return fieldRepository.findByOwnerId(user.getId()).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
     public List<FieldDTO> getFieldsByZone(UserZones zone) {
@@ -169,6 +172,22 @@ public class FieldService {
         fieldRepository.save(field);
     }
 
+    public void deleteReservationByOrganizer(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
+        User currentUser = getCurrentUser();
+        Field field = reservation.getField();
+
+        if (!reservation.getOrganizer().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el organizador de la reserva puede eliminarla");
+        }
+        
+        field.removeReservation(reservationId);
+        reservationRepository.deleteById(reservationId);
+
+        fieldRepository.save(field);
+    }
+
     // UPDATE
     public FieldDTO updateFieldDescription(Long fieldId, String description) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
@@ -205,6 +224,11 @@ public class FieldService {
     public ReservationDTO addReservationToField(ReservationCreateDTO reservation) {
         Field field = fieldRepository.findById(reservation.getFieldId()).orElseThrow(() -> new EntityNotFoundException("Field not found"));
 
+        if (field.getFieldSchedule().getStartHour().isAfter(reservation.getStart()) ||
+            field.getFieldSchedule().getEndHour().isBefore(reservation.getEnd())) {
+            throw new IllegalArgumentException("Reservation time slot is outside of field's schedule.");
+        }
+
         List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(field.getId(), reservation.getDate());
         if (reservations.stream().anyMatch(r -> 
                 r.getStart().isBefore(reservation.getEnd()) && 
@@ -222,19 +246,16 @@ public class FieldService {
         }
 
         User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
-        System.out.println("en 'addreservation..' se va a guardar en la db: " + reservation);
         Reservation newReservation = reservationRepository.save(reservation.asReservation(field, organizer));
-        System.out.println("reserva guardada en db");
         field.addReservation(newReservation);
         //fieldRepository.save(field);
         return new ReservationDTO(newReservation);
     }
 
-    public List<String> getAvailableSlotsForReservations(String date, Long fieldId) {
-        LocalDate parsedDate = LocalDate.parse(date);
+    public List<String> getAvailableSlotsForReservations(LocalDate date, Long fieldId) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(fieldId, parsedDate);
-        List<TimeSlot> timeSlots = field.getSchedule().getTimeSlotsForDate(parsedDate, reservations);
+        List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(fieldId, date);
+        List<TimeSlot> timeSlots = field.getSchedule().getTimeSlotsForDate(date, reservations);
 
         return timeSlots.stream()
                 .map(slot -> slot.getStartHour() + " - " + slot.getEndHour())

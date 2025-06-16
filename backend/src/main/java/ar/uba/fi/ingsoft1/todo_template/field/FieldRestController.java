@@ -1,5 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,6 @@ import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -59,14 +59,15 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
     public FieldDTO getFieldById(@PathVariable @Positive Long id) throws MethodArgumentNotValidException {
-        return new FieldDTO(fieldService.getFieldById(id));
+        return fieldService.getFieldById(id);
     }
 
     @GetMapping(value = "/owner/{ownerEmail}", produces = "application/json")
     @Operation(summary = "Get all fields by owner email")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFieldsByOwnerId(@PathVariable @Positive String ownerEmail) {
+    public List<FieldDTO> getFieldsByOwnerId(@PathVariable String ownerEmail) {
+        System.out.println("Fetching fields for owner: " + ownerEmail);
         return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
 
@@ -76,6 +77,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
     public List<FieldDTO> getFieldsOwns() {
         String ownerEmail = fieldService.getCurrentUser().getEmail();
+        System.out.println("Fetching fields for owner: " + ownerEmail);
         return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
 
@@ -124,7 +126,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Available time slots found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public List<String> getAvailableTimeSlotsByFieldId(@PathVariable @Positive Long id, 
-                                                       @RequestParam(required = true) String date) {
+                                                       @RequestParam(required = true) LocalDate date) {
         return fieldService.getAvailableSlotsForReservations(date, id).stream().map(Object::toString).toList();
     }
 
