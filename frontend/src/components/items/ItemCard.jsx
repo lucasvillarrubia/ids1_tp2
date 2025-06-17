@@ -102,7 +102,7 @@ const featureMap = {
 };
 
 
-const ItemCard = ({ id, name, ownerEmail, location, zone, price, features, schedule, description, date }) => {
+const ItemCard = ({ id, name, ownerEmail, location, zone, price, features, schedule, description, date, organizer, participationTypeDTO, timeRange, state}) => {
   const renderSchedule = () => {
     if (!Array.isArray(schedule) || schedule.length === 0) return null;
     return (
@@ -125,12 +125,17 @@ const ItemCard = ({ id, name, ownerEmail, location, zone, price, features, sched
       <ItemInfo>
         <ItemAuthor>#{id}</ItemAuthor>
 
-        <ItemTitle>{name || 'Sin nombre'}</ItemTitle>
+        <ItemTitle>{name || organizer}</ItemTitle>
 
-        {ownerEmail && <ItemAuthor>Dueño: {ownerEmail}</ItemAuthor>}
         {location && <ItemAuthor>Ubicación: {location}</ItemAuthor>}
+        {participationTypeDTO && <ItemAuthor>Cantidad de jugadores actuales: {participationTypeDTO.players.length}</ItemAuthor>}
+        {participationTypeDTO && <ItemAuthor>Cantidad de jugadores mínima: {participationTypeDTO.minPlayersCount}</ItemAuthor>}
+        {participationTypeDTO && <ItemAuthor>Cantidad de jugadores máxima: {participationTypeDTO.maxPlayersCount}</ItemAuthor>}
+        {timeRange && <ItemAuthor>Inicio: {timeRange.start}</ItemAuthor>}
+        {timeRange && <ItemAuthor>Fin: {timeRange.end}</ItemAuthor>}
         {zone && <ItemAuthor>Zona: {zoneMap[zone]}</ItemAuthor>}
         {price && <ItemAuthor>Precio: ${price}</ItemAuthor>}
+        {state && <ItemAuthor>Estado: {state}</ItemAuthor>}
         {features?.length > 0 && (
           <ItemAuthor>
             Características: {features.map(f => featureMap[f] || f).join(', ')}

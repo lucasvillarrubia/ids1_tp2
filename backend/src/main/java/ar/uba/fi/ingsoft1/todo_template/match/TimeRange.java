@@ -56,6 +56,14 @@ org.springframework.dao.DataIntegrityViolationException could not execute statem
                 (otherEnd.isAfter(this.start) && otherEnd.isBefore(this.end)) ||
                 (otherStart.isBefore(this.start) && otherEnd.isAfter(this.end));
     }
+
+    public LocalTime getStart() {
+        return this.start;
+    }
+
+    public LocalTime getEnd() {
+        return this.end;
+    }
 }
 
 

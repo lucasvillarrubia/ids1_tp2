@@ -19,6 +19,7 @@ const ItemsForm = ({ itemCategory }) => {
                 await loadItemsByGenre(dispatch);
                 navigate('/congratulations');
             } catch (error) {
+                console.log("Hola")
                 alert('No se pudo crear el ítem: error visible en consola');
             } finally {
                 setSubmitting(false);

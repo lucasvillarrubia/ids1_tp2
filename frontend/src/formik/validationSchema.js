@@ -80,15 +80,12 @@ export const matchValidationSchema = Yup.object({
                 then: schema => schema.required('Requerido en modo Open').max(50),
                 otherwise: schema => schema.notRequired(),
             }),
-        players: Yup.string()
+        players: Yup.array()
+            .of(Yup.string().trim())
             .when('type', {
                 is: 'Open',
                 then: schema =>
-                    schema.test('max-players', 'Máximo 50 jugadores', value => {
-                        if (!value) return true;
-                        const players = value.split(',').map(p => p.trim()).filter(Boolean);
-                        return players.length <= 50;
-                    }),
+                    schema.max(50, 'Máximo 50 jugadores'),
                 otherwise: schema => schema.notRequired(),
             }),
     }),

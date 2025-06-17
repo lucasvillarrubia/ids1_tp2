@@ -168,7 +168,8 @@ export const matchFields = [
         id: 'match-fieldId',
         htmlFor: 'match-fieldId',
         placeholder: 'ID',
-        label: 'ID de la cancha'
+        label: 'ID de la cancha',
+        min: '0'
     },
     {
         name: 'participationType.type',
@@ -179,7 +180,7 @@ export const matchFields = [
         label: 'Tipo de partido',
         options: [
             { value: 'Open', label: 'Open' },
-            { value: 'Close', label: 'Close' }
+            //{ value: 'Close', label: 'Close' }
         ]
     },
     {
@@ -188,7 +189,10 @@ export const matchFields = [
         id: 'match-minPlayersCount',
         htmlFor: 'match-minPlayersCount',
         placeholder: 'Cantidad Mínima de Jugadores (sólo para partidos abiertos)',
-        label: 'Mínimo'
+        label: 'Mínimo',
+        min: '2',
+        max: '10',
+        step: '2'
     },
     {
         name: 'participationType.maxPlayersCount',
@@ -196,15 +200,10 @@ export const matchFields = [
         id: 'match-maxPlayersCount',
         htmlFor: 'match-maxPlayersCount',
         placeholder: 'Cantidad Máxima de Jugadores (sólo para partidos abiertos)',
-        label: 'Máximo'
-    },
-    {
-        name: 'participationType.players',
-        type: 'text',
-        id: 'match-players',
-        htmlFor: 'match-players',
-        placeholder: 'Jugadores (separados por comas)',
-        label: 'Jugadores (sólo para partidos cerrados)',
+        label: 'Máximo',
+        min: '2',
+        max: '10',
+        step: '2'
     },
     {
         name: 'timeRange.start',
@@ -212,6 +211,7 @@ export const matchFields = [
         id: 'match-timeRange-start',
         htmlFor: 'match-timeRange-start',
         placeholder: 'Hora de Inicio',
+        step: '1',
         label: 'Inicio'
     },
     {
@@ -220,6 +220,7 @@ export const matchFields = [
         id: 'match-timeRange-end',
         htmlFor: 'match-timeRange-end',
         placeholder: 'Hora de Finalización',
+        step: '1',
         label: 'Fin'
     }
 ];
