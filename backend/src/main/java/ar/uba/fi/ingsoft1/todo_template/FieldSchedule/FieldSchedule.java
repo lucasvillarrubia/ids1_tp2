@@ -19,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @Entity
@@ -28,6 +29,7 @@ public class FieldSchedule implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "La cancha debe tener un horario asignado")
     @NotEmpty(message = "La cancha debe tener al menos un día de la semana")
     @ElementCollection
     @CollectionTable(name = "schedule_days", joinColumns = @JoinColumn(name = "schedule_id"))
@@ -35,11 +37,16 @@ public class FieldSchedule implements Serializable{
     @Enumerated(EnumType.STRING)
     private List<DayOfWeek> days;
 
+    @Column(name = "start_hour", nullable = false)
+    @NotNull(message = "La hora de inicio no puede ser nula")
     private LocalTime startHour;
 
+    @Column(name = "end_hour", nullable = false)
+    @NotNull(message = "La hora de fin no puede ser nula")
     private LocalTime endHour;
 
     @Column(name = "predef_duration", nullable = false)
+    @NotNull(message = "La duración predefinida no puede ser nula")
     @Positive(message = "La duración predefinida debe ser un valor positivo")
     private Integer predefDuration;
 
@@ -57,20 +64,12 @@ public class FieldSchedule implements Serializable{
         this.unavailableTimeSlots = new ArrayList<>();
     }
 
-    public FieldSchedule(List<DayOfWeek> days, String startHour, String endHour, Integer predefDuration) {
-        this.days = days;
-        this.predefDuration = predefDuration;
-        this.unavailableTimeSlots = new ArrayList<>();
-        setStartHour(startHour);
-        setEndHour(endHour);
-    }
-
-    public FieldSchedule(List<DayOfWeek> days, LocalTime startHour, LocalTime endHour,
-            Integer predefDuration) {
+    public FieldSchedule(List<DayOfWeek> days, LocalTime startHour, LocalTime endHour, Integer predefDuration) {
         this.days = days;
         this.startHour = startHour;
         this.endHour = endHour;
         this.predefDuration = predefDuration;
+        this.unavailableTimeSlots = new ArrayList<>();
     }
 
     public List<DayOfWeek> getDays() {
@@ -103,14 +102,20 @@ public class FieldSchedule implements Serializable{
             return new ArrayList<>();
         }
 
+        if (this.predefDuration <= 0 || this.startHour == null || this.endHour == null || !this.startHour.isBefore(this.endHour)) {
+            throw new IllegalArgumentException("Horario inválido o duración no positiva");
+        }
+
         List<TimeSlot> timeSlots = new ArrayList<>();
         LocalTime actualTimeSlotStart = this.startHour;
         
-        while (actualTimeSlotStart.plusMinutes(this.predefDuration).compareTo(this.endHour) <= 0) {
+        while (actualTimeSlotStart.isBefore(this.endHour)) {
             LocalTime nextTimeSlotStart = actualTimeSlotStart.plusMinutes(this.predefDuration);
-            TimeSlot timeSlot = new TimeSlot(date, actualTimeSlotStart, nextTimeSlotStart);
+            
+            if (!nextTimeSlotStart.isAfter(this.endHour)) {
+                timeSlots.add(new TimeSlot(date, actualTimeSlotStart, nextTimeSlotStart));
+            }
 
-            timeSlots.add(timeSlot);
             actualTimeSlotStart = nextTimeSlotStart;
         }
 

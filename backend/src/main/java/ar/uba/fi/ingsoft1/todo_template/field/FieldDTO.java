@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 
 public class FieldDTO {
@@ -34,7 +35,7 @@ public class FieldDTO {
                 .toList();
         this.schedule = new FieldScheduleDTO(field.getFieldSchedule());
         this.reviews = new ArrayList<>(field.getReviews());
-        this.reservations = new ArrayList<>(field.getReservations());
+        this.reservations = new ArrayList<>(field.getReservations().stream().map(Reservation::getId).toList());
         this.images = new ArrayList<>(field.getImages());
     }
 

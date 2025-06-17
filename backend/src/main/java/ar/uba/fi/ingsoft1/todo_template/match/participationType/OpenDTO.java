@@ -1,15 +1,12 @@
 package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 
-import ar.uba.fi.ingsoft1.todo_template.match.Match;
-import ar.uba.fi.ingsoft1.todo_template.match.TimeRange;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.DiscriminatorValue;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,7 +15,7 @@ import java.util.stream.Collectors;
 public class OpenDTO extends ParticipationTypeDTO {
         @Positive @NotNull private Integer minPlayersCount;
         @Positive @NotNull private Integer maxPlayersCount;
-        private Set<String> players; // Ver de guardar como
+        private Set<String> players;
 
     public Integer getMaxPlayersCount() {
         return maxPlayersCount;

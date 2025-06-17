@@ -1,8 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
-
-import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
 
@@ -15,14 +14,6 @@ public class Match {
     @Column(name = "match_id")
     private Long matchId;
 
-    @ManyToOne
-    @JoinColumn(name = "organizer", nullable = false)
-    private User organizer;
-
-    @ManyToOne
-    @JoinColumn(name = "fieldId", nullable = false)
-    private Field field;
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     @JoinColumn(name = "participationTypeId", nullable = false)
     private ParticipationType participationType;
@@ -30,20 +21,19 @@ public class Match {
     @Column
     private String state = "Active";
 
-    @Embedded
-    private TimeRange timeRange;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservationId", nullable = false)
+    private Reservation reservation;
 
-    public Match(User organizer, Field field, ParticipationType pt, TimeRange fh) {
-        this.organizer = organizer;
-        this.field = field;
+    public Match(ParticipationType pt, Reservation reserv) {
         this.participationType = pt;
-        this.timeRange = fh;
+        this.reservation = reserv;
     }
 
     public Match(){}
 
     public boolean isOrganizer(User actualUser){
-        return actualUser.equals(this.organizer);
+        return actualUser.equals(this.reservation.getOrganizer());
     }
 
     protected void setId(Long id){this.matchId = id;}
@@ -52,22 +42,14 @@ public class Match {
         return matchId;
     }
 
-    public User getOrganizer() {
-        return organizer;
-    }
-
-    public Field getField() {
-        return this.field;
-    }
-
     public String getState() { return state; }
 
     public ParticipationType getParticipationType() {
         return participationType;
     }
 
-    public TimeRange getTimeRange() {
-        return timeRange;
+    public Reservation getReservation() {
+        return reservation;
     }
 
     public void start(){
@@ -104,5 +86,9 @@ public class Match {
 
     public void setParticipationType(ParticipationType partType) {
         this.participationType = partType;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 }

@@ -5,12 +5,14 @@ import java.time.LocalTime;
 
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record ReservationCreateDTO(
-    Long fieldId,
-    LocalDate date,
-    LocalTime start,
-    LocalTime end
+    @NotNull @Positive Long fieldId,
+    @NotNull LocalDate date,
+    @NotNull LocalTime start,
+    @NotNull LocalTime end
 ) {
     public Reservation asReservation(Field field, User organizer) {
         return new Reservation(

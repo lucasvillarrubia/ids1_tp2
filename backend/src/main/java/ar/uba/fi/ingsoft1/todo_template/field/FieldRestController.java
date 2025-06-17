@@ -1,5 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,6 @@ import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -66,7 +66,7 @@ public class FieldRestController {
     @Operation(summary = "Get all fields by owner email")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFieldsByOwnerId(@PathVariable @Positive String ownerEmail) {
+    public List<FieldDTO> getFieldsByOwnerId(@PathVariable String ownerEmail) {
         return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
 
@@ -124,7 +124,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Available time slots found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public List<String> getAvailableTimeSlotsByFieldId(@PathVariable @Positive Long id, 
-                                                       @RequestParam(required = true) String date) {
+                                                       @RequestParam(required = true) LocalDate date) {
         return fieldService.getAvailableSlotsForReservations(date, id).stream().map(Object::toString).toList();
     }
 
@@ -168,12 +168,12 @@ public class FieldRestController {
     }
     /* ejemplo del body para crear una cancha
 {
-    owner_id: 1,
-    name: "Cancha 1",
-    description: "Cancha de futbol 5",
-    location: "Calle Falsa 123",
-    zone: "San Telmo",
-    features: ["GRASS", "LIGHTS", "RESTROOMS"]
+    "owner_id": 1,
+    "name": "Cancha 1",
+    "description": "Cancha de futbol 5",
+    "location": "Calle Falsa 123",
+    "zone": EZEIZA,
+    "features": ["GRASS", "LIGHTS", "RESTROOMS"]
 }
     */
 
@@ -225,17 +225,16 @@ public class FieldRestController {
         return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
     }
 
-    @DeleteMapping(value = "/{fieldId}/reservations/{reservationId}")
+    @DeleteMapping(value = "/reservations/{reservationId}")
     @Operation(summary = "Delete a reservation by its id")
     @ApiResponse(responseCode = "200", description = "Reservation deleted successfully")
     @ApiResponse(responseCode = "404", description = "Reservation not found")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteReservation(
-            @PathVariable @Positive Long fieldId,
             @PathVariable @Positive Long reservationId
     ) {
-        fieldService.deleteReservationByOwner(fieldId, reservationId);
-        return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
+        fieldService.deleteReservationByOwner(reservationId);
+        return ResponseEntity.ok().build();
     }
 
     // PATCH

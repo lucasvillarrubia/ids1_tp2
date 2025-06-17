@@ -10,6 +10,10 @@ public record FieldScheduleCreateDTO(
     Integer predefDuration
 ) {
     public FieldSchedule asFieldSchedule(Long id) {
+        if (startHour.isAfter(endHour)) {
+            throw new IllegalArgumentException("Start hour must be before end hour");
+        }
+        
         return new FieldSchedule(days, startHour, endHour, predefDuration);
     }
 
