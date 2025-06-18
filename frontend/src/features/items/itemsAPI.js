@@ -8,7 +8,9 @@ export const loadItemsByGenre = (genre) => async (dispatch) => {
                 dispatch(setItems([]));
                 return;
         }
-
+        if (genre === 'closed') {
+                genre = 'matches';
+        }
         try {
                 console.log(genre);
                 const res = await axios.get(`${BASE_URL}/${genre}`);

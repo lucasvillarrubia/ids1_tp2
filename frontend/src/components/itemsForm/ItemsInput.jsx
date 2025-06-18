@@ -1,10 +1,37 @@
-import { ErrorMessage, Field } from 'formik';
+import { ErrorMessage, Field, FieldArray, getIn } from 'formik';
+import {ArrayButton, ErrorMessageUI, ItemInputStyled, ItemLabel} from "./ItemsFormStyles.js";
 
-const ItemsInput = ({ name, type, id, htmlFor, placeholder, options = [], children, multiple = false }) => {
+const ItemsInput = ({ name, type, id, htmlFor, placeholder, options = [], children, multiple = false, isList = false }) => {
         return (
             <div>
-                    <label htmlFor={htmlFor}>{children}</label>
+                    <ItemLabel htmlFor={htmlFor}>{children}</ItemLabel>
+                {isList ? (
+                        <FieldArray name={name}>
+                            {({ push, remove, form }) => (
+                                <>
+                                    {(getIn(form.values, name) || []).map((value, index) => (
+                                        <div key={index} style={{ display: 'flex', gap: '8px', alignItems: 'center', flexDirection: 'row' }}>
+                                            <Field
+                                                name={`${name}[${index}]`}
+                                                placeholder={`${placeholder} #${index + 1}`}
+                                                as={ItemInputStyled}
+                                                type={type}
+                                            />
+                                            <ArrayButton type="button" onClick={() => remove(index)}>🗑️</ArrayButton>
+                                        </div>
+                                    ))}
+                                    <ArrayButton type="button" onClick={() => {
+                                        // console.log("holi");
+                                        push('');
+                                    }}>+ Agregar</ArrayButton>
 
+                                    <ErrorMessage name={name}>
+                                        {msg => <ErrorMessageUI>{msg}</ErrorMessageUI>}
+                                    </ErrorMessage>
+                                </>
+                            )}
+                        </FieldArray>
+                    ) : (
                     <Field name={name}>
                             {({ field, form: { setFieldValue } }) => {
                                     if (type === 'select') {
@@ -55,7 +82,7 @@ const ItemsInput = ({ name, type, id, htmlFor, placeholder, options = [], childr
 
                                     // Fallback to standard input
                                     return (
-                                        <input
+                                        <ItemInputStyled
                                             {...field}
                                             type={type}
                                             id={id}
@@ -64,7 +91,7 @@ const ItemsInput = ({ name, type, id, htmlFor, placeholder, options = [], childr
                                     );
                             }}
                     </Field>
-
+                    )}
                     <ErrorMessage name={name}>
                             {(message) => <div style={{ color: 'red' }}>{message}</div>}
                     </ErrorMessage>
