@@ -111,7 +111,7 @@ export const matchOpenValidationSchema = Yup.object({
                     .trim()
                     .required('El nombre no puede estar vacío')
             )
-            .min(1, 'Debe haber al menos un jugador')
+            // .min(1, 'Debe haber al menos un jugador')
             .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
                 if (!Array.isArray(players)) return true;
                 const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
@@ -146,7 +146,7 @@ export const matchClosedValidationSchema = Yup.object({
                     .trim()
                     .required('El nombre no puede estar vacío')
             )
-            .min(1, 'Debe haber al menos un jugador')
+            // .min(1, 'Debe haber al menos un jugador')
             .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
                 if (!Array.isArray(players)) return true;
                 const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
