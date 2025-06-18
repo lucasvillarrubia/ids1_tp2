@@ -7,6 +7,7 @@ import Home from '../pages/home/Home';
 import ProtectedRoute from '../components/globalComponents/ProtectedRoute/ProtectedRoute';
 import Create from '../pages/create/Create';
 import Success from '../pages/success/Success';
+import TeamPage from "../pages/itemPages/teamPage/TeamPage.jsx";
 
 
 function Routes () {
@@ -21,6 +22,7 @@ function Routes () {
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/congratulations' element={<Success />} />
                         </Route>
+                        <Route path="/team/:teamId" element={<TeamPage />} />
                         <Route path='*' element={<NotFound />} />
                 </AllRoutes>
         )
