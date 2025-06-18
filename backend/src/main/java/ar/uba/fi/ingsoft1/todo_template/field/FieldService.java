@@ -2,10 +2,13 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
@@ -72,11 +75,11 @@ public class FieldService {
     public void deleteField(Long fieldId) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
         if (!field.getOwner().getEmail().equals(getCurrentUser().getEmail())) {
-            throw new EntityNotFoundException("Solo el propietario del campo puede eliminarlo");
+            throw new InvalidActionException("Solo el propietario del campo puede eliminarlo");
         }
 
         if (!field.getReservations().isEmpty()) {
-            throw new IllegalArgumentException("No se puede eliminar un campo con reservas asociadas");
+            throw new InvalidActionException("No se puede eliminar un campo con reservas asociadas");
         }
 
         fieldRepository.delete(field);
@@ -135,7 +138,7 @@ public class FieldService {
                 .collect(Collectors.toList());
     }
 
-    public java.util.Map<String, Object> getStaticticsByFieldId(Long fieldId) {
+    public Map<String, Object> getStaticticsByFieldId(Long fieldId) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
         List<Reservation> reservations = reservationRepository.findByFieldId(fieldId);
         
@@ -144,7 +147,7 @@ public class FieldService {
         int totalReservations = reservations.stream().filter(r -> r.getDate().isAfter(LocalDate.now())).collect(Collectors.toList()).size();
         totalReservations += reservations.stream().filter(r -> r.getDate().isEqual(LocalDate.now())).collect(Collectors.toList()).size();
 
-        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("weeklyOccupation", weekly);
         response.put("monthlyOccupation", monthly);
         response.put("totalReservations", totalReservations);
@@ -160,7 +163,7 @@ public class FieldService {
         User currentUser = getCurrentUser();
         
         if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
-            throw new EntityNotFoundException("Solo el propietario del campo puede eliminar reservas"); // raro
+            throw new InvalidActionException("Solo el propietario del campo puede eliminar reservas"); 
         }
 
         field.removeReservation(reservationId);
@@ -231,7 +234,7 @@ public class FieldService {
                 r.getStart().isBefore(reservation.getEnd()) && 
                 r.getEnd().isAfter(reservation.getStart())
             )) {
-            throw new IllegalArgumentException("Reservation time slot is already taken.");
+            throw new DuplicateEntityException("Reservation", "time slot");
         }
 
         if (field.getSchedule().getUnavailableTimeSlots().stream()
@@ -239,7 +242,7 @@ public class FieldService {
                     reservation.getStart().isBefore(unavailable.getEndHour()) &&
                     reservation.getEnd().isAfter(unavailable.getStartHour())
                 )) {
-            throw new IllegalArgumentException("Reservation time slot is blocked.");
+            throw new DuplicateEntityException("Blocked slot", "time slot");
         }
 
         User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
@@ -264,7 +267,7 @@ public class FieldService {
 
         User currentUser = getCurrentUser();
         if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
-            throw new EntityNotFoundException("Solo el propietario del campo puede editarlo");
+            throw new InvalidActionException("Solo el propietario del campo puede editarlo");
         }
 
         TimeSlot timeSlotEntity = timeSlot.asTimeSlot();
@@ -273,7 +276,7 @@ public class FieldService {
                 timeSlotEntity.getStartHour().isBefore(reservation.getEnd()) &&
                 timeSlotEntity.getEndHour().isAfter(reservation.getStart())
             )) {
-            throw new IllegalArgumentException("El horario ya está reservado, no se puede bloquear.");
+            throw new DuplicateEntityException("Reservation", "time slot");
         }
 
         if (field.getSchedule().getUnavailableTimeSlots().stream()
@@ -281,7 +284,7 @@ public class FieldService {
                     timeSlotEntity.getStartHour().isBefore(unavailable.getEndHour()) &&
                     timeSlotEntity.getEndHour().isAfter(unavailable.getStartHour())
                 )) {
-            throw new IllegalArgumentException("El horario ya está bloqueado, no se puede agregar.");
+            throw new DuplicateEntityException("Blocked Timeslot", "time");
         }
 
         field.getSchedule().addUnavailableTimeSlot(timeSlotEntity);
@@ -294,7 +297,7 @@ public class FieldService {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
         User currentUser = getCurrentUser();
         if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
-            throw new EntityNotFoundException("Solo el propietario del campo puede editarlo");
+            throw new InvalidActionException("Solo el propietario del campo puede editarlo");
         }
 
         if (fieldEdit.getDescription() != null) {
