@@ -41,16 +41,46 @@ export const fieldInitialValues = {
     features: [],
 };
 
-export const matchInitialValues = {
-    fieldId: 1,
+// export const matchInitialValues = {
+//     fieldId: 1,
+//     participationType: {
+//         type: 'Open',
+//         minPlayersCount: 2,
+//         maxPlayersCount: 10,
+//         players: []
+//     },
+//     timeRange: {
+//         start: '19:00:00',
+//         end: '20:00:00'
+//     },
+// };
+
+export const matchOpenInitialValues = {
     participationType: {
         type: 'Open',
-        minPlayersCount: 2,
+        minPlayersCount: 5,
         maxPlayersCount: 10,
-        players: []
+        players: ['']
     },
-    timeRange: {
-        start: '19:00:00',
-        end: '20:00:00'
-    },
+    reservation: {
+        fieldId: 1,
+        date: '2025-06-17',
+        start: '18:00',
+        end: '19:00'
+    }
 };
+
+export const matchClosedInitialValues = {
+    participationType: {
+        type: 'Close',
+        players: ['']
+    },
+    reservation: {
+        fieldId: 1,
+        date: '2025-06-17',
+        start: '18:00',
+        end: '19:00'
+    }
+};
+
+

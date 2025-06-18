@@ -61,37 +61,118 @@ export const fieldValidationSchema = Yup.object({
     images: Yup.string().nullable()
 });
 
-export const matchValidationSchema = Yup.object({
-    fieldId: Yup.number().typeError('Debe ser un número').required('Field ID requerido'),
+// export const matchValidationSchema = Yup.object({
+//     fieldId: Yup.number().typeError('Debe ser un número').required('Field ID requerido'),
+//
+//     participationType: Yup.object({
+//         type: Yup.string().oneOf(['Open', 'Close']).required('Tipo requerido'),
+//         minPlayersCount: Yup.number()
+//             .typeError('Debe ser un número')
+//             .when('type', {
+//                 is: 'Open',
+//                 then: schema => schema.required('Requerido en modo Open').min(1),
+//                 otherwise: schema => schema.notRequired(),
+//             }),
+//         maxPlayersCount: Yup.number()
+//             .typeError('Debe ser un número')
+//             .when('type', {
+//                 is: 'Open',
+//                 then: schema => schema.required('Requerido en modo Open').max(50),
+//                 otherwise: schema => schema.notRequired(),
+//             }),
+//         players: Yup.array()
+//             .of(Yup.string().trim())
+//             .when('type', {
+//                 is: 'Open',
+//                 then: schema =>
+//                     schema.max(50, 'Máximo 50 jugadores'),
+//                 otherwise: schema => schema.notRequired(),
+//             }),
+//     }),
+//
+//     timeRange: Yup.object({
+//         start: Yup.string().required('Hora de inicio requerida'),
+//         end: Yup.string().required('Hora de fin requerida'),
+//     }),
+// });
 
+export const matchOpenValidationSchema = Yup.object({
     participationType: Yup.object({
-        type: Yup.string().oneOf(['Open', 'Close']).required('Tipo requerido'),
+        type: Yup.string().oneOf(['Open']).required(),
         minPlayersCount: Yup.number()
-            .typeError('Debe ser un número')
-            .when('type', {
-                is: 'Open',
-                then: schema => schema.required('Requerido en modo Open').min(1),
-                otherwise: schema => schema.notRequired(),
-            }),
+            .required('Mínimo requerido')
+            .min(2, 'Al menos 2 jugadores'),
         maxPlayersCount: Yup.number()
-            .typeError('Debe ser un número')
-            .when('type', {
-                is: 'Open',
-                then: schema => schema.required('Requerido en modo Open').max(50),
-                otherwise: schema => schema.notRequired(),
-            }),
+            .required('Máximo requerido')
+            .moreThan(Yup.ref('minPlayersCount'), 'Debe ser mayor al mínimo'),
         players: Yup.array()
-            .of(Yup.string().trim())
-            .when('type', {
-                is: 'Open',
-                then: schema =>
-                    schema.max(50, 'Máximo 50 jugadores'),
-                otherwise: schema => schema.notRequired(),
-            }),
+            .of(
+                Yup.string()
+                    .trim()
+                    .required('El nombre no puede estar vacío')
+            )
+            .min(1, 'Debe haber al menos un jugador')
+            .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
+                if (!Array.isArray(players)) return true;
+                const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
+                const lowercased = clean.map(p => p.toLowerCase());
+                const set = new Set(lowercased);
+                return set.size === lowercased.length;
+            })
+    }),
+    reservation: Yup.object({
+        fieldId: Yup.number().required('ID requerido'),
+        date: Yup.string()
+            .required('Fecha requerida')
+            .matches(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido'),
+        start: Yup.string()
+            .required('Inicio requerido')
+            .matches(/^\d{2}:\d{2}$/, 'Formato inválido'),
+        end: Yup.string()
+            .required('Fin requerido')
+            .matches(/^\d{2}:\d{2}$/, 'Formato inválido'),
+    })
+});
+
+export const matchClosedValidationSchema = Yup.object({
+    participationType: Yup.object({
+        type: Yup.string()
+            .oneOf(['Close'])
+            .required(),
+
+        players: Yup.array()
+            .of(
+                Yup.string()
+                    .trim()
+                    .required('El nombre no puede estar vacío')
+            )
+            .min(1, 'Debe haber al menos un jugador')
+            .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
+                if (!Array.isArray(players)) return true;
+                const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
+                const lowercased = clean.map(p => p.toLowerCase());
+                const set = new Set(lowercased);
+                return set.size === lowercased.length;
+            })
+
     }),
 
-    timeRange: Yup.object({
-        start: Yup.string().required('Hora de inicio requerida'),
-        end: Yup.string().required('Hora de fin requerida'),
-    }),
+    reservation: Yup.object({
+        fieldId: Yup.number()
+            .typeError('Debe ser un número')
+            .required('ID requerido'),
+
+        date: Yup.string()
+            .required('Fecha requerida')
+            .matches(/^\d{4}-\d{2}-\d{2}$/, 'Formato inválido'),
+
+        start: Yup.string()
+            .required('Hora de inicio requerida')
+            .matches(/^\d{2}:\d{2}$/, 'Formato inválido'),
+
+        end: Yup.string()
+            .required('Hora de fin requerida')
+            .matches(/^\d{2}:\d{2}$/, 'Formato inválido'),
+    })
 });
+

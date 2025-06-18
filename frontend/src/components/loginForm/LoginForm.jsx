@@ -37,18 +37,18 @@ const LoginForm = () => {
                         const { token, name } = await loginUser(values.email, values.password);
                         if (token) {
                                 showLoginMessage('success', 'Inicio de sesión exitoso', true);
-                                dispatch(setCurrentUser({ name, token }));
-                                dispatch(setAuth({ user: { name, email: values.email }, token }));
-                                console.log(currentUser);
+                                // dispatch(setCurrentUser({ name, token }));
+                                // dispatch(setAuth({ user: { name, email: values.email }, token }));
+                                // console.log(currentUser);
                                 // alert("Entraste!");
-                                navigate('/');
-                               // setTimeout(() => {
-                                  //      dispatch(setCurrentUser({ name, token }));
-                                 //       dispatch(setAuth({ user: { name, email: values.email }, token }));
-                                 //       console.log(currentUser);
-                                        // alert("Entraste!");
-                                //        navigate('/');
-                               // }, 5000);
+                                // navigate('/');
+                               setTimeout(() => {
+                                       dispatch(setCurrentUser({ name, token }));
+                                       dispatch(setAuth({ user: { name, email: values.email }, token }));
+                                       console.log(currentUser);
+                                       //  alert("Entraste!");
+                                       // navigate('/');
+                               }, 5000);
                         }
                 } catch (error) {
                         showLoginMessage('error', 'Error al iniciar sesión');

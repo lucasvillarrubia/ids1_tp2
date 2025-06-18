@@ -161,66 +161,170 @@ export const fieldFields = [
     }
 ];
 
-export const matchFields = [
+// export const matchFields = [
+//     {
+//         name: 'fieldId',
+//         type: 'number',
+//         id: 'match-fieldId',
+//         htmlFor: 'match-fieldId',
+//         placeholder: 'ID',
+//         label: 'ID de la cancha',
+//         min: '0'
+//     },
+//     {
+//         name: 'participationType.type',
+//         type: 'select',
+//         id: 'match-participationType-type',
+//         htmlFor: 'match-participationType-type',
+//         placeholder: 'Tipo de partido',
+//         label: 'Tipo de partido',
+//         options: [
+//             { value: 'Open', label: 'Open' },
+//             //{ value: 'Close', label: 'Close' }
+//         ]
+//     },
+//     {
+//         name: 'participationType.minPlayersCount',
+//         type: 'number',
+//         id: 'match-minPlayersCount',
+//         htmlFor: 'match-minPlayersCount',
+//         placeholder: 'Cantidad Mínima de Jugadores (sólo para partidos abiertos)',
+//         label: 'Mínimo',
+//         min: '2',
+//         max: '10',
+//         step: '2'
+//     },
+//     {
+//         name: 'participationType.maxPlayersCount',
+//         type: 'number',
+//         id: 'match-maxPlayersCount',
+//         htmlFor: 'match-maxPlayersCount',
+//         placeholder: 'Cantidad Máxima de Jugadores (sólo para partidos abiertos)',
+//         label: 'Máximo',
+//         min: '2',
+//         max: '10',
+//         step: '2'
+//     },
+//     {
+//         name: 'timeRange.start',
+//         type: 'time',
+//         id: 'match-timeRange-start',
+//         htmlFor: 'match-timeRange-start',
+//         placeholder: 'Hora de Inicio',
+//         step: '1',
+//         label: 'Inicio'
+//     },
+//     {
+//         name: 'timeRange.end',
+//         type: 'time',
+//         id: 'match-timeRange-end',
+//         htmlFor: 'match-timeRange-end',
+//         placeholder: 'Hora de Finalización',
+//         step: '1',
+//         label: 'Fin'
+//     }
+// ];
+
+export const matchOpenFields = [
     {
-        name: 'fieldId',
+        name: 'reservation.fieldId',
         type: 'number',
-        id: 'match-fieldId',
-        htmlFor: 'match-fieldId',
+        id: 'match-reservation-fieldId',
+        htmlFor: 'match-reservation-fieldId',
         placeholder: 'ID',
         label: 'ID de la cancha',
         min: '0'
     },
     {
-        name: 'participationType.type',
-        type: 'select',
-        id: 'match-participationType-type',
-        htmlFor: 'match-participationType-type',
-        placeholder: 'Tipo de partido',
-        label: 'Tipo de partido',
-        options: [
-            { value: 'Open', label: 'Open' },
-            //{ value: 'Close', label: 'Close' }
-        ]
+        name: 'reservation.date',
+        type: 'date',
+        id: 'match-reservation-date',
+        htmlFor: 'match-reservation-date',
+        label: 'Fecha'
+    },
+    {
+        name: 'reservation.start',
+        type: 'time',
+        id: 'match-reservation-start',
+        htmlFor: 'match-reservation-start',
+        label: 'Inicio'
+    },
+    {
+        name: 'reservation.end',
+        type: 'time',
+        id: 'match-reservation-end',
+        htmlFor: 'match-reservation-end',
+        label: 'Fin'
     },
     {
         name: 'participationType.minPlayersCount',
         type: 'number',
         id: 'match-minPlayersCount',
         htmlFor: 'match-minPlayersCount',
-        placeholder: 'Cantidad Mínima de Jugadores (sólo para partidos abiertos)',
-        label: 'Mínimo',
+        label: 'Mínimo de jugadores',
         min: '2',
-        max: '10',
-        step: '2'
+        max: '50',
+        step: '1'
     },
     {
         name: 'participationType.maxPlayersCount',
         type: 'number',
         id: 'match-maxPlayersCount',
         htmlFor: 'match-maxPlayersCount',
-        placeholder: 'Cantidad Máxima de Jugadores (sólo para partidos abiertos)',
-        label: 'Máximo',
+        label: 'Máximo de jugadores',
         min: '2',
-        max: '10',
-        step: '2'
+        max: '50',
+        step: '1'
     },
     {
-        name: 'timeRange.start',
+        name: 'participationType.players',
+        type: 'text',
+        id: 'match-closed-players',
+        htmlFor: 'match-closed-players',
+        placeholder: 'Nombre del jugador',
+        label: 'Jugadores',
+        isList: true
+    }
+];
+
+export const matchClosedFields = [
+    {
+        name: 'reservation.fieldId',
+        type: 'number',
+        id: 'match-reservation-fieldId',
+        htmlFor: 'match-reservation-fieldId',
+        placeholder: 'ID',
+        label: 'ID de la cancha',
+        min: '0'
+    },
+    {
+        name: 'reservation.date',
+        type: 'date',
+        id: 'match-reservation-date',
+        htmlFor: 'match-reservation-date',
+        label: 'Fecha'
+    },
+    {
+        name: 'reservation.start',
         type: 'time',
-        id: 'match-timeRange-start',
-        htmlFor: 'match-timeRange-start',
-        placeholder: 'Hora de Inicio',
-        step: '1',
+        id: 'match-reservation-start',
+        htmlFor: 'match-reservation-start',
         label: 'Inicio'
     },
     {
-        name: 'timeRange.end',
+        name: 'reservation.end',
         type: 'time',
-        id: 'match-timeRange-end',
-        htmlFor: 'match-timeRange-end',
-        placeholder: 'Hora de Finalización',
-        step: '1',
+        id: 'match-reservation-end',
+        htmlFor: 'match-reservation-end',
         label: 'Fin'
+    },
+    {
+        name: 'participationType.players',
+        type: 'text',
+        id: 'match-closed-players',
+        htmlFor: 'match-closed-players',
+        placeholder: 'Nombre del jugador',
+        label: 'Jugadores',
+        isList: true
     }
 ];
