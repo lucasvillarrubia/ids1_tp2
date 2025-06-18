@@ -25,9 +25,9 @@ public class Match {
     @JoinColumn(name = "reservationId", nullable = false)
     private Reservation reservation;
 
-    public Match(ParticipationType pt, Reservation reserv) {
+    public Match(ParticipationType pt, Reservation reserve) {
         this.participationType = pt;
-        this.reservation = reserv;
+        this.reservation = reserve;
     }
 
     public Match(){}

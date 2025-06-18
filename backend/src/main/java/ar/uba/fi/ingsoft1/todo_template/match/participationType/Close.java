@@ -39,19 +39,19 @@ public class Close extends ParticipationType{
 
     @Override
     public boolean leaveMatch(User user) {
-        return false;
+        throw new UnsupportedOperationException("Operation not supported.");
     }
 
     @Override
     public boolean addPlayer(User user){
-        return false;
+        throw new UnsupportedOperationException("Operation not supported.");
     }
 
     @Override
-    public Integer getMinPlayersCount() { throw new UnsupportedOperationException("Not supported yet."); }
+    public Integer getMinPlayersCount() { throw new UnsupportedOperationException("Operation not supported."); }
 
     @Override
-    public Integer getPlayerCount() { throw new UnsupportedOperationException("Not supported yet."); }
+    public Integer getPlayerCount() { throw new UnsupportedOperationException("Operation not supported."); }
 
-    public void checkStart() { throw new UnsupportedOperationException("Not supported yet."); }
+    public void checkStart() {}
 }
