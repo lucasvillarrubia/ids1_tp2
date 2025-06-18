@@ -9,8 +9,7 @@ import jakarta.validation.constraints.Positive;
         {"id": 123,
           "fieldId": 456,
           "score": 4,
-          "comment": "¡Excelente experiencia en el campo! Lo recomiendo.",
-          "createdAt": "2025-06-17T22:00:00Z"
+          "comment": "¡Excelente experiencia en el campo! Lo recomiendo."
         }
         """)
 
