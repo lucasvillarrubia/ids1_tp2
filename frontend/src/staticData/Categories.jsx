@@ -9,6 +9,11 @@ export const CategoryCollection = [
                 category: 'matches',
         },
         {
+                id: 2,
+                name: 'Partidos Cerrados',
+                category: 'closed',
+        },
+        {
                 id: 3,
                 name: 'Equipos',
                 category: 'teams',

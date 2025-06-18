@@ -11,13 +11,21 @@ const Login = () => {
         const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 
-        useEffect(() => {
-          if (isAuthenticated) {
-            navigate('/');
-            setIsAuthenticated(true);
-          }
-        }, [isAuthenticated, navigate]);
+        // useEffect(() => {
+        //   if (isAuthenticated) {
+        //     navigate('/');
+        //     setIsAuthenticated(true);
+        //   }
+        // }, [isAuthenticated, navigate]);
 
+        if (currentUser) {
+            console.log(currentUser.name);
+            console.log(currentUser);
+            console.log(currentUser.token);
+            console.log("por esto estoy redirigiendo");
+            navigate('/');
+            return null;
+        }
 
 
   return (

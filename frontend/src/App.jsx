@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { logout } from "./features/users/usersSlice.js";
 
-
 function App() {
         const dispatch = useDispatch();
 

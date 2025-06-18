@@ -38,7 +38,7 @@ const FlashMessage = ({ message, type = 'info', onClose, duration = 0, fromLogin
                         <> — Redirigiendo en {countdown}s</>
                     )}
                 </p>
-                {!fromLogin && <OKButton onClick={onClose}>OK</OKButton>}
+                {countdown === 0 && <OKButton onClick={onClose}>OK</OKButton>}
             </MessageBox>
         </Overlay>
     );

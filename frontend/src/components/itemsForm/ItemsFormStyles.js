@@ -70,7 +70,7 @@ export const ItemSubmit = styled.button`
         padding: 1rem 3rem;
         border-radius: 30px;
         font-size: 15px;
-        font-family: 'Shrikhand', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
         text-transform: uppercase;
         text-align: center;
         background: var(--vanilla);
@@ -89,7 +89,7 @@ export const ItemLabel = styled.label`
         /* text-shadow: var(--borde_texto); */
         text-align: center;
         width: 100%;
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
         font-weight: 700;
         letter-spacing: 1px;
         @media screen and (min-width: 768px) {
@@ -102,6 +102,7 @@ export const ItemInputStyled = styled.input`
         border: ${({ erroneous }) => (erroneous ? '3px solid #fb103d ' : 'none')};
         outline: none;
         padding: 10px;
+        font-family: 'Bebas Neue', sans-serif;
         border-radius: 15px;
         font-size: 20px;
         /* width: 100%; */
@@ -127,5 +128,23 @@ export const ErrorMessageUI = styled.p`
 `;
 
 
-
+export const ArrayButton = styled.button`
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    text-transform: uppercase;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    letter-spacing: 2px;
+    &:hover {
+        background-color: black;
+        color: white;
+        border: 2px solid white;
+        transition: all 0.2s ease-out;
+    }
+`;
 
