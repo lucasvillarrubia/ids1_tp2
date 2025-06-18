@@ -19,6 +19,14 @@ const UserMenu = () => {
                                         <h6>{`¡Hola ${currentUser?.name}!`}</h6>
                                         <p onClick={() => {
                                                 dispatch(toggleUserMenuDisplay());
+                                                navigate('me');
+                                                // alert('Todavía no lo terminé de implementar!');
+                                        }}
+                                        >
+                                                Tu perfíl
+                                        </p>
+                                        <p onClick={() => {
+                                                dispatch(toggleUserMenuDisplay());
                                                 // navigate('my-orders');
                                                 alert('Todavía no lo terminé de implementar!');
                                         }}
@@ -32,14 +40,6 @@ const UserMenu = () => {
                                         }}
                                         >
                                                 Tus equipos
-                                        </p>
-                                        <p onClick={() => {
-                                                dispatch(toggleUserMenuDisplay());
-                                                // navigate('my-orders');
-                                                alert('Todavía no lo terminé de implementar!');
-                                        }}
-                                        >
-                                                Tus torneos
                                         </p>
                                         <p onClick={() => {
                                                 dispatch(toggleUserMenuDisplay());

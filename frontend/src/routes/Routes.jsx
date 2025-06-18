@@ -7,6 +7,7 @@ import Home from '../pages/home/Home';
 import ProtectedRoute from '../components/globalComponents/ProtectedRoute/ProtectedRoute';
 import Create from '../pages/create/Create';
 import Success from '../pages/success/Success';
+import MyProfile from "../pages/myProfile/MyProfile.jsx";
 import TeamPage from "../pages/itemPages/teamPage/TeamPage.jsx";
 
 
@@ -18,6 +19,9 @@ function Routes () {
                         <Route path='/signup' element={<Signup />} />
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/create' element={<Create />} />
+                        </Route>
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path='/me' element={<MyProfile />} />
                         </Route>
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/congratulations' element={<Success />} />

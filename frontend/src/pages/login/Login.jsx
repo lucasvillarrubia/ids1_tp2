@@ -9,6 +9,10 @@ const Login = () => {
         const { currentUser } = useSelector(state => state.users);
 
         if (currentUser) {
+            console.log(currentUser.name);
+            console.log(currentUser);
+            console.log(currentUser.token);
+                console.log("por esto estoy redirigiendo");
                 navigate('/');
                 return null;
         }

@@ -38,11 +38,11 @@ const LoginForm = () => {
                         if (token) {
                                 showLoginMessage('success', 'Inicio de sesión exitoso', true);
                                 setTimeout(() => {
-                                        dispatch(setCurrentUser({ name, token }));
                                         dispatch(setAuth({ user: { name, email: values.email }, token }));
-                                        console.log(currentUser);
+                                        dispatch(setCurrentUser({ name, token }));
+                                        console.log("usuario: " + currentUser);
                                         // alert("Entraste!");
-                                        navigate('/');
+                                        // navigate('/');
                                 }, 5000);
                         }
                 } catch (error) {
