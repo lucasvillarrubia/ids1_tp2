@@ -25,7 +25,7 @@ function Routes () {
                         <Route path="/verify-email" element={<VerifyEmailPage/>} />
                         <Route path="/password_reset/" element={<ForgotPasswordPage/>} />
                         <Route path="password_reset/new_password" element={<NewPasswordPage/>} />
-                        <Route path = "/sessions/profile" element={<UserProfilePage/>} />
+                        {/*<Route path = "/sessions/profile" element={<UserProfilePage/>} />*/}
 
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/create' element={<Create />} />

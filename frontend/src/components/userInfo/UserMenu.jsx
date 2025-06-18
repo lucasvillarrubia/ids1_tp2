@@ -20,7 +20,7 @@ const UserMenu = () => {
                                   <h6>{`¡Hola ${currentUser?.name || "Invitado"}!`}</h6>
                                   <p onClick={() => {
                                           dispatch(toggleUserMenuDisplay());
-                                          navigate("/sessions/profile");
+                                          navigate("/me");
                                   }}>
                                           Mi Perfil
                                   </p>
