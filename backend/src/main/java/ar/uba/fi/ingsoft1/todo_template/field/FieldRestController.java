@@ -2,7 +2,6 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.http.HttpStatus;
@@ -62,7 +61,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Field found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> getFieldById(@PathVariable @Positive Long id) throws MethodArgumentNotValidException {
+    public ResponseEntity<?> getFieldById(@PathVariable @Positive Long id) {
         try {
             return ResponseEntity.ok(fieldService.getFieldById(id));
         } catch (EntityNotFoundException e) {

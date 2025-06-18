@@ -4,7 +4,6 @@ import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityExceptio
 import ar.uba.fi.ingsoft1.todo_template.common.exception.GlobalExceptionHandler;
 import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerDTO;
 import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerService;
-import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,8 +35,6 @@ public class MatchRestController {
         this.matchService = matchService;
         this.matchOrganizerService = matchOrganizerService;
         globalExceptionHandler = new GlobalExceptionHandler();
-    }
-
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -128,7 +125,6 @@ public class MatchRestController {
         } catch (IllegalArgumentException e) {
             return (ResponseEntity<?>) globalExceptionHandler.handleIllegalArgumentException(e).getBody();
         }
-        return ResponseEntity.ok(this.matchService.createMatch(matchCreateDTO));
     }
 
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
