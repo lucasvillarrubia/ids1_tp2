@@ -14,10 +14,12 @@ const ItemsForm = ({ itemCategory }) => {
 
         const handleSubmit = async (values, { setSubmitting }) => {
             try {
+                console.log("Submiting values: ", values)
                 await createItem(itemCategory, values);
                 await loadItemsByGenre(dispatch);
                 navigate('/congratulations');
             } catch (error) {
+                console.log("Hola")
                 alert('No se pudo crear el ítem: error visible en consola');
             } finally {
                 setSubmitting(false);
@@ -40,9 +42,11 @@ const ItemsForm = ({ itemCategory }) => {
                                                 id={field.id}
                                                 htmlFor={field.htmlFor}
                                                 placeholder={field.placeholder}
+                                                options={field.options}
                                             >
                                                 {field.label}
                                             </ItemsInput>
+
                                         ))}
                                         <ItemSubmit type='submit' disabled={isSubmitting}>CREAR</ItemSubmit>
                                 </Form>

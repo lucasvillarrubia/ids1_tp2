@@ -9,29 +9,14 @@ export const CategoryCollection = [
                 category: 'matches',
         },
         {
-                id: 2,
-                name: 'Partidos Cerrados',
-                category: 'closed',
-        },
-        {
                 id: 3,
                 name: 'Equipos',
                 category: 'teams',
         },
         {
-                id: 4,
-                name: 'Torneos',
-                category: 'tournament',
-        },
-        {
                 id: 5,
                 name: 'Canchas',
                 category: 'fields',
-        },
-        {
-                id: 6,
-                name: 'Usuarios',
-                category: 'users',
         }
 ]; 
 
