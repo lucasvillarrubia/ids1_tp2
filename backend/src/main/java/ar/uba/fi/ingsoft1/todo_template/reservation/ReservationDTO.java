@@ -1,11 +1,15 @@
 package ar.uba.fi.ingsoft1.todo_template.reservation;
 
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record ReservationDTO(
     Long id,
     Long fieldId,
+    String fieldName,
+    UserZones fieldZone,
     String organizerEmail,
     LocalDate date,
     LocalTime start,
@@ -15,6 +19,8 @@ public record ReservationDTO(
         this(
             reservation.getId(),
             reservation.getField().getId(),
+            reservation.getField().getName(),
+            reservation.getField().getZone(),
             reservation.getOrganizer().getEmail(),
             reservation.getDate(),
             reservation.getStart(),
