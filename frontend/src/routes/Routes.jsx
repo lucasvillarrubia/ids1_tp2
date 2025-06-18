@@ -11,6 +11,9 @@ import UserProfilePage from "../components/userProfilePage/UserProfilePage.jsx";
 import VerifyEmailPage from "../components/verifyEmailPage/verifyEmailPage.jsx";
 import ForgotPasswordPage from "../components/forgotPasswordPage/ForgotPasswordPage.jsx";
 import NewPasswordPage from "../components/newPasswordPage/NewPasswordPage.jsx";
+import MyProfile from "../pages/myProfile/MyProfile.jsx";
+import TeamPage from "../pages/itemPages/teamPage/TeamPage.jsx";
+
 
 
 function Routes () {
