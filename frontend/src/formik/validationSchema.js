@@ -9,7 +9,7 @@ export const signupValidationSchema = Yup.object({
         .matches(REG_EMAIL, 'Correo inválido')
         .required('Campo obligatorio'),
     password: Yup.string()
-        .min(8, 'La contraseña debe tener por lo menos 8 caracteres')
+        .min(0, 'La contraseña debe tener por lo menos 8 caracteres')
         .required('Campo obligatorio'),
     age: Yup.number()
         .min(0, 'Edad no válida')
@@ -20,12 +20,15 @@ export const signupValidationSchema = Yup.object({
         .required('Campo obligatorio'),
     photo: Yup.string().url('URL inválida').nullable(),
     role: Yup.string().nullable(),
-    zone: Yup.string().required('Campo obligatorio'),
+    zones: Yup.array()
+        .of(Yup.string()) // or validate against enum keys if needed
+        .min(1, 'Seleccioná al menos una zona') // optional
+        .required('Campo obligatorio')
 });
 
 export const loginValidationSchema = Yup.object({
         email: Yup.string().matches(REG_EMAIL, 'Correo inválido').required('Campo obligatorio'),
-        password: Yup.string().min(8, 'La contraseña debe tener por lo menos 8 caracteres').required('Campo obligatorio')
+        password: Yup.string().min(0, 'La contraseña debe tener por lo menos 8 caracteres').required('Campo obligatorio')
 });
 
 export const verifyValidationSchema = Yup.object({
@@ -35,7 +38,7 @@ export const verifyValidationSchema = Yup.object({
 
 export const teamValidationSchema = Yup.object({
     name: Yup.string().required('Nombre obligatorio'),
-    logo: Yup.string().nullable(),
+    logo: Yup.string().nullable(), // if this were a file, use Yup.mixed()
     colors: Yup.string().required('Colores obligatorios'),
     skill: Yup.number()
         .min(1, 'Mínimo 1')
@@ -51,12 +54,11 @@ export const teamValidationSchema = Yup.object({
 });
 
 export const fieldValidationSchema = Yup.object({
-    ownerId: Yup.number().typeError('Debe ser un número').required('Owner ID requerido'),
     name: Yup.string().required('Nombre requerido'),
     location: Yup.string().required('Ubicación requerida'),
     zone: Yup.string().required('Zona requerida'),
-    features: Yup.array().of(Yup.string()).nullable(),
-    images: Yup.array().of(Yup.string()).nullable()
+    features: Yup.array().min(1, 'Debes seleccionar al menos una característica'),
+    images: Yup.string().nullable()
 });
 
 export const matchValidationSchema = Yup.object({
@@ -78,15 +80,12 @@ export const matchValidationSchema = Yup.object({
                 then: schema => schema.required('Requerido en modo Open').max(50),
                 otherwise: schema => schema.notRequired(),
             }),
-        players: Yup.string()
+        players: Yup.array()
+            .of(Yup.string().trim())
             .when('type', {
                 is: 'Open',
                 then: schema =>
-                    schema.test('max-players', 'Máximo 50 jugadores', value => {
-                        if (!value) return true;
-                        const players = value.split(',').map(p => p.trim()).filter(Boolean);
-                        return players.length <= 50;
-                    }),
+                    schema.max(50, 'Máximo 50 jugadores'),
                 otherwise: schema => schema.notRequired(),
             }),
     }),

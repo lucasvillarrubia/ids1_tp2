@@ -2,10 +2,12 @@ package ar.uba.fi.ingsoft1.todo_template.FieldSchedule;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -17,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @Entity
@@ -26,6 +29,7 @@ public class FieldSchedule implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "La cancha debe tener un horario asignado")
     @NotEmpty(message = "La cancha debe tener al menos un día de la semana")
     @ElementCollection
     @CollectionTable(name = "schedule_days", joinColumns = @JoinColumn(name = "schedule_id"))
@@ -33,18 +37,23 @@ public class FieldSchedule implements Serializable{
     @Enumerated(EnumType.STRING)
     private List<DayOfWeek> days;
 
+    @Column(name = "start_hour", nullable = false)
+    @NotNull(message = "La hora de inicio no puede ser nula")
     private LocalTime startHour;
 
+    @Column(name = "end_hour", nullable = false)
+    @NotNull(message = "La hora de fin no puede ser nula")
     private LocalTime endHour;
 
     @Column(name = "predef_duration", nullable = false)
+    @NotNull(message = "La duración predefinida no puede ser nula")
     @Positive(message = "La duración predefinida debe ser un valor positivo")
     private Integer predefDuration;
 
-    // @ElementCollection
-    // @CollectionTable(name = "available_time_slots", joinColumns = @JoinColumn(name = "schedule_id"))
-    // private List<TimeSlot> availableTimeSlots;
-
+    @ElementCollection
+    @CollectionTable(name = "schedule_unavailable_timeslots", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "unavailable_timeslots", nullable = false)
+    List<TimeSlot> unavailableTimeSlots;
 
     public FieldSchedule() {
         this.days = new ArrayList<>();
@@ -52,24 +61,15 @@ public class FieldSchedule implements Serializable{
         this.startHour = LocalTime.of(8, 0); // seteo un default para que no sea null
         this.endHour = LocalTime.of(22, 0); 
         this.predefDuration =  60; // tiempo en minutos
-        //setAvailableTimeSlots();
+        this.unavailableTimeSlots = new ArrayList<>();
     }
 
-    public FieldSchedule(List<DayOfWeek> days, String startHour, String endHour, Integer predefDuration) {
-        this.days = days;
-        this.predefDuration = predefDuration;
-        setStartHour(startHour);
-        setEndHour(endHour);
-        //setAvailableTimeSlots();
-    }
-
-    public FieldSchedule(List<DayOfWeek> days, LocalTime startHour, LocalTime endHour,
-            Integer predefDuration) {
+    public FieldSchedule(List<DayOfWeek> days, LocalTime startHour, LocalTime endHour, Integer predefDuration) {
         this.days = days;
         this.startHour = startHour;
         this.endHour = endHour;
         this.predefDuration = predefDuration;
-        //setAvailableTimeSlots();
+        this.unavailableTimeSlots = new ArrayList<>();
     }
 
     public List<DayOfWeek> getDays() {
@@ -84,38 +84,61 @@ public class FieldSchedule implements Serializable{
         return endHour;
     }
 
-    // public List<TimeSlot> getAvailableTimeSlots() {
-    //     return availableTimeSlots;
-    // }
-    
     public int getPredefDuration() {
         return predefDuration;
     }
 
-    // public ArrayList<TimeSlot> getTimeSlots() {
-    //     ArrayList<TimeSlot> timeSlots = new ArrayList<>();
-    //     LocalTime actualTimeSlotStart = this.startHour;
-    //     LocalDate today = LocalDate.now();
-                
-    //     for (DayOfWeek day : this.days) {
-    //         LocalDate nextDay = today.with(TemporalAdjusters.nextOrSame(day));
-    //         while (actualTimeSlotStart.plusMinutes(this.predefDuration).compareTo(this.endHour) <= 0) {
-    //             LocalTime nextTimeSlotStart = actualTimeSlotStart.plusMinutes(this.predefDuration);
+    public List<TimeSlot> getUnavailableTimeSlots() {
+        return unavailableTimeSlots;
+    }
 
-    //             timeSlots.add(new TimeSlot(nextDay, actualTimeSlotStart, nextTimeSlotStart));
-    //             actualTimeSlotStart = nextTimeSlotStart;
-    //         }
+    public void addUnavailableTimeSlot(TimeSlot timeSlot) {
+        this.unavailableTimeSlots.add(timeSlot);
+    }
 
-    //         actualTimeSlotStart = this.startHour; 
-    //     }
-    //     System.out.println("Time slots generated: " + timeSlots.size());
-    //     if (timeSlots.isEmpty()) {
-    //         System.out.println("No time slots available for the given schedule.");
-    //     } else {
-    //         System.out.println("Available time slots: " + timeSlots);
-    //     }
-    //     return timeSlots;
-    // }
+    public List<TimeSlot> getTimeSlotsForDate(LocalDate date, List<Reservation> reservations) {
+        DayOfWeek day = date.getDayOfWeek();
+        if (!days.contains(day)) {
+            return new ArrayList<>();
+        }
+
+        if (this.predefDuration <= 0 || this.startHour == null || this.endHour == null || !this.startHour.isBefore(this.endHour)) {
+            throw new IllegalArgumentException("Horario inválido o duración no positiva");
+        }
+
+        List<TimeSlot> timeSlots = new ArrayList<>();
+        LocalTime actualTimeSlotStart = this.startHour;
+        
+        while (actualTimeSlotStart.isBefore(this.endHour)) {
+            LocalTime nextTimeSlotStart = actualTimeSlotStart.plusMinutes(this.predefDuration);
+            
+            if (!nextTimeSlotStart.isAfter(this.endHour)) {
+                timeSlots.add(new TimeSlot(date, actualTimeSlotStart, nextTimeSlotStart));
+            }
+
+            actualTimeSlotStart = nextTimeSlotStart;
+        }
+
+        System.out.println("Reserved time slots for " + date + ": " + reservations.stream().map(res -> res.getStart() + " - " + res.getEnd()).toList());
+
+        timeSlots.removeIf(slot -> reservations.stream()
+            .anyMatch(reservation -> 
+                slot.getStartHour().isBefore(reservation.getEnd()) &&
+                slot.getEndHour().isAfter(reservation.getStart())
+            )
+        );
+
+        timeSlots.removeIf(slot -> 
+            unavailableTimeSlots.stream()
+                .anyMatch(unavailable -> 
+                    slot.getDate().equals(unavailable.getDate()) &&
+                    slot.getStartHour().isBefore(unavailable.getEndHour()) &&
+                    slot.getEndHour().isAfter(unavailable.getStartHour())
+                )
+        );
+
+        return timeSlots;
+    }
 
     public Long getId() {
         return id;
@@ -147,7 +170,42 @@ public class FieldSchedule implements Serializable{
         this.predefDuration = predefDuration;
     }
 
-    // public void setAvailableTimeSlots() {
-    //     this.availableTimeSlots = getTimeSlots();
-    // }
+    public int getTotalHours() {
+        int open_hours = this.endHour.getHour() - this.startHour.getHour();
+        int open_days = this.days.size();
+        int total_hours = open_hours * open_days;
+        return total_hours;
+    }
+
+    public int getOccupiedHoursThisWeek(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int occupied_hours = 0;
+        for (Reservation reservation : reservations) {
+            if (reservation.getDate().isBefore(LocalDate.now()) ||
+                reservation.getDate().isAfter(LocalDate.now().plusDays(7))) {
+                continue;
+            }
+            occupied_hours += reservation.getEnd().getHour() - reservation.getStart().getHour();
+        }
+        return occupied_hours;
+    }
+
+    public int getOccupiedHoursThisMonth(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int occupied_hours = 0;
+        for (Reservation reservation : reservations) {
+            if (reservation.getDate().getMonth() != LocalDate.now().getMonth() ||
+                reservation.getDate().getYear() != LocalDate.now().getYear()) {
+                continue;
+            }
+            occupied_hours += reservation.getEnd().getHour() - reservation.getStart().getHour();
+        }
+        return occupied_hours;
+    }
 }

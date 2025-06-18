@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import ar.uba.fi.ingsoft1.todo_template.field.Field;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,8 +20,11 @@ public class Reservation {
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "field_id", nullable = false)
     private Field field;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer", nullable = false)
+    private User organizer;
 
     private LocalDate date;
 
@@ -30,7 +34,16 @@ public class Reservation {
 
     public Reservation() {}
 
-    public Reservation(Field field, LocalDate date, LocalTime startHour, LocalTime endHour) {
+    public Reservation(Field field, LocalDate date, LocalTime startHour, LocalTime endHour, User organizer) {
+        if (date.isBefore(LocalDate.now()) || (date.isEqual(LocalDate.now()) && startHour.isBefore(LocalTime.now()))) {
+            throw new IllegalArgumentException("Cannot reserve a field for a past date");
+        }
+
+        if (startHour.isAfter(endHour)) {
+            throw new IllegalArgumentException("Start hour must be before end hour");
+        }
+
+        this.organizer = organizer;
         this.field = field;
         this.date = date;
         this.startHour = startHour;
@@ -43,6 +56,10 @@ public class Reservation {
 
     public Field getField() {
         return field;
+    }
+
+    public User getOrganizer() {
+        return organizer;
     }
 
     public LocalDate getDate() {
@@ -59,6 +76,10 @@ public class Reservation {
 
     public void setField(Field field) {
         this.field = field;
+    }
+
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
     }
 
     public void setDate(LocalDate date) {

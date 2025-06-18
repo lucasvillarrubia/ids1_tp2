@@ -1,24 +1,18 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
-
-import ar.uba.fi.ingsoft1.todo_template.field.Field;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
+
+import java.util.Objects;
 
 @Entity
 public class Match {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "match_id")
     private Long matchId;
-
-    @ManyToOne
-    @JoinColumn(name = "organizer", nullable = false)
-    private User organizer;
-
-    @ManyToOne
-    @JoinColumn(name = "fieldId", nullable = false)
-    private Field field;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     @JoinColumn(name = "participationTypeId", nullable = false)
@@ -27,20 +21,19 @@ public class Match {
     @Column
     private String state = "Active";
 
-    @Embedded
-    private TimeRange timeRange;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservationId", nullable = false)
+    private Reservation reservation;
 
-    public Match(User organizer, Field field, ParticipationType pt, TimeRange fh) {
-        this.organizer = organizer;
-        this.field = field;
+    public Match(ParticipationType pt, Reservation reserv) {
         this.participationType = pt;
-        this.timeRange = fh;
+        this.reservation = reserv;
     }
 
     public Match(){}
 
     public boolean isOrganizer(User actualUser){
-        return actualUser.equals(this.organizer);
+        return actualUser.equals(this.reservation.getOrganizer());
     }
 
     protected void setId(Long id){this.matchId = id;}
@@ -49,45 +42,53 @@ public class Match {
         return matchId;
     }
 
-    public User getOrganizer() {
-        return organizer;
-    }
-
-    public Field getField() {
-        return this.field;
-    }
-
     public String getState() { return state; }
 
     public ParticipationType getParticipationType() {
         return participationType;
     }
 
-    public TimeRange getTimeRange() {
-        return timeRange;
+    public Reservation getReservation() {
+        return reservation;
     }
 
-    public void closeMatch(){
-        this.state = "Closed";
+    public void start(){
+        if (!Objects.equals(this.state, "Closed")){
+            throw new IllegalStateException("Cannot start match yet");
+        }
+        this.state = "Started";
     }
 
-    public void endMatch() {
-        this.state = "Ended";
-    }
-
-    public boolean canJoin() {
-        return this.state.equals("Active");
-    }
+    public void close() {
+        if (!Objects.equals(this.state, "Active")){
+            throw new IllegalStateException("Cannot close match");
+        }
+        checkStart();
+        this.state = "Closed";}
 
     public boolean leaveMatch(User user) {
+        if (!Objects.equals(this.state, "Active")){
+            throw new IllegalStateException("Cannot leave match");
+        }
         return this.participationType.leaveMatch(user);
     }
 
     public boolean join(User user) {
+        if (!Objects.equals(this.state, "Active")){
+            throw new IllegalStateException("Cannot join match");
+        }
         return participationType.addPlayer(user);
+    }
+    
+    private void checkStart(){
+        participationType.checkStart();
     }
 
     public void setParticipationType(ParticipationType partType) {
         this.participationType = partType;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
     }
 }

@@ -14,53 +14,60 @@ const UserMenu = () => {
                         {(userMenuOnDisplay) && 
                                 <UserMenuBG onClick={() => dispatch(toggleUserMenuDisplay())}></UserMenuBG>
                         }
-                        {(userMenuOnDisplay) && 
-                                <UserMenuUI>
-                                        <h6>{`¡Hola ${currentUser?.name}!`}</h6>
-                                        <p onClick={() => {
-                                                dispatch(toggleUserMenuDisplay());
-                                                navigate('me');
-                                                // alert('Todavía no lo terminé de implementar!');
-                                        }}
-                                        >
-                                                Tu perfíl
-                                        </p>
-                                        <p onClick={() => {
-                                                dispatch(toggleUserMenuDisplay());
-                                                // navigate('my-orders');
-                                                alert('Todavía no lo terminé de implementar!');
-                                        }}
-                                        >
-                                                Tus partidos
-                                        </p>
-                                        <p onClick={() => {
-                                                dispatch(toggleUserMenuDisplay());
-                                                // navigate('my-orders');
-                                                alert('Todavía no lo terminé de implementar!');
-                                        }}
-                                        >
-                                                Tus equipos
-                                        </p>
-                                        <p onClick={() => {
-                                                dispatch(toggleUserMenuDisplay());
-                                                // navigate('my-orders');
-                                                alert('Todavía no lo terminé de implementar!');
-                                        }}
-                                        >
-                                                Tus reviews
-                                        </p>
-                                        <p onClick={() => {
-                                                        dispatch(toggleUserMenuDisplay());
-                                                        logoutUser(dispatch);
-                                                        navigate('/');
-                                                }}
-                                        >
-                                                Cerrar sesión
-                                        </p>
-                                </UserMenuUI>
+                        {(userMenuOnDisplay) &&
+                          <UserMenuUI>
+                                  {/* <h6>{`¡Hola ${currentUser?.name}!`}</h6>*/}
+                                  <h6>{`¡Hola ${currentUser?.name || "Invitado"}!`}</h6>
+                                  <p onClick={() => {
+                                          dispatch(toggleUserMenuDisplay());
+                                          navigate("/sessions/profile");
+                                  }}>
+                                          Mi Perfil
+                                  </p>
+                                  <p onClick={() => {
+                                          dispatch(toggleUserMenuDisplay());
+                                          // navigate('my-orders');
+                                          alert("Todavía no lo terminé de implementar!");
+                                  }}
+                                  >
+                                          Tus partidos
+                                  </p>
+                                  <p onClick={() => {
+                                          dispatch(toggleUserMenuDisplay());
+                                          // navigate('my-orders');
+                                          alert("Todavía no lo terminé de implementar!");
+                                  }}
+                                  >
+                                          Tus equipos
+                                  </p>
+                                  <p onClick={() => {
+                                          dispatch(toggleUserMenuDisplay());
+                                          // navigate('my-orders');
+                                          alert("Todavía no lo terminé de implementar!");
+                                  }}
+                                  >
+                                          Tus torneos
+                                  </p>
+                                  <p onClick={() => {
+                                          dispatch(toggleUserMenuDisplay());
+                                          // navigate('my-orders');
+                                          alert("Todavía no lo terminé de implementar!");
+                                  }}
+                                  >
+                                          Tus reviews
+                                  </p>
+                                  <p onClick={() => {
+                                          logoutUser(dispatch);
+                                          dispatch(toggleUserMenuDisplay());
+                                          navigate("/");
+                                  }}
+                                  >
+                                          Cerrar sesión
+                                  </p>
+                          </UserMenuUI>
                         }
                 </>
         )
 }
 
-export default UserMenu
+export default UserMenu;

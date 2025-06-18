@@ -39,6 +39,12 @@ public abstract class ParticipationType implements Serializable {
     }
 
     public abstract boolean leaveMatch(User user);
+
+    public abstract Integer getMinPlayersCount();
+
+    public abstract Integer getPlayerCount();
+
+    public abstract void checkStart();
 }
 
 

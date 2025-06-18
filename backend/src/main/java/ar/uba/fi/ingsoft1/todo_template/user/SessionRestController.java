@@ -7,12 +7,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sessions")
@@ -58,5 +63,23 @@ class SessionRestController {
         String name = userService.getCurrentUserName();
         return Map.of("name", name);
     }
+
+    @GetMapping(value = "/profile", produces = "application/json")
+    @Operation(summary = "Get current user's profile")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Current user profile")
+    public ResponseEntity<UserProfileDTO> getCurrentUserProfile() {
+        UserProfileDTO userProfile  = userService.getCurrentUserProfile();
+        return ResponseEntity.ok(userProfile);
+    }
+
+
+    @GetMapping(value = "/user-zones", produces = "application/json")
+    @Operation(summary =  "Get zones")
+        public List<String> getAllUserZones() {
+            return Arrays.stream(UserZones.values())
+                    .map(Enum::name) // Gets the enum name (e.g., "VICENTE_LOPEZ")
+                    .collect(Collectors.toList());
+        }
 
 }

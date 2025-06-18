@@ -3,24 +3,16 @@ import { MenuBG, MenuUI, MenuExit } from './MenuStyles'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from "../../features/users/usersSlice.js";
-import { useNavigate } from 'react-router-dom'
 
 
 const Menu = ({ menuDisplay, setMenuDisplay }) => {
         const dispatch = useDispatch();
-        const navigate = useNavigate();
         const { currentUser } = useSelector(state => state.users);
 
         const handleLogout = () => {
                 dispatch(logout());
                 setMenuDisplay(false);
-                navigate('/');
         };
-
-        const handleMenuClick = () => {
-                setMenuDisplay(!menuDisplay);
-
-        }
 
         return (
                 <>

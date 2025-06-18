@@ -8,25 +8,39 @@ export const loadItemsByGenre = (genre) => async (dispatch) => {
                 dispatch(setItems([]));
                 return;
         }
+
         try {
                 console.log(genre);
                 const res = await axios.get(`${BASE_URL}/${genre}`);
                 const data = res.data;
+
+                // Determine if the data is paginated (i.e., contains "content") or a raw array
+                const itemsArray = Array.isArray(data)
+                    ? data
+                    : Array.isArray(data.content)
+                        ? data.content
+                        : [];
+
+                if (itemsArray.length === 0) {
+                        dispatch(setItems([]));
+                        return;
+                }
+
+                // Optional: gather all keys if needed
                 const allKeys = new Set();
-                data.forEach(item => {
+                itemsArray.forEach(item => {
                         Object.keys(item).forEach(key => allKeys.add(key));
                 });
-                let index = 0;
-                const items = data.map(i => {
-                        index++;
-                        return new Item(i, index);
-                });
+
+                const items = itemsArray.map((i, index) => new Item(i, index));
                 dispatch(setItems(items));
+
         } catch (err) {
                 dispatch(setItems([]));
                 console.error("Falló el fetch de ítems:", err);
         }
 };
+
 
 /**
  * Crea un nuevo ítem (e.g., equipo, partido, cancha etc.)

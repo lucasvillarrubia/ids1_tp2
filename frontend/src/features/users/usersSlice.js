@@ -5,7 +5,7 @@ const initialState = {
         currentUser: null,
         token: null,
         isAuthenticated: false,
-        userMenuOnDisplay: JSON.parse(sessionStorage.getItem('userMenuOnDisplay')) || false
+        userMenuOnDisplay: false
 }
 
 const usersSlice = createSlice({
@@ -19,20 +19,14 @@ const usersSlice = createSlice({
                         state.isAuthenticated = true;
                 },
                 logout: (state) => {
-                        sessionStorage.removeItem('userMenuOnDisplay');
                         state.currentUser = null;
                         state.token = null;
                         state.isAuthenticated = false;
-                        state.userMenuOnDisplay = false;
                 },
-                toggleUserMenuDisplay: (state) => {
-                        const newValue = !state.userMenuOnDisplay;
-                        sessionStorage.setItem('userMenuOnDisplay', JSON.stringify(newValue));
-                        return { ...state, userMenuOnDisplay: newValue };
-                }
+                toggleUserMenuDisplay: state => {return {...state, userMenuOnDisplay: !state.userMenuOnDisplay}}
         }
 });
 
-export const { setCurrentUser, setAuth, logout, toggleUserMenuDisplay } = usersSlice.actions;
+export const { setCurrentUser, setAuth, logout, toggleUserMenuDisplay} = usersSlice.actions;
 
 export default usersSlice.reducer;

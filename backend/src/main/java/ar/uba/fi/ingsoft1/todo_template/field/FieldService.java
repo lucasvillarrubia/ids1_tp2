@@ -1,15 +1,24 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
+import ar.uba.fi.ingsoft1.todo_template.user.UserService;
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleCreateDTO;
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlot;
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlotDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
@@ -20,7 +29,6 @@ import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Service
 @Transactional
@@ -29,17 +37,30 @@ public class FieldService {
     private final FieldRepository fieldRepository;
     private final ReviewRepository reviewRepository;
     private final ReservationRepository reservationRepository;
+    private final UserService userService;
 
     public FieldService(FieldRepository fieldRepository, 
                         ReviewRepository reviewRepository,
-                        ReservationRepository reservationRepository) {
+                        ReservationRepository reservationRepository,
+                        UserService userService) {
         this.fieldRepository = fieldRepository;
         this.reviewRepository = reviewRepository;
         this.reservationRepository = reservationRepository;
+        this.userService = userService;
+    }
+
+    public User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof JwtUserDetails)) {
+            throw new EntityNotFoundException("No se ha encontrado el usuario actual");
+        }
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        User currentUser = userService.getUserByEmail(userDetails.username());
+        return currentUser;
     }
 
     public FieldDTO createField(FieldCreateDTO fieldCreate) {
-        Field newField = fieldCreate.asField();
+        Field newField = fieldCreate.asField(getCurrentUser());
         if (!fieldRepository.findByName(newField.getName()).isEmpty()) {
             throw new DuplicateEntityException("Field", "name");
         }
@@ -50,23 +71,36 @@ public class FieldService {
 
     public void deleteField(Long fieldId) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        if (!field.getOwner().getEmail().equals(getCurrentUser().getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede eliminarlo");
+        }
+
+        if (!field.getReservations().isEmpty()) {
+            throw new IllegalArgumentException("No se puede eliminar un campo con reservas asociadas");
+        }
+
         fieldRepository.delete(field);
     }
 
     // GET
-    public FieldDTO getFieldById(Long fieldId) throws MethodArgumentNotValidException {
-        return new FieldDTO(fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found")));
+    public FieldDTO getFieldById(Long fieldId) {
+        return fieldRepository.findById(fieldId).map(FieldDTO::new).orElseThrow(() -> new EntityNotFoundException("Field not found"));
     }
 
     public List<FieldDTO> getAllFields() {
         return fieldRepository.findAll().stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
-    public List<FieldDTO> getFieldsByOwnerId(Long ownerId) {
-        return fieldRepository.findByOwnerId(ownerId).stream().map(FieldDTO::new).collect(Collectors.toList());
+    public List<FieldDTO> getFieldsByOwner(String ownerEmail) {
+        User user = userService.getUserByEmail(ownerEmail);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with email: " + ownerEmail);
+        }
+
+        return fieldRepository.findByOwnerId(user.getId()).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
-    public List<FieldDTO> getFieldsByZone(String zone) {
+    public List<FieldDTO> getFieldsByZone(UserZones zone) {
         return fieldRepository.findByZone(zone).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
@@ -93,6 +127,62 @@ public class FieldService {
         return reservationRepository.findByFieldId(field.getId()).stream()
                 .map(ReservationDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    public List<ReservationDTO> getReservationByOrganizerEmail(String organizerEmail) {
+        return reservationRepository.findByOrganizerEmail(organizerEmail).stream()
+                .map(ReservationDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public java.util.Map<String, Object> getStaticticsByFieldId(Long fieldId) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        List<Reservation> reservations = reservationRepository.findByFieldId(fieldId);
+        
+        double weekly = field.getWeeklyOcupation(reservations);
+        double monthly = field.getMonthlyOcupation(reservations);
+        int totalReservations = reservations.stream().filter(r -> r.getDate().isAfter(LocalDate.now())).collect(Collectors.toList()).size();
+        totalReservations += reservations.stream().filter(r -> r.getDate().isEqual(LocalDate.now())).collect(Collectors.toList()).size();
+
+        java.util.Map<String, Object> response = new java.util.HashMap<>();
+        response.put("weeklyOccupation", weekly);
+        response.put("monthlyOccupation", monthly);
+        response.put("totalReservations", totalReservations);
+
+        return response;
+    }
+
+    public void deleteReservationByOwner(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
+
+        Field field = reservation.getField();
+        User currentUser = getCurrentUser();
+        
+        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede eliminar reservas"); // raro
+        }
+
+        field.removeReservation(reservationId);
+        reservationRepository.deleteById(reservationId);
+
+        fieldRepository.save(field);
+    }
+
+    public void deleteReservationByOrganizer(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
+        User currentUser = getCurrentUser();
+        Field field = reservation.getField();
+
+        if (!reservation.getOrganizer().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el organizador de la reserva puede eliminarla");
+        }
+        
+        field.removeReservation(reservationId);
+        reservationRepository.deleteById(reservationId);
+
+        fieldRepository.save(field);
     }
 
     // UPDATE
@@ -131,6 +221,11 @@ public class FieldService {
     public ReservationDTO addReservationToField(ReservationCreateDTO reservation) {
         Field field = fieldRepository.findById(reservation.getFieldId()).orElseThrow(() -> new EntityNotFoundException("Field not found"));
 
+        if (field.getFieldSchedule().getStartHour().isAfter(reservation.getStart()) ||
+            field.getFieldSchedule().getEndHour().isBefore(reservation.getEnd())) {
+            throw new IllegalArgumentException("Reservation time slot is outside of field's schedule.");
+        }
+
         List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(field.getId(), reservation.getDate());
         if (reservations.stream().anyMatch(r -> 
                 r.getStart().isBefore(reservation.getEnd()) && 
@@ -139,16 +234,68 @@ public class FieldService {
             throw new IllegalArgumentException("Reservation time slot is already taken.");
         }
 
-        Reservation newReservation = reservationRepository.save(reservation.asReservation(field));
+        if (field.getSchedule().getUnavailableTimeSlots().stream()
+                .anyMatch(unavailable -> 
+                    reservation.getStart().isBefore(unavailable.getEndHour()) &&
+                    reservation.getEnd().isAfter(unavailable.getStartHour())
+                )) {
+            throw new IllegalArgumentException("Reservation time slot is blocked.");
+        }
 
-        field.addReservation(newReservation.getId());
-        fieldRepository.save(field);
+        User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
+        Reservation newReservation = reservationRepository.save(reservation.asReservation(field, organizer));
+        field.addReservation(newReservation);
+        //fieldRepository.save(field);
         return new ReservationDTO(newReservation);
+    }
+
+    public List<String> getAvailableSlotsForReservations(LocalDate date, Long fieldId) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(fieldId, date);
+        List<TimeSlot> timeSlots = field.getSchedule().getTimeSlotsForDate(date, reservations);
+
+        return timeSlots.stream()
+                .map(slot -> slot.getStartHour() + " - " + slot.getEndHour())
+                .collect(Collectors.toList());
+    }
+
+    public FieldDTO addUnavailbleTimeSlotToField(Long fieldId, TimeSlotDTO timeSlot) {
+        Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+
+        User currentUser = getCurrentUser();
+        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede editarlo");
+        }
+
+        TimeSlot timeSlotEntity = timeSlot.asTimeSlot();
+        List<Reservation> reservations = reservationRepository.findByFieldIdAndDate(fieldId, timeSlotEntity.getDate());
+        if (reservations.stream().anyMatch(reservation ->
+                timeSlotEntity.getStartHour().isBefore(reservation.getEnd()) &&
+                timeSlotEntity.getEndHour().isAfter(reservation.getStart())
+            )) {
+            throw new IllegalArgumentException("El horario ya está reservado, no se puede bloquear.");
+        }
+
+        if (field.getSchedule().getUnavailableTimeSlots().stream()
+                .anyMatch(unavailable -> 
+                    timeSlotEntity.getStartHour().isBefore(unavailable.getEndHour()) &&
+                    timeSlotEntity.getEndHour().isAfter(unavailable.getStartHour())
+                )) {
+            throw new IllegalArgumentException("El horario ya está bloqueado, no se puede agregar.");
+        }
+
+        field.getSchedule().addUnavailableTimeSlot(timeSlotEntity);
+        
+        return new FieldDTO(fieldRepository.save(field));
     }
 
     // edit field
     public FieldDTO updateField(Long fieldId, FieldUpdateDTO fieldEdit) {
         Field field = fieldRepository.findById(fieldId).orElseThrow(() -> new EntityNotFoundException("Field not found"));
+        User currentUser = getCurrentUser();
+        if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
+            throw new EntityNotFoundException("Solo el propietario del campo puede editarlo");
+        }
 
         if (fieldEdit.getDescription() != null) {
             field.setDescription(fieldEdit.getDescription());
@@ -202,6 +349,10 @@ public class FieldService {
         }
 
         return new FieldDTO(fieldRepository.save(field));
+    }
+
+    public Reservation getReservationById(Long id) {
+        return reservationRepository.getReferenceById(id);
     }
 
 }

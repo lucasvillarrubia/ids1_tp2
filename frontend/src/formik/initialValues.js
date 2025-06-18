@@ -35,24 +35,22 @@ export const teamInitialValues = {
 };
 
 export const fieldInitialValues = {
-    ownerId: '',
     name: '',
     location: '',
     zone: '',
     features: [],
-    images: []
 };
 
 export const matchInitialValues = {
-    fieldId: '',
+    fieldId: 1,
     participationType: {
-        type: '',
-        minPlayersCount: '',
-        maxPlayersCount: '',
-        players: '',
+        type: 'Open',
+        minPlayersCount: 2,
+        maxPlayersCount: 10,
+        players: []
     },
     timeRange: {
-        start: '',
-        end: '',
+        start: '19:00:00',
+        end: '20:00:00'
     },
 };

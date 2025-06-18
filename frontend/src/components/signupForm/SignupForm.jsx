@@ -6,6 +6,8 @@ import { signupValidationSchema } from '../../formik/validationSchema'
 import SignupInput from './SignupInput'
 import { createUser } from '../../features/users/usersAPI'
 import { useNavigate } from 'react-router-dom'
+import { AVAILABLE_ZONES_DISPLAY } from "../../utils/constants.js";
+
 
 const SignupForm = () => {
         const navigate = useNavigate();
@@ -26,16 +28,20 @@ const SignupForm = () => {
                         }}
                 >
                         <Form>
-                                <SignupInput name="name" type="text" id="nombre" htmlFor="nombre" placeholder="Tu nombre">
+                                <SignupInput name="name" type="text" id="nombre" htmlFor="nombre"
+                                             placeholder="Tu nombre">
                                         Nombre
                                 </SignupInput>
-                                <SignupInput name="lastname" type="text" id="apellido" htmlFor="apellido" placeholder="Tu apellido">
+                                <SignupInput name="lastname" type="text" id="apellido" htmlFor="apellido"
+                                             placeholder="Tu apellido">
                                         Apellido
                                 </SignupInput>
-                                <SignupInput name="email" type="email" id="correo" htmlFor="correo" placeholder="Tu correo">
+                                <SignupInput name="email" type="email" id="correo" htmlFor="correo"
+                                             placeholder="Tu correo">
                                         Correo electrónico
                                 </SignupInput>
-                                <SignupInput name="password" type="password" id="contrasenia" htmlFor="contrasenia" placeholder="Tu nueva contraseña">
+                                <SignupInput name="password" type="password" id="contrasenia" htmlFor="contrasenia"
+                                             placeholder="Tu nueva contraseña">
                                         Creá una contraseña
                                 </SignupInput>
                                 <SignupInput name="age" type="number" id="edad" htmlFor="edad" placeholder="Tu edad">
@@ -53,9 +59,31 @@ const SignupForm = () => {
                                                 {msg => <ErrorMessageUI>{msg}</ErrorMessageUI>}
                                         </ErrorMessage>
                                 </div>
-                                <SignupInput name="zone" type="text" id="zona" htmlFor="zona" placeholder="Tu zona o localidad">
-                                        Zona
-                                </SignupInput>
+                                {
+                                <div>
+                                        <label htmlFor="zones">Zonas de Interés</label>
+                                        <Field
+                                            as="select"
+                                            name="zones"
+                                            id="zones"
+                                            multiple
+                                            style={{ minHeight: '80px', width: '25%' }}
+                                        >
+                                                {AVAILABLE_ZONES_DISPLAY.map((zone) => (
+                                                    <option key={zone.value} value={zone.value}>
+                                                            {zone.label}
+                                                    </option>
+                                                ))}
+                                        </Field>
+                                        <ErrorMessage name="zones">
+                                                {msg => <ErrorMessageUI>{msg}</ErrorMessageUI>}
+                                        </ErrorMessage>
+                                        <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+                                                Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples zonas.
+                                        </small>
+                                </div>
+                                }
+
                                 <SignupSubmit type='submit'>Crear usuario</SignupSubmit>
                         </Form>
                 </Formik>

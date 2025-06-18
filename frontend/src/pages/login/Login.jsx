@@ -1,23 +1,26 @@
 import { useSelector } from 'react-redux'
-import React from 'react'
+import React, { useEffect, useState } from "react";
 import { LoginBG, LoginText, LoginTitle, LoginButton } from './LoginStyles'
 import LoginForm from '../../components/loginForm/LoginForm'
 import { useNavigate } from 'react-router-dom'
 
+
 const Login = () => {
         const navigate = useNavigate();
         const { currentUser } = useSelector(state => state.users);
+        const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-        if (currentUser) {
-            console.log(currentUser.name);
-            console.log(currentUser);
-            console.log(currentUser.token);
-                console.log("por esto estoy redirigiendo");
-                navigate('/');
-                return null;
-        }
 
-        return (
+        useEffect(() => {
+          if (isAuthenticated) {
+            navigate('/');
+            setIsAuthenticated(true);
+          }
+        }, [isAuthenticated, navigate]);
+
+
+
+  return (
                 <LoginBG>
                         <LoginTitle>INICIÁ SESIÓN!</LoginTitle>
                         <LoginForm />
@@ -28,3 +31,7 @@ const Login = () => {
 }
 
 export default Login
+//if (currentUser) {
+//       navigate('/');
+//      return null;
+// }

@@ -14,7 +14,6 @@ import java.util.Set;
 public class Open extends ParticipationType {
 
     private Integer minPlayersCount;
-
     private Integer maxPlayersCount;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -33,6 +32,7 @@ public class Open extends ParticipationType {
         this.players = players != null ? players : new HashSet<>();
     }
 
+    @Override
     public Integer getMinPlayersCount() {
         return this.minPlayersCount;
     }
@@ -43,11 +43,7 @@ public class Open extends ParticipationType {
 
     public Integer getPlayerCount() { return players.size(); }
 
-    //public void deletePlayer(id) {}
-
     public Set<User> getPlayers() { return this.players; }
-
-    public void setPlayers(Set<User> players) { this.players = players; }
 
     @Override
     public String toString() {
@@ -57,6 +53,9 @@ public class Open extends ParticipationType {
     @Override
     public boolean addPlayer(User user) {
         if (players.size() == maxPlayersCount) {
+            return false;
+        }
+        if (players.contains(user)) {
             return false;
         }
         players.add(user);
@@ -70,6 +69,16 @@ public class Open extends ParticipationType {
         }
         players.remove(user);
         return true;
+    }
+
+    @Override
+    public void checkStart(){
+        if (players.size() < minPlayersCount){
+            throw new IllegalStateException("Not enough players!");
+        }
+        if (players.size() % 2 != 0){
+            throw new IllegalStateException("The number of players must be even!");
+        }
     }
 
 

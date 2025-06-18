@@ -7,8 +7,10 @@ import Home from '../pages/home/Home';
 import ProtectedRoute from '../components/globalComponents/ProtectedRoute/ProtectedRoute';
 import Create from '../pages/create/Create';
 import Success from '../pages/success/Success';
-import MyProfile from "../pages/myProfile/MyProfile.jsx";
-import TeamPage from "../pages/itemPages/teamPage/TeamPage.jsx";
+import UserProfilePage from "../components/userProfilePage/UserProfilePage.jsx";
+import VerifyEmailPage from "../components/verifyEmailPage/verifyEmailPage.jsx";
+import ForgotPasswordPage from "../components/forgotPasswordPage/ForgotPasswordPage.jsx";
+import NewPasswordPage from "../components/newPasswordPage/NewPasswordPage.jsx";
 
 
 function Routes () {
@@ -17,6 +19,11 @@ function Routes () {
                         <Route path='/' element={<Home />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='/signup' element={<Signup />} />
+                        <Route path="/verify-email" element={<VerifyEmailPage/>} />
+                        <Route path="/password_reset/" element={<ForgotPasswordPage/>} />
+                        <Route path="password_reset/new_password" element={<NewPasswordPage/>} />
+                        <Route path = "/sessions/profile" element={<UserProfilePage/>} />
+
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/create' element={<Create />} />
                         </Route>

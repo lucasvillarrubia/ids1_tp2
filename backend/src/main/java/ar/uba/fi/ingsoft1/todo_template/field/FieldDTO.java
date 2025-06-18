@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 
 public class FieldDTO {
     private Long id;
-    private Long ownerId;
+    private String ownerEmail;
     private String name;
     private String description;
     private String location;
-    private String zone;
+    private UserZones zone;
     private Integer price;
     private List<String> features;
     private FieldScheduleDTO schedule;
@@ -21,7 +23,7 @@ public class FieldDTO {
 
     public FieldDTO(Field field) {
         this.id = field.getId();
-        this.ownerId = field.getOwnerId();
+        this.ownerEmail = field.getOwner().getEmail();
         this.name = field.getName();
         this.description = field.getDescription();
         this.location = field.getLocation();
@@ -33,20 +35,16 @@ public class FieldDTO {
                 .toList();
         this.schedule = new FieldScheduleDTO(field.getFieldSchedule());
         this.reviews = new ArrayList<>(field.getReviews());
-        this.reservations = new ArrayList<>(field.getReservations());
+        this.reservations = new ArrayList<>(field.getReservations().stream().map(Reservation::getId).toList());
         this.images = new ArrayList<>(field.getImages());
-    }
-
-    public Field asField() {
-        return new Field(this.id, this.ownerId, this.name, this.location, this.zone, this.features.stream().map(FieldFeatures::valueOf).toList());
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public String getOwnerEmail() {
+        return ownerEmail;
     }
 
     public String getName() {
@@ -61,7 +59,7 @@ public class FieldDTO {
         return location;
     }
 
-    public String getZone() {
+    public UserZones getZone() {
         return zone;
     }
 
@@ -93,8 +91,8 @@ public class FieldDTO {
         this.id = id;
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
     }
 
     public void setName(String name) {
@@ -109,7 +107,7 @@ public class FieldDTO {
         this.location = location;
     }
 
-    public void setZone(String zone) {
+    public void setZone(UserZones zone) {
         this.zone = zone;
     }
 

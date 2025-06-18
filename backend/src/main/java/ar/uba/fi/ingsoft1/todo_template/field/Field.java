@@ -6,20 +6,12 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
+import ar.uba.fi.ingsoft1.todo_template.user.User;
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @Entity
@@ -30,9 +22,9 @@ public class Field {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Positive 
-    @Column(nullable = false)
-    private Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner", nullable = false)
+    private User owner;
 
     @NotEmpty(message = "La cancha debe tener un nombre")
     @Column(nullable = false)
@@ -42,7 +34,9 @@ public class Field {
 
     private String location;
 
-    private String zone;
+    @NotNull(message = "La cancha debe tener una zona asignada")
+    @Enumerated(EnumType.STRING)
+    private UserZones zone;
 
     @Positive(message = "El precio debe ser un valor positivo")
     @Column
@@ -67,10 +61,8 @@ public class Field {
     @Column(name = "image")
     private List<String> images;
 
-    @ElementCollection
-    @CollectionTable(name = "field_reservations", joinColumns = @JoinColumn(name = "field_id"))
-    @Column(name = "reservation_id")
-    private List<Long> reservations;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Reservation> reservations;
 
     @ElementCollection
     @CollectionTable(name = "field_reviews", joinColumns = @JoinColumn(name = "field_id"))
@@ -78,10 +70,10 @@ public class Field {
 
     public Field() {}
 
-    public Field(Long id, String name, Long ownerId, String location, String zone, List<FieldFeatures> features, Optional<List<String>> images) {
+    public Field(Long id, String name, User owner, String location, UserZones zone, List<FieldFeatures> features, Optional<List<String>> images) {
         this.id = id;
         this.name = name;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.location = location;
         this.zone = zone;
         this.features = features;
@@ -92,10 +84,10 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long id, Long ownerId, String name, String location, String zone, List<FieldFeatures> features) {
+    public Field(Long id, User owner, String name, String location, UserZones zone, List<FieldFeatures> features) {
         this.id = id;
         this.name = name;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.location = location;
         this.zone = zone;
         this.features = features;
@@ -106,9 +98,9 @@ public class Field {
         this.reviews = new ArrayList<>();
     }
 
-    public Field(Long ownerId, String name, String location, String zone, List<FieldFeatures> features, List<String> images) {
+    public Field(User owner, String name, String location, UserZones zone, List<FieldFeatures> features, List<String> images) {
         this.name = name;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.location = location;
         this.zone = zone;
         this.features = features;
@@ -123,8 +115,8 @@ public class Field {
         return id;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public User getOwner() {
+        return owner;
     }
 
     public String getName() {
@@ -139,7 +131,7 @@ public class Field {
         return location;
     }
 
-    public String getZone() {
+    public UserZones getZone() {
         return zone;
     }
 
@@ -159,7 +151,7 @@ public class Field {
         return schedule;
     }
 
-    public List<Long> getReservations() {
+    public List<Reservation> getReservations() {
         return reservations;
     }
 
@@ -191,7 +183,7 @@ public class Field {
         this.location = location;
     }
     
-    public void setZone(String zone) {
+    public void setZone(UserZones zone) {
         this.zone = zone;
     }
 
@@ -227,7 +219,7 @@ public class Field {
         this.schedule.setPredefDuration(predefDuration);
     }
 
-    public void setReservations(List<Long> reservations) {
+    public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 
@@ -239,11 +231,35 @@ public class Field {
         this.isAvailable = isAvailable;
     }
 
-    public void addReservation(Long reservation) { // TODO: Que se modifique el schedule
+    public void addReservation(Reservation reservation) { 
         this.reservations.add(reservation);
     }
 
     public void addReview(Long review) {
         this.reviews.add(review);
+    }
+
+    public void removeReservation(Long id) {
+        this.reservations.removeIf(reservation -> reservation.getId().equals(id));
+    }
+
+    public double getWeeklyOcupation(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int total_hours = this.schedule.getTotalHours();
+        int occupiedHours = this.schedule.getOccupiedHoursThisWeek(reservations);
+        return occupiedHours / (double) total_hours;
+    }
+
+    public double getMonthlyOcupation(List<Reservation> reservations) {
+        if (reservations == null || reservations.isEmpty()) {
+            return 0;
+        }
+
+        int total_hours = this.schedule.getTotalHours() * 4; 
+        int occupiedHours = this.schedule.getOccupiedHoursThisMonth(reservations);
+        return occupiedHours / (double) total_hours;
     }
 }

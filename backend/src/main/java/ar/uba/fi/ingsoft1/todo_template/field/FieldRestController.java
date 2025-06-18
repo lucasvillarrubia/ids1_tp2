@@ -1,7 +1,10 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
+import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,9 +16,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlotDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
@@ -57,19 +62,28 @@ public class FieldRestController {
         return fieldService.getFieldById(id);
     }
 
-    @GetMapping(value = "/owner/{ownerId}", produces = "application/json")
-    @Operation(summary = "Get all fields by owner id")
+    @GetMapping(value = "/owner/{ownerEmail}", produces = "application/json")
+    @Operation(summary = "Get all fields by owner email")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFieldsByOwnerId(@PathVariable @Positive Long ownerId) {
-        return fieldService.getFieldsByOwnerId(ownerId).stream().toList();
+    public List<FieldDTO> getFieldsByOwnerId(@PathVariable String ownerEmail) {
+        return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
+    }
+
+    @GetMapping(value = "/owner/me", produces = "application/json")
+    @Operation(summary = "Get all fields owned by the current user")
+    @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
+    public List<FieldDTO> getFieldsOwns() {
+        String ownerEmail = fieldService.getCurrentUser().getEmail();
+        return fieldService.getFieldsByOwner(ownerEmail).stream().toList();
     }
 
     @GetMapping(value = "/zone/{zone}", produces = "application/json")
     @Operation(summary = "Get all fields by zone")
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
-    public List<FieldDTO> getFieldsByZone(@PathVariable String zone) {
+    public List<FieldDTO> getFieldsByZone(@PathVariable UserZones zone) {
         return fieldService.getFieldsByZone(zone).stream().toList();
     }
 
@@ -89,7 +103,7 @@ public class FieldRestController {
         return fieldService.getFieldsByFeature(feature).stream().toList();
     }
 
-    @GetMapping(value = "/reviews/{id}", produces = "application/json")
+    @GetMapping(value = "{id}/reviews/", produces = "application/json")
     @Operation(summary = "Get all reviews for a field by its id")
     @ApiResponse(responseCode = "200", description = "Reviews found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
@@ -97,7 +111,7 @@ public class FieldRestController {
         return fieldService.getReviewsByFieldId(id).stream().toList();
     }
 
-    @GetMapping(value = "/reservations/field/{id}", produces = "application/json")
+    @GetMapping(value = "{id}/reservations/", produces = "application/json")
     @Operation(summary = "Get all reservations for a field by its id")
     @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
@@ -105,14 +119,61 @@ public class FieldRestController {
         return fieldService.getReservationsByFieldId(id).stream().toList();
     }
 
+    @GetMapping(value = "{id}/reservations/availableSlots", produces = "application/json")
+    @Operation(summary = "Get all available time slots for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Available time slots found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<String> getAvailableTimeSlotsByFieldId(@PathVariable @Positive Long id, 
+                                                       @RequestParam(required = true) LocalDate date) {
+        return fieldService.getAvailableSlotsForReservations(date, id).stream().map(Object::toString).toList();
+    }
+
+    @GetMapping(value = "/reservations/organizer/{organizerEmail}", produces = "application/json")
+    @Operation(summary = "Get all reservations for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<ReservationDTO> getReservationsByOrganizer(@PathVariable @Positive String organizerEmail) {
+        return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
+    }
+
+    @GetMapping(value = "/reservations/organizer/me", produces = "application/json")
+    @Operation(summary = "Get all reservations for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public List<ReservationDTO> getMyReservations() {
+        String organizerEmail = fieldService.getCurrentUser().getEmail();
+        return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
+    }
+
+    @GetMapping(value = "/{id}/reservations/statistics", produces = "application/json")
+    @Operation(summary = "Get reservation statistics for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Reservation statistics found", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    public Map<String, Object> getReservationStatistics(@PathVariable @Positive Long id) {
+        return fieldService.getStaticticsByFieldId(id);
+    }
+
+    @PostMapping(value = "/{id}/reservations/unavailableSlots", produces = "application/json")
+    @Operation(summary = "Block time slots for a field by its id")
+    @ApiResponse(responseCode = "200", description = "Unavailable time slots blocked", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')") 
+    public ResponseEntity<Void> blockTimeSlots(
+            @PathVariable @Positive Long id,
+            @Valid @RequestBody TimeSlotDTO unavailableTimeSlots
+    ) {
+        fieldService.addUnavailbleTimeSlotToField(id, unavailableTimeSlots);
+        return ResponseEntity.ok().build();
+    }
     /* ejemplo del body para crear una cancha
 {
-    owner_id: 1,
-    name: "Cancha 1",
-    description: "Cancha de futbol 5",
-    location: "Calle Falsa 123",
-    zone: "San Telmo",
-    features: ["GRASS", "LIGHTS", "RESTROOMS"]
+    "owner_id": 1,
+    "name": "Cancha 1",
+    "description": "Cancha de futbol 5",
+    "location": "Calle Falsa 123",
+    "zone": EZEIZA,
+    "features": ["GRASS", "LIGHTS", "RESTROOMS"]
 }
     */
 
@@ -121,14 +182,11 @@ public class FieldRestController {
     @ApiResponse(responseCode = "201", description = "Field created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')") // esto imagino que solo los administradores de cancha pueden crearlas
+    @PreAuthorize("hasRole('ADMIN')")
     public FieldDTO createField(
             @Valid @RequestBody FieldCreateDTO fieldCreateDTO
     ) {
         System.out.println("CONTROLLER Creating Field with DTO: " + fieldCreateDTO);
-        if (fieldCreateDTO.getOwnerId() == null || fieldCreateDTO.getName() == null || fieldCreateDTO.getZone() == null) {
-            throw new IllegalArgumentException("Owner ID and Name are required to create a field.");
-        }
         FieldDTO createdField = this.fieldService.createField(fieldCreateDTO);
         return createdField;
     }
@@ -138,19 +196,19 @@ public class FieldRestController {
     @ApiResponse(responseCode = "201", description = "Review created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('USER')") // cualquier usuario puede crear una reseña
+    @PreAuthorize("hasRole('USER')") 
     public ReviewDTO createReview(
             @Valid @RequestBody ReviewCreateDTO reviewCreateDTO
     ) {
         return fieldService.addReviewToField(reviewCreateDTO);
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json", value = "/reservations/field/{id}")
+    @PostMapping(consumes = "application/json", produces = "application/json", value = "/{id}/reservations")
     @Operation(summary = "Create a new reservation for a field")
     @ApiResponse(responseCode = "201", description = "Reservation created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('USER')") // cualquier usuario puede crear una reserva
+    @PreAuthorize("hasRole('USER')")
     public ReservationDTO createReservation(
             @Valid @RequestBody ReservationCreateDTO reservationCreateDTO
     ) {
@@ -161,10 +219,22 @@ public class FieldRestController {
     @Operation(summary = "Delete a field by its id")
     @ApiResponse(responseCode = "200", description = "Field deleted successfully")
     @ApiResponse(responseCode = "404", description = "Field not found")
-    //@PreAuthorize("hasRole('ADMIN')") // esto representa a un administrador de cancha no de app ?
+    @PreAuthorize("hasRole('ADMIN')") 
     public ResponseEntity<Void> deleteField(@PathVariable @Positive long id) {
         fieldService.deleteField(id);
         return ResponseEntity.ok().build(); // TODO: chequear si se eliminó
+    }
+
+    @DeleteMapping(value = "/reservations/{reservationId}")
+    @Operation(summary = "Delete a reservation by its id")
+    @ApiResponse(responseCode = "200", description = "Reservation deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Reservation not found")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Void> deleteReservation(
+            @PathVariable @Positive Long reservationId
+    ) {
+        fieldService.deleteReservationByOwner(reservationId);
+        return ResponseEntity.ok().build();
     }
 
     // PATCH

@@ -1,6 +1,6 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/constants"
-import {logout, setCurrentUser} from "./usersSlice.js";
+import {logout, setCurrentUser,setAuth} from "./usersSlice.js";
 
 
 /**
@@ -34,7 +34,7 @@ export const createUser = async (userData) => {
 
 export const verifyUser = async (email, code) => {
         try {
-                const { data } = await axios.post(`${BASE_URL}/auth/verify`, { email, code });
+                const { data } = await axios.patch(`${BASE_URL}/auth/verify`, { email, code });
                 return data;
         } catch (error) {
                 console.log({ verifyUserError: error });
@@ -54,9 +54,12 @@ export const verifyUser = async (email, code) => {
 
 
 export const loginUser = async (email, password) => {
+
+
         try {
                 const response = await axios.post(`${BASE_URL}/sessions`, { email, password });
                 const token = response.data.accessToken;
+
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 const userResponse = await axios.get(`${BASE_URL}/sessions/me`);
                 const name = userResponse.data.name;
@@ -67,6 +70,31 @@ export const loginUser = async (email, password) => {
                 throw new Error(msg);
         }
 };
+
+
+export const getUserProfile = async (token) => {
+        try {
+
+                const userProfileResponse = await axios.get(`${BASE_URL}/sessions/profile`, {
+                        headers: {
+                                'Authorization': `Bearer ${token}` // <- Aquí te aseguras que el token se envía
+                        }
+                });
+
+                return userProfileResponse
+        } catch (error) {
+                console.error("getUserProfile error:", error);
+
+                // Extract a meaningful error message from the response
+                const msg =
+                  error?.response?.data?.message || // For messages from your Spring backend
+                  error?.message ||                  // For network errors or generic JS errors
+                  "Ocurrió un error desconocido al cargar el perfil del usuario.";
+
+                throw new Error(msg); // Re-throw a standardized Error for the calling component to catch
+        }
+};
+
 
 export const logoutUser = (dispatch) => {
         delete axios.defaults.headers.common["Authorization"];

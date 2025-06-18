@@ -8,20 +8,20 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class TimeSlot implements Serializable{
-    private LocalDate day;
+    private LocalDate date;
     private LocalTime startHour;
     private LocalTime endHour;
 
     public TimeSlot() {}
 
-    public TimeSlot(LocalDate day, LocalTime startHour, LocalTime endHour) {
-        this.day = day;
+    public TimeSlot(LocalDate date, LocalTime startHour, LocalTime endHour) {
+        this.date = date;
         this.startHour = startHour;
         this.endHour = endHour;
     }
 
-    public LocalDate getDay() {
-        return day;
+    public LocalDate getDate() {
+        return date;
     }
 
     public LocalTime getStartHour() {
@@ -34,6 +34,6 @@ public class TimeSlot implements Serializable{
 
     @Override
     public String toString() {
-        return day + " " + startHour + " - " + endHour;
+        return date + " " + startHour + " - " + endHour;
     }
 }
