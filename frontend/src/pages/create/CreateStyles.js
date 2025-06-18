@@ -18,6 +18,7 @@ export const CreateContainer = styled.div`
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
+        flex-wrap: wrap;
         align-items: baseline;
         width: 100%;
         @media screen and (max-width: 768px) {

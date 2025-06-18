@@ -1,12 +1,15 @@
 import React from 'react'
-import { UserInfoUI } from './UserStyles'
+import { useSelector } from 'react-redux'
+import { UserInfoUI } from './UserStyles.js'
 
 const UserInfo = () => {
+    const { currentUser } = useSelector(state => state.users);
+
   return (
     <UserInfoUI>
-        <p>Usuario: Ezequiel Martínez</p>
-        <p>Correo: villar.lucase@gmail.com</p>
-        <a href="#">No soy yo, cerrar sesión.</a>
+        <p>Usuario: {currentUser.name}</p>
+        {/*<p>Correo: {currentUser.user.email}</p>*/}
+        {/*<p>Tipo de usuario: </p>*/}
     </UserInfoUI>
   )
 }

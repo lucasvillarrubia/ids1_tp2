@@ -28,8 +28,12 @@ function Routes () {
                             <Route path='/create' element={<Create />} />
                         </Route>
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path='/me' element={<MyProfile />} />
+                        </Route>
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/congratulations' element={<Success />} />
                         </Route>
+                        <Route path="/team/:teamId" element={<TeamPage />} />
                         <Route path='*' element={<NotFound />} />
                 </AllRoutes>
         )
