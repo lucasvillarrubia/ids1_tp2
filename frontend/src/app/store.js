@@ -5,11 +5,19 @@ import storage from "redux-persist/lib/storage";
 import categoriesReducer from "../features/categories/categoriesSlice";
 import itemsReducer from "../features/items/itemsSlice.js";
 import usersReducer from "../features/users/usersSlice";
+import teamsReducer from "../features/teams/teamsSlice.js";
+import fieldsReducer from "../features/fields/fieldsSlice.js";
+import matchesReducer from "../features/matches/matchesSlice.js";
+import tournamentsReducer from "../features/tournaments/tournamentsSlice.js";
 
 const reducers = combineReducers({
         categories: categoriesReducer,
         items: itemsReducer,
-        users: usersReducer
+        users: usersReducer,
+        teams: teamsReducer,
+        fields: fieldsReducer,
+        matches: matchesReducer,
+        tournaments: tournamentsReducer
 })
 
 const persistConfig = { key: 'root', storage, whitelist: ['users'] }
