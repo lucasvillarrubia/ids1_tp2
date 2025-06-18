@@ -102,10 +102,6 @@ public class FieldSchedule implements Serializable{
             return new ArrayList<>();
         }
 
-        if (this.predefDuration <= 0 || this.startHour == null || this.endHour == null || !this.startHour.isBefore(this.endHour)) {
-            throw new IllegalArgumentException("Horario inválido o duración no positiva");
-        }
-
         List<TimeSlot> timeSlots = new ArrayList<>();
         LocalTime actualTimeSlotStart = this.startHour;
         

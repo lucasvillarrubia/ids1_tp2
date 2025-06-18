@@ -2,10 +2,7 @@ package ar.uba.fi.ingsoft1.todo_template.match;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
-import ar.uba.fi.ingsoft1.todo_template.field.Field;
-import ar.uba.fi.ingsoft1.todo_template.field.FieldRepository;
 import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerService;
-import ar.uba.fi.ingsoft1.todo_template.match.participationType.Open;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
@@ -15,15 +12,12 @@ import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.*;
 
