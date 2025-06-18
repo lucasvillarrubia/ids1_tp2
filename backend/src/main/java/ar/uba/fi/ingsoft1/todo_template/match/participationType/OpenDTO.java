@@ -3,6 +3,7 @@ package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -10,11 +11,14 @@ import jakarta.validation.constraints.Positive;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+@Schema(description = "Participación abierta")
 @DiscriminatorValue("Open")
 public class OpenDTO extends ParticipationTypeDTO {
+        @Schema(description = "Cantidad mínima de jugadores requeridos", example = "5")
         @Positive @NotNull private Integer minPlayersCount;
+        @Schema(description = "Cantidad máxima de jugadores permitidos", example = "10")
         @Positive @NotNull private Integer maxPlayersCount;
+        @Schema(description = "Lista de usuarios que se inscribieron al partido", example = "[\"user1@example.com\", \"user2@example.com\"]")
         private Set<String> players;
 
     public Integer getMaxPlayersCount() {

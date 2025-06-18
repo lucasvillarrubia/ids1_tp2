@@ -2,13 +2,10 @@ package ar.uba.fi.ingsoft1.todo_template.team;
 
 import java.util.Arrays;
 
+import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.NumberFormat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public record TeamCreateDTO(
     @NotBlank(message = "Team name is required")
@@ -34,6 +31,7 @@ public record TeamCreateDTO(
     @NumberFormat(style = NumberFormat.Style.NUMBER)
     @Min(value = 1, message = "Team level must be at least 1")
     @Max(value = 10, message = "Team level must be at most 10")
+    @Positive
     @Schema(description = "Team skill level is optional, must be between 1 and 10",
             minLength = 1,
             maxLength = 10,

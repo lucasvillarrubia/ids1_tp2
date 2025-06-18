@@ -4,11 +4,33 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTyp
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
+@Schema(
+        description = "Datos necesarios para crear un partido",
+        example = """
+    {
+      "participationType": {
+        "type": "Open",
+        "minPlayersCount" : 5,
+        "maxPlayersCount": 10,
+        "players" :["jugador1", "jugador2", "jugador3"]
+      },
+      "reservation": {
+        "fieldId": 3,
+        "date": "2025-06-17",
+        "start": "18:30",
+        "end": "19:30"
+      }
+    }
+    """
+)
 public record MatchCreateDTO(
         @NotNull ParticipationTypeDTO participationType,
         @NotNull ReservationCreateDTO reservation
+
+
 ){
 
     public Match asMatch(ParticipationType participationType, Reservation reserv) {
