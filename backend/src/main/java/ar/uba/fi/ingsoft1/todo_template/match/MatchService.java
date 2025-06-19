@@ -58,11 +58,11 @@ public class MatchService {
 
     public void deleteMatch(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
-        fieldService.deleteReservationByOrganizer(match.getReservation().getId());
-
         if (match != null && match.isOrganizer(userService.getUserByEmail(getUserEmail()))) {
             matchRepository.deleteById(id);
         }
+
+        fieldService.deleteReservationByOrganizer(match.getReservation().getId());
     }
 
     public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {
