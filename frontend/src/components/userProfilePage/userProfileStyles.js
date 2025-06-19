@@ -2,10 +2,10 @@ import { styled } from "styled-components";
 
 export const ProfileContainer = styled.div`
         max-width: 600px;
-        margin: 80px auto;
+        margin: 50px auto;
         padding: 50px;
         border: 1px solid #623412ff;
-        border-radius: 20px;
+        border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         background: sandybrown;
         color: black;
@@ -19,8 +19,8 @@ export const ProfileSection = styled.section`
 `;
 
 
-export const ProfileTitle = styled.h1`
-        font-size: 40px;
+export const ProfileTitle = styled.h4`
+        font-size: 30px;
         color: black;
         text-align: center;
         font-family: 'Bebas Neue', sans-serif;
@@ -46,12 +46,13 @@ export const  ProfileSubtitle = styled.h2`
         }
 `;
 export const ProfileDetailRow = styled.p`
-    font-size: 20px;
+    font-size: 25px;
     font-family: 'Bebas Neue', sans-serif;
     text-transform: uppercase;
     line-height: 1.5;
 
     strong {
+        font-size: 20px;
         font-weight: bold;
         color: #333; // Slightly darker for emphasis
     }

@@ -21,8 +21,8 @@ export const signupValidationSchema = Yup.object({
     photo: Yup.string().url('URL inválida').nullable(),
     role: Yup.string().nullable(),
     zones: Yup.array()
-        .of(Yup.string()) // or validate against enum keys if needed
-        .min(1, 'Seleccioná al menos una zona') // optional
+        .of(Yup.string())
+        .min(1, 'Seleccioná al menos una zona')
         .required('Campo obligatorio')
 });
 
@@ -38,7 +38,7 @@ export const verifyValidationSchema = Yup.object({
 
 export const teamValidationSchema = Yup.object({
     name: Yup.string().required('Nombre obligatorio'),
-    logo: Yup.string().nullable(), // if this were a file, use Yup.mixed()
+    // logo: Yup.string().nullable(),
     colors: Yup.string().required('Colores obligatorios'),
     skill: Yup.number()
         .min(1, 'Mínimo 1')
@@ -119,21 +119,21 @@ export const matchOpenValidationSchema = Yup.object({
             .min(2, 'Al menos 2 jugadores'),
         maxPlayersCount: Yup.number()
             .required('Máximo requerido')
-            .moreThan(Yup.ref('minPlayersCount'), 'Debe ser mayor al mínimo'),
-        players: Yup.array()
-            .of(
-                Yup.string()
-                    .trim()
-                    .required('El nombre no puede estar vacío')
-            )
-            // .min(1, 'Debe haber al menos un jugador')
-            .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
-                if (!Array.isArray(players)) return true;
-                const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
-                const lowercased = clean.map(p => p.toLowerCase());
-                const set = new Set(lowercased);
-                return set.size === lowercased.length;
-            })
+            .moreThan(Yup.ref('minPlayersCount'), 'Debe ser mayor al mínimo')
+        // , players: Yup.array()
+        //     .of(
+        //         Yup.string()
+        //             .trim()
+        //             .required('El nombre no puede estar vacío')
+        //     )
+        //     // .min(1, 'Debe haber al menos un jugador')
+        //     .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
+        //         if (!Array.isArray(players)) return true;
+        //         const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
+        //         const lowercased = clean.map(p => p.toLowerCase());
+        //         const set = new Set(lowercased);
+        //         return set.size === lowercased.length;
+        //     })
     }),
     reservation: Yup.object({
         fieldId: Yup.number().required('ID requerido'),
@@ -178,3 +178,31 @@ export const matchClosedValidationSchema = Yup.object({
     })
 });
 
+export const fieldUpdateValidationSchema = Yup.object({
+    name: Yup.string().required("Nombre requerido"),
+    description: Yup.string(),
+    location: Yup.string().required("Ubicación requerida"),
+    zone: Yup.string().required("Zona requerida"),
+    price: Yup.number().min(0).required("Precio requerido"),
+    features: Yup.array().min(1, 'Debes seleccionar al menos una característica'),
+    images: Yup.array()
+        .of(
+            Yup.string()
+                .trim()
+                .required('La imágen no puede estar vacía')
+        )
+        // .min(1, 'Debe haber al menos un jugador')
+        .test('sin-duplicados', 'No puede haber imágenes repetidas', (images) => {
+            if (!Array.isArray(images)) return true;
+            const clean = images.filter(p => typeof p === 'string' && p.trim() !== '');
+            const lowercased = clean.map(p => p.toLowerCase());
+            const set = new Set(lowercased);
+            return set.size === lowercased.length;
+        }),
+    schedule: Yup.object({
+        days: Yup.string().required('Días requeridos'),
+        startHour: Yup.string().required("Hora inicio requerida"),
+        endHour: Yup.string().required("Hora fin requerida"),
+        predefDuration: Yup.number().required()
+    })
+});

@@ -3,8 +3,43 @@ import styled from "styled-components";
 export const TeamContainer = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 30px;
+    margin-top: 50px;
+    background-color: var(--celadon);
+    padding: 100px 0;
+    & h3 {
+        color: white;
+    }
+`;
+
+export const MatchContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 50px;
+    background-color: var(--rosa);
+    padding: 100px 0;
+    & h3 {
+        color: white;
+    }
+`;
+
+export const FieldContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 50px;
+    background-color: var(--oldgold);
+    padding: 100px 0;
+    & h3 {
+        color: white;
+    }
 `;
 
 const ItemCardUI = styled.div`
@@ -20,7 +55,7 @@ const ItemCardUI = styled.div`
 
 export const ExpandedItemCardUI = styled(ItemCardUI)`
     width: 70vw;
-    margin-top: 200px;
+    //margin-top: 200px;
     font-family: Bebas Neue, sans-serif;
     background-color: black;
     padding: 50px;
@@ -42,7 +77,7 @@ export const ActionButton = styled.button`
     border-radius: 15px;
     font-family: Bebas Neue, sans-serif;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 30px;
 `;
 
 export const PlayersList = styled.div`
@@ -72,7 +107,7 @@ export const ItemPageInfo = styled.div`
 
 
 export const ItemPageTitle = styled.h3`
-        font-size: 30px;
+        font-size: 40px;
         width: 100%;
         text-align: left;
         padding-left: 25px;
@@ -82,12 +117,12 @@ export const ItemPageTitle = styled.h3`
 `;
 
 export const ItemPageAuthor = styled.h4`
-        font-size: 15px;
+        font-size: 30px;
         width: 100%;
         text-align: left;
         padding: 0 25px;
         padding-top: 10px;
-        letter-spacing: 2px;
+        //letter-spacing: 2px;
 `;
 
 export const PlayerCardUI = styled.div`
@@ -95,5 +130,5 @@ export const PlayerCardUI = styled.div`
     color: white;
     padding: 10px;
     border-radius: 10px;
-    width: 200px;
+    width: 300px;
 `;

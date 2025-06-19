@@ -14,7 +14,7 @@ export const SuccessBG = styled.section`
         letter-spacing: 3px;
         color: black;
         & p {
-                font-family: 'Shrikhand', sans-serif;
+                font-family: 'Bebas Neue', sans-serif;
         }
         @media screen and (max-width: 768px) {
                 font-size: 30px;
@@ -31,7 +31,7 @@ export const SuccessButton = styled.button`
         padding: 1rem 3rem;
         border-radius: 10px;
         font-size: 15px;
-        font-family: 'Shrikhand', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
         text-transform: uppercase;
         text-align: center;
         background: white;

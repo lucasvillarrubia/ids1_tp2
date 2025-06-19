@@ -28,7 +28,7 @@ export const verifyInitialValues = {
 
 export const teamInitialValues = {
     name: '',
-    logo: '',
+    // logo: '',
     colors: '',
     skill: '',
     players: ['']
@@ -60,7 +60,7 @@ export const matchOpenInitialValues = {
         type: 'Open',
         minPlayersCount: 5,
         maxPlayersCount: 10,
-        players: ['']
+        players: []
     },
     reservation: {
         fieldId: 1,
@@ -86,5 +86,46 @@ export const matchClosedInitialValues = {
         end: '19:00'
     }
 };
+
+export const fieldUpdateInitialValues = (field) => ({
+    name: field?.name || '',
+    description: field?.description || '',
+    location: field?.location || '',
+    zone: field?.zone || '',
+    price: field?.price || 0,
+    features: [],
+    images: field?.images || [''],
+    schedule: {
+        days: field?.schedule?.days || '',
+        startHour: field?.schedule?.startHour || '',
+        endHour: field?.schedule?.endHour || '',
+        predefDuration: field?.schedule?.predefDuration || 60
+    }
+});
+
+export const matchUpdateInitialValues = (match) => ({
+    participationType: {
+        type: 'Open',
+        minPlayersCount: match?.participationType?.minPlayersCount || 0,
+        maxPlayersCount: match?.participationType?.maxPlayersCount || 0,
+        players: match?.participationType?.players || [''],
+    },
+    reservation: {
+        fieldId: match?.reservation?.fieldId || 0,
+        date: match?.reservation?.date || '',
+        start: match?.reservation?.start || '',
+        end: match?.reservation?.end || '',
+    }
+});
+
+export const teamUpdateInitialValues = (team) => ({
+    name: team?.name || '',
+    // logo: team?.logo || '',
+    colors: team?.colors || '',
+    skill: team?.skill || '',
+    players: team?.players || ['']
+});
+
+
 
 

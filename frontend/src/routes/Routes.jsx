@@ -13,6 +13,8 @@ import ForgotPasswordPage from "../components/forgotPasswordPage/ForgotPasswordP
 import NewPasswordPage from "../components/newPasswordPage/NewPasswordPage.jsx";
 import MyProfile from "../pages/myProfile/MyProfile.jsx";
 import TeamPage from "../pages/itemPages/teamPage/TeamPage.jsx";
+import MatchPage from "../pages/itemPages/matchPage/MatchPage.jsx";
+import FieldPage from "../pages/itemPages/fieldPage/FieldPage.jsx";
 
 
 
@@ -36,7 +38,9 @@ function Routes () {
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/congratulations' element={<Success />} />
                         </Route>
-                        <Route path="/team/:teamId" element={<TeamPage />} />
+                        <Route path="/teams/:teamId" element={<TeamPage />} />
+                        <Route path="/matches/:matchId" element={<MatchPage />} />
+                        <Route path="/fields/:fieldId" element={<FieldPage />} />
                         <Route path='*' element={<NotFound />} />
                 </AllRoutes>
         )

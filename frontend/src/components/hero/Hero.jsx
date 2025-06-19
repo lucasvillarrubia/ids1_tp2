@@ -6,7 +6,7 @@ const Hero = () => {
     <HeroUI>
         <HeroBGBlur>
                 <HeroTitle>IDS1</HeroTitle>
-                <HeroButton>Sprint 2!</HeroButton>
+                <HeroButton>DEMO</HeroButton>
         </HeroBGBlur>
     </HeroUI>
   )

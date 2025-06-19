@@ -2,12 +2,13 @@ import React from 'react';
 import {PlayerCardUI} from "../itemPagesStyles.js";
 
 
-const PlayerCard = ({ player }) => {
+const PlayerCard = ({ player, idx }) => {
     if (!player) return null;
     return (
         <PlayerCardUI>
+            <p>Jugador {idx+1}</p>
             <h4>{player.name}</h4>
-            <p>Position: {player.position}</p>
+            {player.position && <p>Position: {player.position}</p>}
         </PlayerCardUI>
     );
 };

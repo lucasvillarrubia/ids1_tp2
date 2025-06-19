@@ -1,19 +1,52 @@
 import React from 'react'
-import { ProfileItemCardUI, ProfileItemCardNumber, ProfileItemCardTotal, ProfileItemCardDate } from './ProfileStyles'
-import { formatPrice } from '../../utils/formatPrice'
-import { formatDate } from '../../utils/formatDate'
+import {
+    ProfileItemCardUI,
+    ProfileItemCardNumber,
+    ProfileItemCardTotal,
+    ProfileItemCardDate
+} from './ProfileStyles'
 import { useNavigate } from 'react-router-dom'
 
 const ProfileItemCard = (item) => {
-        const navigate = useNavigate();
+    const navigate = useNavigate()
 
-        return (
-                <ProfileItemCardUI onClick={() => navigate(`/my-${item.category}/${item._id}`)}>
-                        <ProfileItemCardNumber>Ítem #{item._id}</ProfileItemCardNumber>
-                        <ProfileItemCardDate>Creado el {formatDate(item.createdAt)}</ProfileItemCardDate>
-                        <ProfileItemCardTotal>{formatPrice(item.total)}</ProfileItemCardTotal>
-                </ProfileItemCardUI>
-        )
+    let label = ''
+    let extraInfo = ''
+    // let keyOrId = ''
+    const keyOrId = item.id ?? item._id ?? item.name
+    const encodedKey = encodeURIComponent(keyOrId)
+    switch (item.category) {
+        case 'teams':
+            label = `Equipo: ${item.name}`
+            // keyOrId = item.name
+            extraInfo = `Capitán: ${item.captain}`
+            break
+
+        case 'fields':
+            label = `Cancha: ${item.name}`
+            // keyOrId = item.id
+            extraInfo = `Ubicación: ${item.location}`
+            break
+
+        case 'matches':
+            label = `Partido #${item.id}`
+            // keyOrId = item.id
+            extraInfo = `Tipo: ${item.participationType.type}`
+            break
+
+        default:
+            label = 'Ítem'
+            // keyOrId = 'unknown'
+            // extraInfo = ''
+    }
+
+    return (
+        // <ProfileItemCardUI onClick={() => navigate(`/${item.category}/${keyOrId}`)}>
+        <ProfileItemCardUI onClick={() => navigate(`/${item.category}/${encodedKey}`)}>
+            <ProfileItemCardNumber>{label}</ProfileItemCardNumber>
+            {extraInfo && <ProfileItemCardDate>{extraInfo}</ProfileItemCardDate>}
+        </ProfileItemCardUI>
+    )
 }
 
 export default ProfileItemCard

@@ -53,7 +53,7 @@ export const ItemInfo = styled.div`
         border-radius: 10px;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         color: white;
         min-height: 375px;
@@ -72,7 +72,7 @@ export const ItemTitle = styled.h3`
         text-align: left;
         padding-left: 25px;
         padding-right: 25px;
-        margin-bottom: 10px;
+        //margin-bottom: 10px;
         line-height: 30px;
 `;
 
@@ -82,7 +82,7 @@ export const ItemAuthor = styled.h4`
         text-align: left;
         padding: 0 25px;
         padding-top: 10px;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
 `;
 
 export const ItemPrice = styled.h4`
