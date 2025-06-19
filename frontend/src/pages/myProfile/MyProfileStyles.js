@@ -7,8 +7,9 @@ export const MyProfileUI = styled.div`
         justify-content: center;
         align-items: center;
         max-width: 100%;
-        padding-top: 150px;
-        gap: 50px;
+        margin-top: 30px;
+        padding: 100px;
+        gap: 30px;
         @media screen and (max-width: 768px) {
                 padding-top: 100px;
                 /* font-size: 20px; */
@@ -16,11 +17,11 @@ export const MyProfileUI = styled.div`
 `;
 
 export const MyProfileTitle = styled.h2`
-        font-size: 20px;
+        font-size: 32px;
         letter-spacing: 1px;
         color: black;
         /* text-shadow: var(--borde_fino); */
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
         text-overflow: ellipsis;
         word-wrap: break-word;
         word-break: break-all;
@@ -36,7 +37,7 @@ export const MyProfileButton = styled.button`
         padding: 1rem 3rem;
         border-radius: 30px;
         font-size: 15px;
-        font-family: 'Shrikhand', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
         /* font-weight: bold; */
         text-transform: uppercase;
         text-align: center;

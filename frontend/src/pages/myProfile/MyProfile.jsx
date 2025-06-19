@@ -21,8 +21,8 @@ const MyProfile = () => {
 
 	return (
 		<MyProfileUI>
+			<MyProfileTitle>Mí Perfíl</MyProfileTitle>
 			<UserProfilePage />
-			{/*<MyProfileTitle>Perfíl</MyProfileTitle>*/}
 			{/* <UserInfo />*/}
 			<ProfileItemsSection category={"matches"} />
 			<ProfileItemsSection category={"teams"} />

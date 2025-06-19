@@ -69,11 +69,11 @@ const UserProfilePage = () => {
 
   return (
     <>
-    <ProfileContainer>
-      <ProfileTitle>Mi Perfil</ProfileTitle>
-    </ProfileContainer>
+    {/*<ProfileContainer>*/}
+    {/*</ProfileContainer>*/}
 
     <ProfileContainer>
+        <ProfileTitle>Información Personal</ProfileTitle>
         <ProfileSection>
           <ProfileDetailRow> <strong>NOMBRE:</strong>{fullUserData.data.name}</ProfileDetailRow>
           <ProfileDetailRow><strong>APELLIDO:</strong> {fullUserData.data.lastname}</ProfileDetailRow>

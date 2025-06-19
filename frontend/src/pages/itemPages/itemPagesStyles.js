@@ -4,12 +4,14 @@ export const TeamContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 30px;
 `;
 
 export const MatchContainer = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 30px;
 `;
@@ -17,10 +19,12 @@ export const MatchContainer = styled.div`
 export const FieldContainer = styled.div`
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 30px;
+    margin-top: 50px;
     background-color: var(--oldgold);
-    margin-top: 200px;
+    padding: 100px 0;
     & h3 {
         color: white;
     }
@@ -39,7 +43,7 @@ const ItemCardUI = styled.div`
 
 export const ExpandedItemCardUI = styled(ItemCardUI)`
     width: 70vw;
-    margin-top: 200px;
+    //margin-top: 200px;
     font-family: Bebas Neue, sans-serif;
     background-color: black;
     padding: 50px;

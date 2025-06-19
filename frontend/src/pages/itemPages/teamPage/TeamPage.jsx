@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import PlayerCard from './PlayerCard.jsx';
@@ -7,7 +7,7 @@ import { ItemPageInfo, ItemPageAuthor, ItemPageTitle, ActionButton, ButtonContai
 
 const TeamPage = () => {
     const { teamId } = useParams();
-
+    const navigate = useNavigate();
     const team = useSelector(state => state.teams.list[decodeURIComponent(teamId)]);
 
     if (!team) return <p>Equipo no encontrado.</p>;
@@ -39,6 +39,7 @@ const TeamPage = () => {
                     <PlayerCard key={idx} player={{ name: playerName }} />
                 ))}
             </PlayersList>
+            <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
         </TeamContainer>
     );
 };

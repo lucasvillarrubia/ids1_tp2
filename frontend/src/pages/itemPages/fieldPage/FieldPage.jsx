@@ -6,10 +6,10 @@ import { updateField, deleteField } from '../../../features/fields/fieldsAPI'
 import ItemsForm from '../../../components/itemsForm/ItemsForm.jsx'
 
 const FieldPage = () => {
-    const dispatch = useDispatch()
-    const { fieldId } = useParams()
-    const navigate = useNavigate()
-    const [editing, setEditing] = useState(false)
+    const dispatch = useDispatch();
+    const { fieldId } = useParams();
+    const navigate = useNavigate();
+    const [editing, setEditing] = useState(false);
 
     const field = useSelector(state =>
         state.fields.list.find(f => f.id === Number(fieldId))
@@ -17,8 +17,8 @@ const FieldPage = () => {
 
     const handleDelete = () => {
         if (confirm('Estás seguro de que querés eliminar esta cancha?')) {
-            dispatch(deleteField(field.id))
-            navigate('/me')
+            dispatch(deleteField(field.id));
+            navigate('/me');
         }
     }
 
@@ -38,6 +38,7 @@ const FieldPage = () => {
                     <ActionButton onClick={handleDelete}>Eliminar</ActionButton>
                 </ButtonContainer>
             </ExpandedItemCardUI>
+            <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
         </FieldContainer>
     )
 }

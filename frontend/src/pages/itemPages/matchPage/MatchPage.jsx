@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { ItemPageInfo, ItemPageAuthor, ItemPageTitle, ActionButton, ButtonContainer, ExpandedItemCardUI, MatchContainer } from '../itemPagesStyles.js'
@@ -7,8 +7,9 @@ import { ItemPageInfo, ItemPageAuthor, ItemPageTitle, ActionButton, ButtonContai
 import { joinMatch, leaveMatch, startMatch, closeMatch, updateMatch, deleteMatch } from '../../../features/matches/matchesAPI.js'
 
 const MatchPage = () => {
-    const { matchId } = useParams()
-    const dispatch = useDispatch()
+    const { matchId } = useParams();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const match = useSelector(state => {
         const idNum = Number(matchId)
@@ -39,6 +40,7 @@ const MatchPage = () => {
                     <ActionButton onClick={handleDelete}>Eliminar</ActionButton>
                 </ButtonContainer>
             </ExpandedItemCardUI>
+            <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
         </MatchContainer>
     )
 }

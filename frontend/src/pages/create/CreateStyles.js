@@ -48,7 +48,7 @@ export const CreateTitle = styled.h2`
         letter-spacing: 1px;
         color: black;
         /* text-shadow: var(--borde_fino); */
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
         text-overflow: ellipsis;
         word-wrap: break-word;
         word-break: break-all;
@@ -64,7 +64,7 @@ export const CreateSubtitle = styled.h3`
         letter-spacing: 1px;
         color: white;
         text-shadow: var(--borde_fino);
-        font-family: 'Raleway', sans-serif;
+        font-family: 'Bebas Neue', sans-serif;
         text-overflow: ellipsis;
         word-wrap: break-word;
         max-width: 80%;
