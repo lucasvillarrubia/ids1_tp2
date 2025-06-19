@@ -1,27 +1,16 @@
 import React from 'react';
-import { ItemPageInfo, ItemPageAuthor, ItemPageTitle } from '../itemPagesStyles.js';
-import { useParams } from "react-router"
+import { useParams } from 'react-router';
+import { useSelector } from 'react-redux';
+
 import PlayerCard from './PlayerCard.jsx';
-import {ActionButton, ButtonContainer, ExpandedItemCardUI, PlayersList, TeamContainer} from "../itemPagesStyles.js";
+import { ItemPageInfo, ItemPageAuthor, ItemPageTitle, ActionButton, ButtonContainer, ExpandedItemCardUI, PlayersList, TeamContainer } from '../itemPagesStyles.js';
 
 const TeamPage = () => {
-    // if (!team || typeof team !== 'object') return null;
-
     const { teamId } = useParams();
-    // const team = useSelector(state => state.teams[teamId]);
 
-    const team = {
-        id: "team123",
-        name: "Los Leones FC",
-        coach: "Carlos Gómez",
-        founded: 1998,
-        country: "Argentina",
-        division: "Primera B",
-        players: [
-            { id: 1, name: "Juan Pérez", position: "Delantero" },
-            { id: 2, name: "Luis García", position: "Arquero" },
-        ],
-    };
+    const team = useSelector(state => state.teams.list[decodeURIComponent(teamId)]);
+
+    if (!team) return <p>Equipo no encontrado.</p>;
 
     const handleAddPlayer = () => {
     };
@@ -33,22 +22,21 @@ const TeamPage = () => {
         <TeamContainer>
             <ExpandedItemCardUI>
                 <ItemPageInfo>
-                    <ItemPageTitle>{team.name || 'Team Name'}</ItemPageTitle>
-                    {Object.entries(team).map(([key, value]) => (
-                        <ItemPageAuthor key={key}>
-                            {key}: {typeof value === 'object' ? JSON.stringify(value) : String(value)}
-                        </ItemPageAuthor>
-                    ))}
+                    <ItemPageTitle>{team.name}</ItemPageTitle>
+                    <ItemPageAuthor>Capitán: {team.captain}</ItemPageAuthor>
+                    {team.colors && <ItemPageAuthor>Colores: {team.colors}</ItemPageAuthor>}
+                    {team.skill && <ItemPageAuthor>Habilidad: {team.skill}</ItemPageAuthor>}
+                    {team.logo && <ItemPageAuthor>Logo: {team.logo}</ItemPageAuthor>}
                 </ItemPageInfo>
                 <ButtonContainer>
-                    <ActionButton onClick={handleAddPlayer}>Add Player</ActionButton>
-                    <ActionButton onClick={handleRemovePlayer}>Remove Player</ActionButton>
+                    <ActionButton onClick={handleAddPlayer}>Agregar jugador</ActionButton>
+                    <ActionButton onClick={handleRemovePlayer}>Eliminar jugador</ActionButton>
                 </ButtonContainer>
             </ExpandedItemCardUI>
 
             <PlayersList>
-                {(team.players || []).map((player, idx) => (
-                    <PlayerCard key={idx} player={player} />
+                {(team.players || []).map((playerName, idx) => (
+                    <PlayerCard key={idx} player={{ name: playerName }} />
                 ))}
             </PlayersList>
         </TeamContainer>

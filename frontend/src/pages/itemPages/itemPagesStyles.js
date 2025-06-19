@@ -7,6 +7,13 @@ export const TeamContainer = styled.div`
     gap: 30px;
 `;
 
+export const MatchContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+`;
+
 const ItemCardUI = styled.div`
         width: 300px;
         /* min-height: 500px; */
