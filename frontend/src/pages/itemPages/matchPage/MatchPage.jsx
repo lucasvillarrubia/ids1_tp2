@@ -30,17 +30,49 @@ const MatchPage = () => {
 
     if (!match) return <p>Partido no encontrado.</p>
 
-    const handleJoin = () => dispatch(joinMatch(match.id))
-    const handleLeave = () => dispatch(leaveMatch(match.id))
+    const handleJoin = () => {
+        try {
+            dispatch(joinMatch(match.id))
+            navigate(`/me`);
+        } catch (error) {
+            console.error("Error al unirse al partido:", error);
+            alert("No se pudo unirse al partido.");
+            return;
+        }
+    }
+    const handleLeave = () => {
+        try {
+            dispatch(leaveMatch(match.id))
+            navigate(`/me`);
+        } catch (error) {
+            console.error("Error al abandonar el partido:", error);
+            alert("No se pudo abandonar el partido.");
+            return;
+        }
+    }
 
     const handleStart = () => {
-        if (!confirm('Vas a iniciar este partido')) return;
-        dispatch(startMatch(match.id))
+        try {
+            if (!confirm('Vas a iniciar este partido')) return;
+            dispatch(startMatch(match.id));
+            navigate(`/me`);
+        } catch (error) {
+            console.error("Error al iniciar el partido:", error);
+            alert("No se pudo iniciar el partido.");
+            return;
+        }
     }
 
     const handleClose = () => {
-        if (!confirm('Estás seguro de que querés cerrar este partido?')) return;
-        dispatch(closeMatch(match.id))
+        try {
+            if (!confirm('Estás seguro de que querés cerrar este partido?')) return;
+            dispatch(closeMatch(match.id))
+            navigate('/me');
+        } catch (error) {
+            console.error("Error al cerrar el partido:", error);
+            alert("No se pudo cerrar el partido.");
+            return;
+        }
     }
 
     const handleDelete = () => {
@@ -66,8 +98,8 @@ const MatchPage = () => {
                     ))}
                 </PlayersList>
                 <ButtonContainer>
-                    <ActionButton onClick={handleJoin}>Agregar Jugador</ActionButton>
-                    <ActionButton onClick={handleLeave}>Eliminar Jugador</ActionButton>
+                    <ActionButton onClick={handleJoin}>UNIRSE</ActionButton>
+                    <ActionButton onClick={handleLeave}>ABANDONAR</ActionButton>
                 </ButtonContainer>
                 <ButtonContainer>
                     <ActionButton onClick={handleStart}>Iniciar</ActionButton>

@@ -15,6 +15,7 @@ import {
     MatchContainer
 } from '../itemPagesStyles.js';
 import ItemsForm from "../../../components/itemsForm/ItemsForm.jsx";
+import {addPlayerThunk, deleteTeamThunk, removePlayerThunk} from "../../../features/teams/teamsSlice.js";
 
 const TeamPage = () => {
     const { teamId } = useParams();
@@ -35,7 +36,7 @@ const TeamPage = () => {
         if (!confirm) return;
 
         try {
-            await dispatch(deleteTeamThunk(team.name)); // o team.id si usás ID real
+            await dispatch(deleteTeamThunk(team.name));
             navigate('/me');
         } catch (error) {
             console.error("Error al eliminar el equipo:", error);
@@ -49,6 +50,8 @@ const TeamPage = () => {
 
         try {
             await dispatch(addPlayerThunk({ id: team.name, playerName }));
+            navigate('/me');
+
         } catch (error) {
             console.error("Error al agregar jugador:", error);
             alert("No se pudo agregar el jugador.");
@@ -62,6 +65,7 @@ const TeamPage = () => {
 
         try {
             await dispatch(removePlayerThunk({ id: team.name, playerName }));
+            navigate('/me');
         } catch (error) {
             console.error("Error al eliminar jugador:", error);
             alert("No se pudo eliminar el jugador.");

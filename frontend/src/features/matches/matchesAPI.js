@@ -21,6 +21,9 @@ export const leaveMatch = (id) => async (dispatch) => {
 export const startMatch = (id) => async (dispatch) => {
     try {
         const res = await axios.post(`${BASE_URL}/matches/start`, { id });
+        if (res) {
+            console.log("Match comenzó", res.data);
+        }
         dispatch({ type: "matches/updateOne", payload: res.data });
     } catch (err) {
         console.error("startMatch failed", err);
@@ -48,6 +51,9 @@ export const deleteMatch = (id) => async (dispatch) => {
 export const updateMatch = (id, matchCreateDTO) => async (dispatch) => {
     try {
         const res = await axios.patch(`${BASE_URL}/matches/${id}`, matchCreateDTO);
+        if (res) {
+            console.log("Match se editó", res.data);
+        }
         dispatch({ type: "matches/updateOne", payload: res.data });
     } catch (err) {
         console.error("updateMatch failed", err);

@@ -49,7 +49,7 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
                 console.log("Intentando actualizar partido con", values);
                 dispatch(updateMatch(existingItem.id, values));
                 onCancel();
-                navigate('/me')
+                navigate('/me');
             } catch (error) {
                 alert('No se pudo actualizar el partido: error visible en consola');
             }
@@ -59,6 +59,8 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
             try {
                 console.log("Intentando actualizar equipo con", values);
                 await dispatch(updateTeamThunk({ id: existingItem.name, teamData: values }));
+                onCancel();
+                navigate('/me');
             } catch (error) {
                 console.error("Error al actualizar el equipo:", error);
                 alert("No se pudo actualizar el equipo: error visible en consola");

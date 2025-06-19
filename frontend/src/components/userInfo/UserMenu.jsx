@@ -24,38 +24,38 @@ const UserMenu = () => {
                                   }}>
                                           Mi Perfil
                                   </p>
-                                  <p onClick={() => {
-                                          dispatch(toggleUserMenuDisplay());
-                                          // navigate('my-orders');
-                                          alert("Todavía no lo terminé de implementar!");
-                                  }}
-                                  >
-                                          Tus partidos
-                                  </p>
-                                  <p onClick={() => {
-                                          dispatch(toggleUserMenuDisplay());
-                                          // navigate('my-orders');
-                                          alert("Todavía no lo terminé de implementar!");
-                                  }}
-                                  >
-                                          Tus equipos
-                                  </p>
-                                  <p onClick={() => {
-                                          dispatch(toggleUserMenuDisplay());
-                                          // navigate('my-orders');
-                                          alert("Todavía no lo terminé de implementar!");
-                                  }}
-                                  >
-                                          Tus torneos
-                                  </p>
-                                  <p onClick={() => {
-                                          dispatch(toggleUserMenuDisplay());
-                                          // navigate('my-orders');
-                                          alert("Todavía no lo terminé de implementar!");
-                                  }}
-                                  >
-                                          Tus reviews
-                                  </p>
+                                  {/*<p onClick={() => {*/}
+                                  {/*        dispatch(toggleUserMenuDisplay());*/}
+                                  {/*        // navigate('my-orders');*/}
+                                  {/*        alert("Todavía no lo terminé de implementar!");*/}
+                                  {/*}}*/}
+                                  {/*>*/}
+                                  {/*        Tus partidos*/}
+                                  {/*</p>*/}
+                                  {/*<p onClick={() => {*/}
+                                  {/*        dispatch(toggleUserMenuDisplay());*/}
+                                  {/*        // navigate('my-orders');*/}
+                                  {/*        alert("Todavía no lo terminé de implementar!");*/}
+                                  {/*}}*/}
+                                  {/*>*/}
+                                  {/*        Tus equipos*/}
+                                  {/*</p>*/}
+                                  {/*<p onClick={() => {*/}
+                                  {/*        dispatch(toggleUserMenuDisplay());*/}
+                                  {/*        // navigate('my-orders');*/}
+                                  {/*        alert("Todavía no lo terminé de implementar!");*/}
+                                  {/*}}*/}
+                                  {/*>*/}
+                                  {/*        Tus torneos*/}
+                                  {/*</p>*/}
+                                  {/*<p onClick={() => {*/}
+                                  {/*        dispatch(toggleUserMenuDisplay());*/}
+                                  {/*        // navigate('my-orders');*/}
+                                  {/*        alert("Todavía no lo terminé de implementar!");*/}
+                                  {/*}}*/}
+                                  {/*>*/}
+                                  {/*        Tus reviews*/}
+                                  {/*</p>*/}
                                   <p onClick={() => {
                                           logoutUser(dispatch);
                                           dispatch(toggleUserMenuDisplay());
