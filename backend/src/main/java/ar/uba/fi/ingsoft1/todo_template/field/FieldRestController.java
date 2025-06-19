@@ -162,17 +162,6 @@ public class FieldRestController {
         return ResponseEntity.ok().build();
     }
 
-    /*
-     * ejemplo del body para crear una cancha
-     * {
-     * "name": "Cancha 1",
-     * "description": "Cancha de futbol 5",
-     * "location": "Calle Falsa 123",
-     * "zone": EZEIZA,
-     * "features": ["GRASS", "LIGHTS", "RESTROOMS"]
-     * }
-     */
-
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new Field")
     @ApiResponse(responseCode = "201", description = "Field created", content = @Content(mediaType = "application/json"))

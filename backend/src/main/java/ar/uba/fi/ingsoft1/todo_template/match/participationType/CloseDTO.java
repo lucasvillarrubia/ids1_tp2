@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.stream.Collectors;
 @Schema(description = "Participación cerrada")
 @DiscriminatorValue("Close")
 public class CloseDTO extends ParticipationTypeDTO {

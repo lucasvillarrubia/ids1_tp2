@@ -2,8 +2,6 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
-
 public enum FieldFeatures {
     GRASS, 
     CEMENT,

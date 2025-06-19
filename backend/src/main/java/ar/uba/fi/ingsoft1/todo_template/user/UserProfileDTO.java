@@ -3,10 +3,7 @@ package ar.uba.fi.ingsoft1.todo_template.user;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Positive;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public record UserProfileDTO(
         Long id,

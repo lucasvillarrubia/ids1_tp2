@@ -137,8 +137,6 @@ public class MatchService {
         matchRepository.save(match);
     }
 
-    // Hay que validar que el usuario tenga permiso?
-    // Front puede hacer que algo no aparezca si no tiene permiso?
     public MatchDTO startMatch(Long id) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         JwtUserDetails userDetails = (JwtUserDetails) principal;
@@ -195,8 +193,6 @@ public class MatchService {
         return matchRepository.findAllWithOpenParticipation(pageable).map(MatchDTO::new);
     }
 
-    // ver si se puede meter en otro file con otras funciones para conseguir data
-    // del contexto actual del usuario
     private String getUserEmail() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         JwtUserDetails userDetails = (JwtUserDetails) principal;
