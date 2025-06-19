@@ -46,7 +46,6 @@ public class MatchRestController {
         return matchService.getMatch(id);
     }
 
-//    @GetMapping(value = "/availableMatches", produces = "application/json")
     @GetMapping(produces = "application/json")
     @Operation(summary = "Get all available Matches")
     @ApiResponse(responseCode = "200", description = "Matches found", content = @Content(mediaType = "application/json"))
@@ -79,29 +78,6 @@ public class MatchRestController {
     ) {
         return matchService.getMatchesActualPlayerParticipatesIn(pageable);
     }
-
-
-
-    /*
-   Open Match creation example:
-{
-  "participationType": {
-    "type": "Open",
-    "minPlayersCount": 2,
-    "maxPlayersCount": 6,
-    "players": []
-  },
-  "reservation": {
-    "fieldId": 1,
-    "date": "2025-06-13",
-    "start": "08:00:00",
-    "end": "09:00:00"
-  }
-}
-
-    Close Match creation example:
-
-*/
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new Match")
@@ -240,10 +216,5 @@ public class MatchRestController {
         MatchDTO matchDTO = matchService.startMatch(id);
         return ResponseEntity.ok(matchDTO);
     }
-
-
-
-
-
 }
 

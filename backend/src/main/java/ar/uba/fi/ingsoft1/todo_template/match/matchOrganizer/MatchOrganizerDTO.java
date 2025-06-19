@@ -2,7 +2,6 @@ package ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class MatchOrganizerDTO {

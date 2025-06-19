@@ -22,7 +22,6 @@ public class ParticipationTypeService {
     }
 
     public ParticipationType buildFromDTO(ParticipationTypeDTO dto) {
-        // habria q implementar un factory may be (tal vez service no es tan necesario sino mas bien un factory)
         if (dto instanceof CloseDTO closeDTO) {
             Optional<TeamDTO> teamADTO = Optional.ofNullable(teamService.getTeam(closeDTO.getTeama()));
             Optional<TeamDTO> teamBDTO = Optional.ofNullable(teamService.getTeam(closeDTO.getTeamb()));
