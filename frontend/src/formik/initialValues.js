@@ -28,7 +28,7 @@ export const verifyInitialValues = {
 
 export const teamInitialValues = {
     name: '',
-    logo: '',
+    // logo: '',
     colors: '',
     skill: '',
     players: ['']
@@ -60,7 +60,7 @@ export const matchOpenInitialValues = {
         type: 'Open',
         minPlayersCount: 5,
         maxPlayersCount: 10,
-        players: ['']
+        players: []
     },
     reservation: {
         fieldId: 1,
@@ -120,7 +120,7 @@ export const matchUpdateInitialValues = (match) => ({
 
 export const teamUpdateInitialValues = (team) => ({
     name: team?.name || '',
-    logo: team?.logo || '',
+    // logo: team?.logo || '',
     colors: team?.colors || '',
     skill: team?.skill || '',
     players: team?.players || ['']

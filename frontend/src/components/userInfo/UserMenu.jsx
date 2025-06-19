@@ -22,7 +22,7 @@ const UserMenu = () => {
                                           dispatch(toggleUserMenuDisplay());
                                           navigate("/me");
                                   }}>
-                                          Mi Perfil
+                                          Feed
                                   </p>
                                   {/*<p onClick={() => {*/}
                                   {/*        dispatch(toggleUserMenuDisplay());*/}

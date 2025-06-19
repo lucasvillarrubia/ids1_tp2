@@ -21,6 +21,8 @@ const TeamPage = () => {
     const { teamId } = useParams();
     const [editing, setEditing] = useState(false);
     const navigate = useNavigate();
+    const { dispatch } = useDispatch();
+    const { currentUser } = useSelector(state => state.users);
     console.log(useSelector(state => state.teams.list));
     console.log(useSelector(state => state.teams));
     // const team = useSelector(state => state.teams.list[decodeURIComponent(teamId)]);
@@ -72,6 +74,7 @@ const TeamPage = () => {
         }
     };
 
+    let iAmCaptain = currentUser.email === team.captain;
 
     return editing ? (
         <TeamContainer>
@@ -88,8 +91,8 @@ const TeamPage = () => {
                     {team.logo && <ItemPageAuthor>Logo: {team.logo}</ItemPageAuthor>}
                 </ItemPageInfo>
                 <ButtonContainer>
-                    <ActionButton onClick={() => setEditing(true)}>Editar Equipo</ActionButton>
-                    <ActionButton onClick={handleDeleteTeam}>Eliminar equipo</ActionButton>
+                    {iAmCaptain && <ActionButton onClick={() => setEditing(true)}>Editar Equipo</ActionButton>}
+                    {iAmCaptain && <ActionButton onClick={handleDeleteTeam}>Eliminar equipo</ActionButton>}
                 </ButtonContainer>
             </ExpandedItemCardUI>
 
@@ -99,8 +102,8 @@ const TeamPage = () => {
                 ))}
             </PlayersList>
             <ButtonContainer>
-                <ActionButton onClick={handleAddPlayer}>Agregar Jugador</ActionButton>
-                <ActionButton onClick={handleRemovePlayer}>Eliminar Jugador</ActionButton>
+                {iAmCaptain && <ActionButton onClick={handleAddPlayer}>Agregar Jugador</ActionButton>}
+                {iAmCaptain && <ActionButton onClick={handleRemovePlayer}>Eliminar Jugador</ActionButton>}
             </ButtonContainer>
             <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
         </TeamContainer>

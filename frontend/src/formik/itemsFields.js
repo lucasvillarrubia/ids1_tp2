@@ -7,14 +7,14 @@ export const teamFields = [
         placeholder: 'Nombre',
         label: 'Nombre del equipo'
     },
-    {
-        name: 'logo',
-        type: 'text',
-        id: 'team-logo',
-        htmlFor: 'team-logo',
-        placeholder: 'Logo',
-        label: 'Logo del equipo',
-    },
+    // {
+    //     name: 'logo',
+    //     type: 'text',
+    //     id: 'team-logo',
+    //     htmlFor: 'team-logo',
+    //     placeholder: 'Logo',
+    //     label: 'Logo del equipo',
+    // },
     {
         name: 'colors',
         type: 'text',
@@ -276,16 +276,16 @@ export const matchOpenFields = [
         min: '2',
         max: '50',
         step: '1'
-    },
-    {
-        name: 'participationType.players',
-        type: 'text',
-        id: 'match-closed-players',
-        htmlFor: 'match-closed-players',
-        placeholder: 'Nombre del jugador',
-        label: 'Jugadores',
-        isList: true
     }
+    // ,{
+    //     name: 'participationType.players',
+    //     type: 'text',
+    //     id: 'match-closed-players',
+    //     htmlFor: 'match-closed-players',
+    //     placeholder: 'Nombre del jugador',
+    //     label: 'Jugadores',
+    //     isList: true
+    // }
 ];
 
 export const matchClosedFields = [

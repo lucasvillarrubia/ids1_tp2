@@ -24,6 +24,8 @@ const FieldPage = () => {
 
     if (!field) return <p>Cancha no encontrada</p>
 
+    let iAmOwner = field.ownerEmail === useSelector(state => state.users.currentUser.email);
+
     return editing ? (
         <FieldContainer>
             <ItemsForm key="updateField" itemCategory="updateField" onCancel={() => setEditing(false)} existingItem={field} />
@@ -34,8 +36,8 @@ const FieldPage = () => {
                 <ItemPageTitle>{field.name}</ItemPageTitle>
                 <ItemPageInfo>{field.description}</ItemPageInfo>
                 <ButtonContainer>
-                    <ActionButton onClick={() => setEditing(true)}>Editar</ActionButton>
-                    <ActionButton onClick={handleDelete}>Eliminar</ActionButton>
+                    {iAmOwner && <ActionButton onClick={() => setEditing(true)}>Editar</ActionButton>}
+                    {iAmOwner && <ActionButton onClick={handleDelete}>Eliminar</ActionButton>}
                 </ButtonContainer>
             </ExpandedItemCardUI>
             <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
