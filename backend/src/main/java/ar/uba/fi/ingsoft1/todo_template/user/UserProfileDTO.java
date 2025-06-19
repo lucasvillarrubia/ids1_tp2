@@ -1,5 +1,10 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Positive;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +13,8 @@ public record UserProfileDTO(
         String name,
         String lastname,
         String email,
+        @Schema(description = "Edad del usuario", maxLength = 255, example = "23")
+        @Positive
         Short age,
         String gender,
         List<UserZones> zones,
@@ -18,7 +25,7 @@ public record UserProfileDTO(
         List<String> collectedZoneNames = user.getZones()
                 .stream()
                 .map(UserZones::name)
-                .collect(Collectors.toList());
+                .toList();
 
         UserProfileDTO userProfileDTO = new UserProfileDTO(
                 user.getId(),

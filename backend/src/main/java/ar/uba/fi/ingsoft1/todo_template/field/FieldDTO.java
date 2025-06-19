@@ -6,19 +6,36 @@ import java.util.List;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldScheduleDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class FieldDTO {
+
+    @Schema(description = "ID de la cancha")
     private Long id;
+
+    @Schema(description = "Email del dueño del establecimiento", example = "owner1@field1.com")
     private String ownerEmail;
+
+    @Schema(description = "Nombre", example = "Los Botines")
     private String name;
+
+    @Schema(description = "Breve descripcion del lugar")
     private String description;
+    @Schema(description = "Direccion", example="Los Polvorines 1200")
     private String location;
+    @Schema(description = "Zona", example = "FLORENCIO_VARELA")
     private UserZones zone;
+    @Schema(description = "Precio",example = "2500")
     private Integer price;
+    @Schema(description = "Caracteristicas",example = "[\"GRASS\", \"ARTIFICIAL_TURF\", \"ROOF\"]" )
     private List<String> features;
+    @Schema(description = "Horarios disponibles")
     private FieldScheduleDTO schedule;
+    @Schema(description = "ID de Reseñas", example = "[101, 102, 103]")
     private List<Long> reviews;
+    @Schema(description = "ID de Reservas", example = "[101, 102, 103]")
     private List<Long> reservations;
+    @Schema(description = "Fotos del lugar", example = "[\"https://example.com/1.jpg\", \"https://example.com/2.jpg\"]")
     private List<String> images;
 
     public FieldDTO(Field field) {

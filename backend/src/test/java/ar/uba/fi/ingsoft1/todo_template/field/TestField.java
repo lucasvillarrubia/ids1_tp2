@@ -1,24 +1,26 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 public class TestField {
+
     private Validator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
@@ -26,12 +28,11 @@ public class TestField {
 
     private Field buildValidDTO() {
         User user = new User(
-            "Juan", "Pérez", "juan.perez@example.com", List.of(UserZones.AVELLANEDA), "123456", "hombre","http://example.com/photo.jpg", (short) 30
+                "Juan", "Pérez", "juan.perez@example.com",
+                List.of(UserZones.AVELLANEDA), "123456", "hombre", "http://example.com/photo.jpg", (short) 30
         );
         return new Field(
-                user, "Cancha de Prueba",
-                "Calle 123",
-                UserZones.AVELLANEDA,
+                user, "Cancha de Prueba", "Calle 123", UserZones.AVELLANEDA,
                 List.of(FieldFeatures.GRASS, FieldFeatures.WIFI, FieldFeatures.PARKING),
                 List.of("https://example.com/image1.jpg", "https://example.com/image2.jpg")
         );

@@ -1,10 +1,16 @@
 package ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.HashSet;
 import java.util.Set;
 
 public class MatchOrganizerDTO {
+    @Schema(description = "Cantidad de jugadores", example = "16")
     Set<Long> availablePlayers;
+    @Schema(description = "Cantidad jugadores equipo A", example = "8")
     Set<Long> teamAPlayers;
+    @Schema(description = "Cantidad jugadores equipo B", example = "8")
     Set<Long> teamBPlayers;
 
     public MatchOrganizerDTO(MatchOrganizer matchOrganizer) {

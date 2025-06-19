@@ -2,8 +2,19 @@ package ar.uba.fi.ingsoft1.todo_template.reservation;
 
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+@Schema(description = "Confirmacion de reserva de una cancha", example = """
+        {"id": 1,
+        "fieldId": 3,
+        "organizer": pepe03@gmail.com,
+        "date": "2025-06-17",
+        "start": "18:30",
+        "end": "19:30"
+        }"""
+)
 
 public record ReservationDTO(
     Long id,

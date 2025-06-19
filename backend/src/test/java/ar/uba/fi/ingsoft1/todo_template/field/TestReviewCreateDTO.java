@@ -1,9 +1,9 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
 import jakarta.validation.Validation;
@@ -13,7 +13,7 @@ import jakarta.validation.ValidatorFactory;
 public class TestReviewCreateDTO {
     private Validator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
@@ -21,9 +21,9 @@ public class TestReviewCreateDTO {
 
     public ReviewCreateDTO buildValidReviewCreateDTO() {
         return new ReviewCreateDTO(
-            1L,
-            (short) 5,
-            "Excelente cancha, muy bien mantenida."
+                1L,
+                (short) 5,
+                "Excelente cancha, muy bien mantenida."
         );
     }
 
@@ -37,21 +37,21 @@ public class TestReviewCreateDTO {
     @Test
     public void testNullFieldIdFailsValidation() {
         ReviewCreateDTO review = new ReviewCreateDTO(
-            null,
-            (short) 5,
-            "Excelente cancha, muy bien mantenida."
+                null,
+                (short) 5,
+                "Excelente cancha, muy bien mantenida."
         );
         var violations = validator.validate(review);
         assertTrue(violations.stream()
-            .anyMatch(v -> v.getPropertyPath().toString().equals("field_id")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("field_id")));
     }
 
     @Test
     public void testEmptyCommentPassValidation() {
         ReviewCreateDTO review = new ReviewCreateDTO(
-            1L,
-            (short) 5,
-            ""
+                1L,
+                (short) 5,
+                ""
         );
         var violations = validator.validate(review);
         assertTrue(violations.isEmpty());
@@ -60,25 +60,24 @@ public class TestReviewCreateDTO {
     @Test
     public void testInvalidRatingFailsValidation() {
         ReviewCreateDTO review = new ReviewCreateDTO(
-            1L,
-            (short) 6, // Rating out of range
-            "Excelente cancha, muy bien mantenida."
+                1L,
+                (short) 6, // Rating fuera del rango válido
+                "Excelente cancha, muy bien mantenida."
         );
         var violations = validator.validate(review);
         assertTrue(violations.stream()
-            .anyMatch(v -> v.getPropertyPath().toString().equals("score")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("score")));
     }
 
     @Test
     public void testNegativeRatingFailsValidation() {
         ReviewCreateDTO review = new ReviewCreateDTO(
-            1L,
-            (short) -1, // Negative rating
-            "Pésima cancha, muy mal mantenida."
+                1L,
+                (short) -1, // Rating negativo
+                "Pésima cancha, muy mal mantenida."
         );
         var violations = validator.validate(review);
         assertTrue(violations.stream()
-            .anyMatch(v -> v.getPropertyPath().toString().equals("score")));
+                .anyMatch(v -> v.getPropertyPath().toString().equals("score")));
     }
-
 }

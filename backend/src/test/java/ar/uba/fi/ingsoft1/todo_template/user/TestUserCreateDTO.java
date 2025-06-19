@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserCreateDTOTest {
+public class TestUserCreateDTO {
 
     private Validator validator;
 
@@ -26,7 +26,7 @@ class UserCreateDTOTest {
                 "Pérez",
                 "juan@ejemplo.com",
                 List.of(UserZones.VICENTE_LOPEZ),
-                "securePassword123",
+                "contrasenaSegura123",
                 "http://example.com/photo.jpg",
                 "hombre",
                 (short) 25
@@ -44,7 +44,7 @@ class UserCreateDTOTest {
     void blankName_failsValidation() {
         UserCreateDTO dto = new UserCreateDTO(
                 "", "Pérez", "juan@ejemplo.com",
-                List.of(UserZones.EZEIZA), "pass", null,
+                List.of(UserZones.EZEIZA), "contra", null,
                 "hombre", (short) 25
         );
 
@@ -57,7 +57,7 @@ class UserCreateDTOTest {
     void nullZones_failsValidation() {
         UserCreateDTO dto = new UserCreateDTO(
                 "Juan", "Pérez", "juan@ejemplo.com",
-                null, "pass", null,
+                null, "contra", null,
                 "hombre", (short) 25
         );
 
@@ -70,7 +70,7 @@ class UserCreateDTOTest {
     void emptyZones_failsValidation() {
         UserCreateDTO dto = new UserCreateDTO(
                 "Juan", "Pérez", "juan@ejemplo.com",
-                List.of(), "pass", null,
+                List.of(), "contra", null,
                 "hombre", (short) 25
         );
 
@@ -83,7 +83,7 @@ class UserCreateDTOTest {
     void invalidEmail_failsValidation() {
         UserCreateDTO dto = buildValidDTO();
         dto = new UserCreateDTO(
-                dto.name(), dto.lastname(), "not-an-email",
+                dto.name(), dto.lastname(), "email-invalido",
                 dto.zones(), dto.password(), dto.photo(),
                 dto.gender(), dto.age()
         );
@@ -97,7 +97,7 @@ class UserCreateDTOTest {
     void ageBelowMinimum_failsValidation() {
         UserCreateDTO dto = new UserCreateDTO(
                 "Juan", "Pérez", "juan@ejemplo.com",
-                List.of(UserZones.VICENTE_LOPEZ), "pass", null,
+                List.of(UserZones.VICENTE_LOPEZ), "contra", null,
                 "hombre", (short) 10
         );
 
@@ -110,7 +110,7 @@ class UserCreateDTOTest {
     void ageAboveMaximum_failsValidation() {
         UserCreateDTO dto = new UserCreateDTO(
                 "Juan", "Pérez", "juan@ejemplo.com",
-                List.of(UserZones.VICENTE_LOPEZ), "pass", null,
+                List.of(UserZones.VICENTE_LOPEZ), "contra", null,
                 "hombre", (short) 151
         );
 
@@ -122,7 +122,7 @@ class UserCreateDTOTest {
     @Test
     void asUser_appliesPasswordEncryption() {
         UserCreateDTO dto = buildValidDTO();
-        Function<String, String> encryptor = pwd -> "encrypted_" + pwd;
+        Function<String, String> encryptor = pwd -> "encriptada_" + pwd;
 
         User user = dto.asUser(encryptor);
 
@@ -130,7 +130,7 @@ class UserCreateDTOTest {
         assertEquals("Pérez", user.getLastname());
         assertEquals("juan@ejemplo.com", user.getEmail());
         assertEquals(List.of(UserZones.VICENTE_LOPEZ), user.getZones());
-        assertEquals("encrypted_securePassword123", user.getPassword());
+        assertEquals("encriptada_contrasenaSegura123", user.getPassword());
         assertEquals("http://example.com/photo.jpg", user.getPhoto());
         assertEquals("hombre", user.getGender());
         assertEquals((Short) (short) 25, user.getAge());
