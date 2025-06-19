@@ -14,6 +14,11 @@ const ItemsForm = ({ itemCategory }) => {
 
         const handleSubmit = async (values, { setSubmitting }) => {
             try {
+                if (itemCategory === 'closed') {
+                    console.log("Intentando crear partido cerrado")
+                    itemCategory = 'matches';
+                }
+                console.log("Submiting values: ", values)
                 await createItem(itemCategory, values);
                 await loadItemsByGenre(dispatch);
                 navigate('/congratulations');
@@ -34,15 +39,18 @@ const ItemsForm = ({ itemCategory }) => {
                                 <Form>
                                         {formFields.map(field => (
                                             <ItemsInput
-                                                key={field.name}
-                                                name={field.name}
-                                                type={field.type}
-                                                id={field.id}
-                                                htmlFor={field.htmlFor}
-                                                placeholder={field.placeholder}
+                                                // key={field.name}
+                                                // name={field.name}
+                                                // type={field.type}
+                                                // id={field.id}
+                                                // htmlFor={field.htmlFor}
+                                                // placeholder={field.placeholder}
+                                                // options={field.options}
+                                                {...field}
                                             >
                                                 {field.label}
                                             </ItemsInput>
+
                                         ))}
                                         <ItemSubmit type='submit' disabled={isSubmitting}>CREAR</ItemSubmit>
                                 </Form>

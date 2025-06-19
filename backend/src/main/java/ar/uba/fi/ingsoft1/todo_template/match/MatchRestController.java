@@ -1,11 +1,14 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
+import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import ar.uba.fi.ingsoft1.todo_template.common.exception.GlobalExceptionHandler;
 import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerDTO;
 import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,18 +21,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-// task: Franja horaria figura como reservada y ocupada en el sistema (se deberia solicitar al cancha service la reserva de una cancha)
-
 @RestController
 @RequestMapping("/matches")
 @Tag(name = "Matches")
 public class MatchRestController {
     private final MatchService matchService;
     private final MatchOrganizerService matchOrganizerService;
+    private final GlobalExceptionHandler globalExceptionHandler;
 
     public MatchRestController(MatchService matchService, MatchOrganizerService matchOrganizerService) {
         this.matchService = matchService;
         this.matchOrganizerService = matchOrganizerService;
+        globalExceptionHandler = new GlobalExceptionHandler();
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -104,11 +107,22 @@ public class MatchRestController {
     @Operation(summary = "Create a new Match")
     @ApiResponse(responseCode = "201", description = "Match created", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
+    @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
+    @ApiResponse(responseCode = "409", description = "Unavailable time slot", content = @Content)
     @PreAuthorize("hasRole('USER')")
-    ResponseEntity<MatchDTO> createMatch(
+    ResponseEntity<?> createMatch(
             @Valid @RequestBody MatchCreateDTO matchCreateDTO
     ) {
-        return ResponseEntity.ok(this.matchService.createMatch(matchCreateDTO));
+        try {
+            MatchDTO createdMatch = matchService.createMatch(matchCreateDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdMatch);
+        } catch (EntityNotFoundException e) {
+            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
+        } catch (DuplicateEntityException e) {
+            return (ResponseEntity<?>) globalExceptionHandler.handleDuplicateEntityException(e).getBody();
+        } catch (IllegalArgumentException e) {
+            return (ResponseEntity<?>) globalExceptionHandler.handleIllegalArgumentException(e).getBody();
+        }
     }
 
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")

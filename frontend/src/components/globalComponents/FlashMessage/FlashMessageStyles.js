@@ -27,13 +27,14 @@ export const MessageBox = styled.div`
     font-family: 'Bebas Neue', sans-serif;
     text-transform: uppercase;
     border-radius: 15px;
-    width: 300px;
+    width: 350px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     text-align: center;
-    font-size: 15px;
+    font-size: 30px;
+    letter-spacing: 1px;
     & p {
         font-family: 'Bebas Neue', sans-serif;
         text-transform: uppercase;
@@ -50,7 +51,7 @@ export const OKButton = styled.button`
     border-radius: 50px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 25px;
     letter-spacing: 2px;
     &:hover {
         background-color: black;

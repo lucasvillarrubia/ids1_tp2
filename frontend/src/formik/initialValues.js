@@ -31,28 +31,60 @@ export const teamInitialValues = {
     logo: '',
     colors: '',
     skill: '',
-    players: '',
+    players: ['']
 };
 
 export const fieldInitialValues = {
-    ownerId: '',
     name: '',
     location: '',
     zone: '',
-    features: '',
-    images: '',
+    features: [],
 };
 
-export const matchInitialValues = {
-    fieldId: '',
+// export const matchInitialValues = {
+//     fieldId: 1,
+//     participationType: {
+//         type: 'Open',
+//         minPlayersCount: 2,
+//         maxPlayersCount: 10,
+//         players: []
+//     },
+//     timeRange: {
+//         start: '19:00:00',
+//         end: '20:00:00'
+//     },
+// };
+
+export const matchOpenInitialValues = {
     participationType: {
-        type: '',
-        minPlayersCount: '',
-        maxPlayersCount: '',
-        players: '',
+        type: 'Open',
+        minPlayersCount: 5,
+        maxPlayersCount: 10,
+        players: ['']
     },
-    timeRange: {
-        start: '',
-        end: '',
-    },
+    reservation: {
+        fieldId: 1,
+        date: '2025-06-17',
+        start: '18:00',
+        end: '19:00'
+    }
 };
+
+export const matchClosedInitialValues = {
+    participationType: {
+        type: 'Close',
+        teama: '',
+        teamb: ''
+        // minPlayersCount: 2,
+        // maxPlayersCount: 22,
+        // players: ['']
+    },
+    reservation: {
+        fieldId: 1,
+        date: '2025-06-17',
+        start: '18:00',
+        end: '19:00'
+    }
+};
+
+

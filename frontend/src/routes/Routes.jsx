@@ -11,6 +11,9 @@ import UserProfilePage from "../components/userProfilePage/UserProfilePage.jsx";
 import VerifyEmailPage from "../components/verifyEmailPage/verifyEmailPage.jsx";
 import ForgotPasswordPage from "../components/forgotPasswordPage/ForgotPasswordPage.jsx";
 import NewPasswordPage from "../components/newPasswordPage/NewPasswordPage.jsx";
+import MyProfile from "../pages/myProfile/MyProfile.jsx";
+import TeamPage from "../pages/itemPages/teamPage/TeamPage.jsx";
+
 
 
 function Routes () {
@@ -22,14 +25,18 @@ function Routes () {
                         <Route path="/verify-email" element={<VerifyEmailPage/>} />
                         <Route path="/password_reset/" element={<ForgotPasswordPage/>} />
                         <Route path="password_reset/new_password" element={<NewPasswordPage/>} />
-                        <Route path = "/sessions/profile" element={<UserProfilePage/>} />
+                        {/*<Route path = "/sessions/profile" element={<UserProfilePage/>} />*/}
 
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/create' element={<Create />} />
                         </Route>
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path='/me' element={<MyProfile />} />
+                        </Route>
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/congratulations' element={<Success />} />
                         </Route>
+                        <Route path="/team/:teamId" element={<TeamPage />} />
                         <Route path='*' element={<NotFound />} />
                 </AllRoutes>
         )

@@ -1,7 +1,7 @@
 import React from 'react'
 import { UserMenuBG, UserMenuUI } from './UserStyles'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentUser, toggleUserMenuDisplay } from '../../features/users/usersSlice';
+import {logout, setCurrentUser, toggleUserMenuDisplay} from '../../features/users/usersSlice';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from "../../features/users/usersAPI.js";
 
@@ -20,7 +20,7 @@ const UserMenu = () => {
                                   <h6>{`¡Hola ${currentUser?.name || "Invitado"}!`}</h6>
                                   <p onClick={() => {
                                           dispatch(toggleUserMenuDisplay());
-                                          navigate("/sessions/profile");
+                                          navigate("/me");
                                   }}>
                                           Mi Perfil
                                   </p>

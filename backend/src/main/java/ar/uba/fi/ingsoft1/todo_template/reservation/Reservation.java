@@ -35,14 +35,6 @@ public class Reservation {
     public Reservation() {}
 
     public Reservation(Field field, LocalDate date, LocalTime startHour, LocalTime endHour, User organizer) {
-        if (date.isBefore(LocalDate.now()) || (date.isEqual(LocalDate.now()) && startHour.isBefore(LocalTime.now()))) {
-            throw new IllegalArgumentException("Cannot reserve a field for a past date");
-        }
-
-        if (startHour.isAfter(endHour)) {
-            throw new IllegalArgumentException("Start hour must be before end hour");
-        }
-
         this.organizer = organizer;
         this.field = field;
         this.date = date;

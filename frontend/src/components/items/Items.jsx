@@ -35,7 +35,7 @@ const Items = () => {
       <ItemCardsContainer>
           {items.length > 0 ? (
               items.slice(0, limit).map(item => (
-                  <ItemCard key={item.renderIndex} {...item} />
+                  <ItemCard key={item.id} {...item} />
               ))
           ) : (
               <p>Todavía no hay resultados de esto. Creá uno!</p>

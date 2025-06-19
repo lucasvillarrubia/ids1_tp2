@@ -19,19 +19,9 @@ export const CategoryCollection = [
                 category: 'teams',
         },
         {
-                id: 4,
-                name: 'Torneos',
-                category: 'tournament',
-        },
-        {
                 id: 5,
                 name: 'Canchas',
                 category: 'fields',
-        },
-        {
-                id: 6,
-                name: 'Usuarios',
-                category: 'users',
         }
 ]; 
 
