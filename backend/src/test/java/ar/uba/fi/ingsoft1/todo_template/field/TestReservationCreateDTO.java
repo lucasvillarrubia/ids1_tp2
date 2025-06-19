@@ -1,13 +1,13 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import jakarta.validation.ConstraintViolation;
@@ -27,7 +27,7 @@ public class TestReservationCreateDTO {
         );
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();

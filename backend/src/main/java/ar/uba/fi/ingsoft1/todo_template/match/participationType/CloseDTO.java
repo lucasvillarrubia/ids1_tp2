@@ -3,14 +3,18 @@ package ar.uba.fi.ingsoft1.todo_template.match.participationType;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.stream.Collectors;
-
+@Schema(description = "Participación cerrada")
 @DiscriminatorValue("Close")
 public class CloseDTO extends ParticipationTypeDTO {
+    @Schema(description = "Nombre del equipo 1", example = "Los Halcones")
     @NotBlank String teama;
+
+    @Schema(description = "Nombre del equipo 2", example = "Las Panteras")
     @NotBlank String teamb;
 
     public String getTeama() {
