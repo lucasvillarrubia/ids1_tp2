@@ -44,13 +44,28 @@ export const teamValidationSchema = Yup.object({
         .min(1, 'Mínimo 1')
         .max(10, 'Máximo 10')
         .nullable(),
-    players: Yup.string()
-        .test('max-players', 'Máximo 4 jugadores', value => {
-            if (!value) return true;
-            const players = value.split(',').map(p => p.trim()).filter(Boolean);
-            return players.length <= 4;
+    // players: Yup.string()
+    //     .test('max-players', 'Máximo 4 jugadores', value => {
+    //         if (!value) return true;
+    //         const players = value.split(',').map(p => p.trim()).filter(Boolean);
+    //         return players.length <= 4;
+    //     })
+    //     .nullable(),
+    players: Yup.array()
+        .of(
+            Yup.string()
+                .trim()
+                .required('El nombre no puede estar vacío')
+        )
+        // .min(1, 'Debe haber al menos un jugador')
+        .max(4, 'Máximo 4 jugadores')
+        .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
+            if (!Array.isArray(players)) return true;
+            const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
+            const lowercased = clean.map(p => p.toLowerCase());
+            const set = new Set(lowercased);
+            return set.size === lowercased.length;
         })
-        .nullable(),
 });
 
 export const fieldValidationSchema = Yup.object({
@@ -139,21 +154,8 @@ export const matchClosedValidationSchema = Yup.object({
         type: Yup.string()
             .oneOf(['Close'])
             .required(),
-
-        players: Yup.array()
-            .of(
-                Yup.string()
-                    .trim()
-                    .required('El nombre no puede estar vacío')
-            )
-            // .min(1, 'Debe haber al menos un jugador')
-            .test('sin-duplicados', 'No puede haber jugadores repetidos', (players) => {
-                if (!Array.isArray(players)) return true;
-                const clean = players.filter(p => typeof p === 'string' && p.trim() !== '');
-                const lowercased = clean.map(p => p.toLowerCase());
-                const set = new Set(lowercased);
-                return set.size === lowercased.length;
-            })
+        teama: Yup.string().required('Equipo A requerido'),
+        teamb: Yup.string().required('Equipo B requerido')
 
     }),
 

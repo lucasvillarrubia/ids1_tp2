@@ -31,7 +31,7 @@ export const teamInitialValues = {
     logo: '',
     colors: '',
     skill: '',
-    players: '',
+    players: ['']
 };
 
 export const fieldInitialValues = {
@@ -73,7 +73,11 @@ export const matchOpenInitialValues = {
 export const matchClosedInitialValues = {
     participationType: {
         type: 'Close',
-        players: ['']
+        teama: '',
+        teamb: ''
+        // minPlayersCount: 2,
+        // maxPlayersCount: 22,
+        // players: ['']
     },
     reservation: {
         fieldId: 1,

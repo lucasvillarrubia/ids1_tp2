@@ -15,6 +15,7 @@ const ItemsForm = ({ itemCategory }) => {
         const handleSubmit = async (values, { setSubmitting }) => {
             try {
                 if (itemCategory === 'closed') {
+                    console.log("Intentando crear partido cerrado")
                     itemCategory = 'matches';
                 }
                 console.log("Submiting values: ", values)

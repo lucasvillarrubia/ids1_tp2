@@ -36,8 +36,9 @@ export const teamFields = [
         type: 'text',
         id: 'team-players',
         htmlFor: 'team-players',
-        placeholder: 'Jugadores (separados por comas)',
-        label: 'Jugadores'
+        placeholder: 'Nombre del jugador',
+        label: 'Jugadores',
+        isList: true
     }
 ];
 // htmlFor, type, id, placeholder, name
@@ -319,12 +320,19 @@ export const matchClosedFields = [
         label: 'Fin'
     },
     {
-        name: 'participationType.players',
+        name: 'participationType.teama',
         type: 'text',
-        id: 'match-closed-players',
-        htmlFor: 'match-closed-players',
-        placeholder: 'Nombre del jugador',
-        label: 'Jugadores',
-        isList: true
+        id: 'teama',
+        htmlFor: 'teama',
+        placeholder: 'Equipo A',
+        label: 'Equipo A'
+    },
+    {
+        name: 'participationType.teamb',
+        type: 'text',
+        id: 'teamb',
+        htmlFor: 'teamb',
+        placeholder: 'Equipo B',
+        label: 'Equipo B'
     }
 ];
