@@ -5,14 +5,15 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import {getFormConfig, getFormFields} from "../../formik/index.js";
 import {createItem, loadItemsByGenre} from "../../features/items/itemsAPI.js";
+import {updateField} from "../../features/fields/fieldsAPI.js";
 
-const ItemsForm = ({ itemCategory }) => {
+const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
         const dispatch = useDispatch();
         const navigate = useNavigate();
-        const { initialValues, validationSchema } = getFormConfig(itemCategory);
+        const { initialValues, validationSchema } = (itemCategory === 'updateField') ? getFormConfig(itemCategory) : getFormConfig(itemCategory, existingItem);
         const formFields = getFormFields(itemCategory);
 
-        const handleSubmit = async (values, { setSubmitting }) => {
+        const handleCreateSubmit = async (values, { setSubmitting }) => {
             try {
                 if (itemCategory === 'closed') {
                     console.log("Intentando crear partido cerrado")
@@ -29,11 +30,23 @@ const ItemsForm = ({ itemCategory }) => {
             }
         };
 
+        const handleUpdateSubmit = (values) => {
+            try {
+                console.log("Intentando actualizar con", values);
+                dispatch(updateField(existingItem.id, values));
+                onCancel();
+                navigate('/me')
+            } catch (error) {
+                alert('No se pudo actualizar el ítem: error visible en consola');
+            }
+
+        }
+
         return (
                 <Formik
                         initialValues={initialValues}
                         validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
+                        onSubmit={itemCategory === 'updateField' ? handleUpdateSubmit : handleCreateSubmit}
                 >
                         {({isSubmitting}) => (
                                 <Form>
@@ -52,7 +65,12 @@ const ItemsForm = ({ itemCategory }) => {
                                             </ItemsInput>
 
                                         ))}
-                                        <ItemSubmit type='submit' disabled={isSubmitting}>CREAR</ItemSubmit>
+                                        <ItemSubmit type='submit' disabled={isSubmitting}>
+                                            {(itemCategory === 'updateField') ? 'ACTUALIZAR' : 'CREAR'}
+                                        </ItemSubmit>
+                                    {(itemCategory === 'updateField') &&
+                                        <ItemSubmit type='button' onClick={onCancel} disabled={isSubmitting}>CANCELAR</ItemSubmit>
+                                    }
                                 </Form>
                         )}
                 </Formik>

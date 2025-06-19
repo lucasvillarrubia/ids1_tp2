@@ -14,6 +14,18 @@ export const MatchContainer = styled.div`
     gap: 30px;
 `;
 
+export const FieldContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    background-color: var(--oldgold);
+    margin-top: 200px;
+    & h3 {
+        color: white;
+    }
+`;
+
 const ItemCardUI = styled.div`
         width: 300px;
         /* min-height: 500px; */

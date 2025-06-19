@@ -1,18 +1,19 @@
 import {
-    fieldInitialValues,
+    fieldInitialValues, fieldUpdateInitialValues,
     matchClosedInitialValues,
     matchOpenInitialValues,
     teamInitialValues
 } from "./initialValues.js";
 import {
+    fieldUpdateValidationSchema,
     fieldValidationSchema,
     matchClosedValidationSchema,
     matchOpenValidationSchema,
     teamValidationSchema
 } from "./validationSchema.js";
-import {fieldFields, matchClosedFields, matchOpenFields, teamFields} from "./itemsFields.js";
+import {fieldFields, fieldUpdateFields, matchClosedFields, matchOpenFields, teamFields} from "./itemsFields.js";
 
-export const getFormConfig = (type) => {
+export const getFormConfig = (type, existingItem = null) => {
     switch (type) {
         case 'teams':
             return {
@@ -34,6 +35,11 @@ export const getFormConfig = (type) => {
                 initialValues: matchClosedInitialValues,
                 validationSchema: matchClosedValidationSchema
             };
+        case 'updateField':
+            return {
+                initialValues: fieldUpdateInitialValues(existingItem),
+                validationSchema: fieldUpdateValidationSchema
+            };
         default:
             throw new Error(`Unknown form type: ${type}`);
     }
@@ -49,6 +55,8 @@ export const getFormFields = (type) => {
             return matchOpenFields;
         case 'closed':
             return matchClosedFields;
+        case 'updateField':
+            return fieldUpdateFields;
         default:
             throw new Error(`Unknown form type for fields: ${type}`);
     }

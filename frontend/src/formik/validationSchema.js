@@ -178,3 +178,31 @@ export const matchClosedValidationSchema = Yup.object({
     })
 });
 
+export const fieldUpdateValidationSchema = Yup.object({
+    name: Yup.string().required("Nombre requerido"),
+    description: Yup.string(),
+    location: Yup.string().required("Ubicación requerida"),
+    zone: Yup.string().required("Zona requerida"),
+    price: Yup.number().min(0).required("Precio requerido"),
+    features: Yup.array().min(1, 'Debes seleccionar al menos una característica'),
+    images: Yup.array()
+        .of(
+            Yup.string()
+                .trim()
+                .required('La imágen no puede estar vacía')
+        )
+        // .min(1, 'Debe haber al menos un jugador')
+        .test('sin-duplicados', 'No puede haber imágenes repetidas', (images) => {
+            if (!Array.isArray(images)) return true;
+            const clean = images.filter(p => typeof p === 'string' && p.trim() !== '');
+            const lowercased = clean.map(p => p.toLowerCase());
+            const set = new Set(lowercased);
+            return set.size === lowercased.length;
+        }),
+    schedule: Yup.object({
+        days: Yup.string().required('Días requeridos'),
+        startHour: Yup.string().required("Hora inicio requerida"),
+        endHour: Yup.string().required("Hora fin requerida"),
+        predefDuration: Yup.number().required()
+    })
+});

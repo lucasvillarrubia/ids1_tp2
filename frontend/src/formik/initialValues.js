@@ -87,4 +87,21 @@ export const matchClosedInitialValues = {
     }
 };
 
+export const fieldUpdateInitialValues = (field) => ({
+    name: field?.name || '',
+    description: field?.description || '',
+    location: field?.location || '',
+    zone: field?.zone || '',
+    price: field?.price || 0,
+    features: [],
+    images: field?.images || [''],
+    schedule: {
+        days: field?.schedule?.days || '',
+        startHour: field?.schedule?.startHour || '',
+        endHour: field?.schedule?.endHour || '',
+        predefDuration: field?.schedule?.predefDuration || 60
+    }
+});
+
+
 
