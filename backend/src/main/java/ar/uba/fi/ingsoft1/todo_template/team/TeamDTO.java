@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Positive;
 
 import java.util.Arrays;
+import java.util.List;
 
 public record TeamDTO(
 

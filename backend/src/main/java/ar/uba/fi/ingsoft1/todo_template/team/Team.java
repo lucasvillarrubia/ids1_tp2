@@ -2,6 +2,8 @@ package ar.uba.fi.ingsoft1.todo_template.team;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
@@ -11,9 +13,11 @@ import jakarta.persistence.*;
 public class Team {
     @Id
     @Column(nullable = false, unique = true)
+    @NotBlank
     private String name;
 
     @Column(nullable = false)
+    @NotBlank
     private String captain;
     
     @Column(nullable = true)
@@ -28,8 +32,15 @@ public class Team {
     @ElementCollection
     private List<String> players;
 
-    public Team() {}
-
+    public Team() {
+        this.name = name;
+        this.captain = getUser();
+        this.logo = null;
+        this.colors = null;
+        this.skill = null;
+        this.players = new ArrayList<>();
+        this.players.add(captain);
+    }
     public Team(String name) {
         this.name = name;
         this.captain = getUser();
@@ -49,6 +60,9 @@ public class Team {
         this.players = new ArrayList<>();
         this.players.add(captain);
     }
+
+
+
 
     public String getName() {
         return name;
@@ -92,7 +106,7 @@ public class Team {
 
     public void setPlayers(List<String> players) {
         for (String player : players) {
-            if (!this.isComplete()) {
+            if (!this.isComplete() & player!= null & (player != " " )) {
                 this.addPlayer(player);
             }
             else {
@@ -102,7 +116,7 @@ public class Team {
     }
 
     public boolean addPlayer(String player) {
-        if (!this.players.contains(player)) {
+        if (!this.players.contains(player) & (player != null) & (player != " " )  ) {
             this.players.add(player);
             return true;
         }
