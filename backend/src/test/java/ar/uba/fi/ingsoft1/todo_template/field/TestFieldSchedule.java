@@ -1,6 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.field;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -8,8 +8,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlot;
@@ -23,7 +23,7 @@ import jakarta.validation.ValidatorFactory;
 public class TestFieldSchedule {
     private Validator validator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
@@ -31,26 +31,26 @@ public class TestFieldSchedule {
 
     public FieldSchedule buildValidSchedule() {
         return new FieldSchedule(
-            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
-            LocalTime.of(8, 0),
-            LocalTime.of(22, 0),
-            60
+                List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0),
+                60
         );
     }
 
     public User buildValidUser() {
         return new User(
-            "Juan", "Pérez", "juan.perez@example.com", List.of(UserZones.AVELLANEDA), "123456", "hombre","http://example.com/photo.jpg", (short) 30
+                "Juan", "Pérez", "juan.perez@example.com", List.of(UserZones.AVELLANEDA), "123456", "hombre","http://example.com/photo.jpg", (short) 30
         );
     }
 
     public Field buildValidField() {
         return new Field(
-            buildValidUser(), "Cancha de Prueba",
-            "Calle 123",
-            UserZones.AVELLANEDA,
-            List.of(FieldFeatures.GRASS, FieldFeatures.WIFI, FieldFeatures.PARKING),
-            List.of("https://example.com/image1.jpg", "https://example.com/image2.jpg")
+                buildValidUser(), "Cancha de Prueba",
+                "Calle 123",
+                UserZones.AVELLANEDA,
+                List.of(FieldFeatures.GRASS, FieldFeatures.WIFI, FieldFeatures.PARKING),
+                List.of("https://example.com/image1.jpg", "https://example.com/image2.jpg")
         );
     }
 
@@ -58,8 +58,8 @@ public class TestFieldSchedule {
         User user = buildValidUser();
         Field field = buildValidField();
         return List.of(
-            new Reservation(field, date, LocalTime.of(10, 0), LocalTime.of(11, 0), user),
-            new Reservation(field, date, LocalTime.of(12, 0), LocalTime.of(13, 0), user)
+                new Reservation(field, date, LocalTime.of(10, 0), LocalTime.of(11, 0), user),
+                new Reservation(field, date, LocalTime.of(12, 0), LocalTime.of(13, 0), user)
         );
     }
 
@@ -73,10 +73,10 @@ public class TestFieldSchedule {
     @Test
     public void testNullStartTimeFailsValidation() {
         FieldSchedule schedule = new FieldSchedule(
-            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
-            null,
-            LocalTime.of(22, 0),
-            60
+                List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
+                null,
+                LocalTime.of(22, 0),
+                60
         );
 
         var violations = validator.validate(schedule);
@@ -86,10 +86,10 @@ public class TestFieldSchedule {
     @Test
     public void testNullEndTimeFailsValidation() {
         FieldSchedule schedule = new FieldSchedule(
-            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
-            LocalTime.of(8, 0),
-            null,
-            60
+                List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
+                LocalTime.of(8, 0),
+                null,
+                60
         );
 
         var violations = validator.validate(schedule);
@@ -99,10 +99,10 @@ public class TestFieldSchedule {
     @Test
     public void testNullDaysOfWeekFailsValidation() {
         FieldSchedule schedule = new FieldSchedule(
-            null,
-            LocalTime.of(8, 0),
-            LocalTime.of(22, 0),
-            60
+                null,
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0),
+                60
         );
 
         var violations = validator.validate(schedule);
@@ -112,10 +112,10 @@ public class TestFieldSchedule {
     @Test
     public void testNullDurationFailsValidation() {
         FieldSchedule schedule = new FieldSchedule(
-            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
-            LocalTime.of(8, 0),
-            LocalTime.of(22, 0),
-            null
+                List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0),
+                null
         );
 
         var violations = validator.validate(schedule);
@@ -125,10 +125,10 @@ public class TestFieldSchedule {
     @Test
     public void testInvalidDurationFailsValidation() {
         FieldSchedule schedule = new FieldSchedule(
-            List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
-            LocalTime.of(8, 0),
-            LocalTime.of(22, 0),
-            -30
+                List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0),
+                -30
         );
 
         var violations = validator.validate(schedule);
@@ -138,10 +138,10 @@ public class TestFieldSchedule {
     @Test
     public void testEmptyDaysOfWeekFailsValidation() {
         FieldSchedule schedule = new FieldSchedule(
-            List.of(),
-            LocalTime.of(8, 0),
-            LocalTime.of(22, 0),
-            60
+                List.of(),
+                LocalTime.of(8, 0),
+                LocalTime.of(22, 0),
+                60
         );
 
         var violations = validator.validate(schedule);
@@ -182,8 +182,8 @@ public class TestFieldSchedule {
         LocalDate date = LocalDate.of(2025, 6, 18); // Un miércoles
 
         List<TimeSlot> unavailableSlots = List.of(
-            new TimeSlot(date, LocalTime.of(9, 0), LocalTime.of(10, 0)),
-            new TimeSlot(date, LocalTime.of(11, 0), LocalTime.of(12, 0))
+                new TimeSlot(date, LocalTime.of(9, 0), LocalTime.of(10, 0)),
+                new TimeSlot(date, LocalTime.of(11, 0), LocalTime.of(12, 0))
         );
         schedule.addUnavailableTimeSlot(unavailableSlots.get(0));
         schedule.addUnavailableTimeSlot(unavailableSlots.get(1));
@@ -196,8 +196,8 @@ public class TestFieldSchedule {
 
     @Test
     public void testGetWeeklyOccupiedTimeSlotsForDateWithoutReservations() {
-        FieldSchedule schedule = buildValidSchedule(); 
-        List<Reservation> reservations = List.of(); 
+        FieldSchedule schedule = buildValidSchedule();
+        List<Reservation> reservations = List.of();
 
         int occupied_hours = schedule.getOccupiedHoursThisWeek(reservations);
         assertTrue(occupied_hours == 0); // No debería haber horas ocupadas
@@ -205,7 +205,7 @@ public class TestFieldSchedule {
 
     @Test
     public void testGetWeeklyOccupiedTimeSlotsForDateWithReservations() {
-        FieldSchedule schedule = buildValidSchedule(); 
+        FieldSchedule schedule = buildValidSchedule();
         LocalDate date = LocalDate.of(2025, 6, 18); // Un miércoles
         List<Reservation> reservations = buildValidReservations(date); // 2 Reservas para el miércoles
 
@@ -215,8 +215,8 @@ public class TestFieldSchedule {
 
     @Test
     public void testGetMonthlyOccupiedTimeSlotsForDateWithoutReservations() {
-        FieldSchedule schedule = buildValidSchedule(); 
-        List<Reservation> reservations = List.of(); 
+        FieldSchedule schedule = buildValidSchedule();
+        List<Reservation> reservations = List.of();
 
         int occupied_hours = schedule.getOccupiedHoursThisMonth(reservations);
         assertTrue(occupied_hours == 0); // No debería haber horas ocupadas
@@ -224,7 +224,7 @@ public class TestFieldSchedule {
 
     @Test
     public void testGetMonthlyOccupiedTimeSlotsForDateWithReservations() {
-        FieldSchedule schedule = buildValidSchedule(); 
+        FieldSchedule schedule = buildValidSchedule();
         LocalDate date = LocalDate.of(2025, 6, 18); // Un miércoles
         List<Reservation> reservations = new ArrayList<>(buildValidReservations(date));  // 2 Reservas para una semana
         LocalDate anotherDate = LocalDate.of(2025, 6, 30); // Un viernes

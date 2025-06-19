@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserCreateDTOTest {
+public class TestUserCreateDTO {
 
     private Validator validator;
 
