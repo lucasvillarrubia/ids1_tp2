@@ -7,7 +7,6 @@ import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,9 +19,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.TimeSlotDTO;
-import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
-import ar.uba.fi.ingsoft1.todo_template.common.exception.GlobalExceptionHandler;
-import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.reviews.ReviewCreateDTO;
@@ -31,7 +27,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 
@@ -41,11 +36,9 @@ import jakarta.validation.constraints.Positive;
 public class FieldRestController {
 
     private final FieldService fieldService;
-    private final GlobalExceptionHandler globalExceptionHandler;
 
     public FieldRestController(FieldService fieldService) {
         this.fieldService = fieldService;
-        globalExceptionHandler = new GlobalExceptionHandler();
     }
 
     @GetMapping(produces = "application/json")
@@ -62,11 +55,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> getFieldById(@PathVariable @Positive Long id) {
-        try {
-            return ResponseEntity.ok(fieldService.getFieldById(id));
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        return ResponseEntity.ok(fieldService.getFieldById(id));
     }
 
     @GetMapping(value = "/owner/{ownerEmail}", produces = "application/json")
@@ -74,11 +63,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Owner not found", content = @Content)
     public ResponseEntity<?> getFieldsByOwnerId(@PathVariable String ownerEmail) {
-        try {
-            return ResponseEntity.ok(fieldService.getFieldsByOwner(ownerEmail).stream().toList());
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        return ResponseEntity.ok(fieldService.getFieldsByOwner(ownerEmail).stream().toList());
     }
 
     @GetMapping(value = "/owner/me", produces = "application/json")
@@ -86,12 +71,8 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Owner not found", content = @Content)
     public ResponseEntity<?> getFieldsOwns() {
-        try {
-            String ownerEmail = fieldService.getCurrentUser().getEmail();
-            return ResponseEntity.ok(fieldService.getFieldsByOwner(ownerEmail).stream().toList());
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        String ownerEmail = fieldService.getCurrentUser().getEmail();
+        return ResponseEntity.ok(fieldService.getFieldsByOwner(ownerEmail).stream().toList());
     }
 
     @GetMapping(value = "/zone/{zone}", produces = "application/json")
@@ -99,11 +80,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Fields not found", content = @Content)
     public ResponseEntity<?> getFieldsByZone(@PathVariable UserZones zone) {
-        try {
-            return ResponseEntity.ok(fieldService.getFieldsByZone(zone).stream().toList());
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        return ResponseEntity.ok(fieldService.getFieldsByZone(zone).stream().toList());
     }
 
     @GetMapping(value = "/name/{name}", produces = "application/json")
@@ -125,11 +102,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Reviews found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public ResponseEntity<?> getReviewsByFieldId(@PathVariable @Positive Long id) {
-        try {
-            return ResponseEntity.ok(fieldService.getReviewsByFieldId(id).stream().toList());
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        return ResponseEntity.ok(fieldService.getReviewsByFieldId(id).stream().toList());
     }
 
     @GetMapping(value = "{id}/reservations/", produces = "application/json")
@@ -137,11 +110,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public ResponseEntity<?> getReservationsByFieldId(@PathVariable @Positive Long id) {
-        try {
-            return ResponseEntity.ok(fieldService.getReservationsByFieldId(id).stream().toList());
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        return ResponseEntity.ok(fieldService.getReservationsByFieldId(id).stream().toList());
     }
 
     @GetMapping(value = "{id}/reservations/availableSlots", produces = "application/json")
@@ -150,12 +119,8 @@ public class FieldRestController {
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public ResponseEntity<?> getAvailableTimeSlotsByFieldId(@PathVariable @Positive Long id,
             @RequestParam(required = true) LocalDate date) {
-        try {
-            return ResponseEntity.ok(
-                    fieldService.getAvailableSlotsForReservations(date, id));
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        return ResponseEntity.ok(
+            fieldService.getAvailableSlotsForReservations(date, id));
     }
 
     @GetMapping(value = "/reservations/organizer/{organizerEmail}", produces = "application/json")
@@ -178,16 +143,13 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Reservation statistics found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public ResponseEntity<?> getReservationStatistics(@PathVariable @Positive Long id) {
-        try {
-            return ResponseEntity.ok(fieldService.getStaticticsByFieldId(id));
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        return ResponseEntity.ok(fieldService.getStaticticsByFieldId(id));
     }
 
     @PostMapping(value = "/{id}/reservations/unavailableSlots", produces = "application/json")
     @Operation(summary = "Block time slots for a field by its id")
     @ApiResponse(responseCode = "200", description = "Unavailable time slots blocked", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ApiResponse(responseCode = "403", description = "User is not authorized to block time slots for this field", content = @Content)
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     @ApiResponse(responseCode = "409", description = "Time slot is unavailable", content = @Content)
@@ -196,16 +158,8 @@ public class FieldRestController {
     public ResponseEntity<?> blockTimeSlots(
             @PathVariable @Positive Long id,
             @Valid @RequestBody TimeSlotDTO unavailableTimeSlots) {
-        try {
-            fieldService.addUnavailbleTimeSlotToField(id, unavailableTimeSlots);
-            return ResponseEntity.ok().build();
-        } catch (DuplicateEntityException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleDuplicateEntityException(e).getBody();
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        } catch (InvalidActionException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleInvalidActionException(e).getBody();
-        }
+        fieldService.addUnavailbleTimeSlotToField(id, unavailableTimeSlots);
+        return ResponseEntity.ok().build();
     }
 
     /*
@@ -222,20 +176,15 @@ public class FieldRestController {
     @PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(summary = "Create a new Field")
     @ApiResponse(responseCode = "201", description = "Field created", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ApiResponse(responseCode = "404", description = "User is not logged in to create this field", content = @Content)
     @ApiResponse(responseCode = "409", description = "Field with the same name already exists", content = @Content)
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createField(
             @Valid @RequestBody FieldCreateDTO fieldCreateDTO) {
-        try {
-            FieldDTO createdField = this.fieldService.createField(fieldCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdField);
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        } catch (DuplicateEntityException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleDuplicateEntityException(e).getBody();
-        }
+        FieldDTO createdField = this.fieldService.createField(fieldCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdField);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json", value = "/{id}/reviews")
@@ -246,12 +195,8 @@ public class FieldRestController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createReview(
             @Valid @RequestBody ReviewCreateDTO reviewCreateDTO) {
-        try {
-            ReviewDTO createdReview = fieldService.addReviewToField(reviewCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        }
+        ReviewDTO createdReview = fieldService.addReviewToField(reviewCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdReview);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json", value = "/{id}/reservations")
@@ -264,16 +209,8 @@ public class FieldRestController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> createReservation(
             @Valid @RequestBody ReservationCreateDTO reservationCreateDTO) {
-        try {
-            ReservationDTO createdReservation = fieldService.addReservationToField(reservationCreateDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation);
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        } catch (DuplicateEntityException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleDuplicateEntityException(e).getBody();
-        } catch (IllegalArgumentException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleIllegalArgumentException(e).getBody();
-        }
+        ReservationDTO createdReservation = fieldService.addReservationToField(reservationCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -283,14 +220,8 @@ public class FieldRestController {
     @ApiResponse(responseCode = "403", description = "User is not authorized to delete this field")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteField(@PathVariable @Positive long id) {
-        try {
-            fieldService.deleteField(id);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        } catch (InvalidActionException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleInvalidActionException(e).getBody();
-        }
+        fieldService.deleteField(id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/reservations/{reservationId}")
@@ -301,14 +232,8 @@ public class FieldRestController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteReservation(
             @PathVariable @Positive Long reservationId) {
-        try {
-            fieldService.deleteReservationByOwner(reservationId);
-            return ResponseEntity.ok().build();
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        } catch (InvalidActionException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleInvalidActionException(e).getBody();
-        }
+        fieldService.deleteReservationByOwner(reservationId);
+        return ResponseEntity.ok().build();
     }
 
     // PATCH
@@ -316,19 +241,14 @@ public class FieldRestController {
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Update a field by its id")
     @ApiResponse(responseCode = "200", description = "Field updated successfully", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "Invalid data", content = @Content)
     @ApiResponse(responseCode = "403", description = "User is not authorized to update this field", content = @Content)
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public ResponseEntity<?> updateField(
             @PathVariable @Positive Long id,
             @Valid @RequestBody FieldUpdateDTO fieldUpdateDTO) {
-        try {
-            FieldDTO updatedField = fieldService.updateField(id, fieldUpdateDTO);
-            return ResponseEntity.ok(updatedField);
-        } catch (EntityNotFoundException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleEntityNotFoundException(e).getBody();
-        } catch (InvalidActionException e) {
-            return (ResponseEntity<?>) globalExceptionHandler.handleInvalidActionException(e).getBody();
-        }
+        FieldDTO updatedField = fieldService.updateField(id, fieldUpdateDTO);
+        return ResponseEntity.ok(updatedField);
     }
 
 }

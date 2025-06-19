@@ -1,5 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum UserZones {
     // Zona norte
     VICENTE_LOPEZ,
@@ -77,5 +79,17 @@ public enum UserZones {
     VILLA_CRESPO,
     VILLA_DEL_PARQUE,
     VILLA_DEVOTO,
-    VILLA_GENERAL_MITRE
+    VILLA_GENERAL_MITRE;
+
+    @JsonCreator
+    public static UserZones from(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("Zona inválida: no puede estar vacía");
+        }
+        try {
+            return UserZones.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Zona inválida: " + value);
+        }
+    }
 }
