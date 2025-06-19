@@ -11,7 +11,7 @@ import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
-public class TestTodoTemplateApplication {
+public class TestFutbolApplication {
 
 	public static void main(String[] args) {
 		SummaryGeneratingListener listener = new SummaryGeneratingListener();
