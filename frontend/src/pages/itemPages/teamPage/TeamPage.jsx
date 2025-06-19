@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import PlayerCard from './PlayerCard.jsx';
-import { ItemPageInfo, ItemPageAuthor, ItemPageTitle, ActionButton, ButtonContainer, ExpandedItemCardUI, PlayersList, TeamContainer } from '../itemPagesStyles.js';
+import {
+    ItemPageInfo,
+    ItemPageAuthor,
+    ItemPageTitle,
+    ActionButton,
+    ButtonContainer,
+    ExpandedItemCardUI,
+    PlayersList,
+    TeamContainer,
+    MatchContainer
+} from '../itemPagesStyles.js';
+import ItemsForm from "../../../components/itemsForm/ItemsForm.jsx";
 
 const TeamPage = () => {
     const { teamId } = useParams();
+    const [editing, setEditing] = useState(false);
     const navigate = useNavigate();
     console.log(useSelector(state => state.teams.list));
     console.log(useSelector(state => state.teams));
@@ -18,19 +30,50 @@ const TeamPage = () => {
 
     if (!team) return <p>Equipo no encontrado.</p>;
 
-    const handleEditTeam = () => {
-    }
+    const handleDeleteTeam = async () => {
+        const confirm = window.confirm(`¿Estás seguro de que querés eliminar el equipo "${team.name}"?`);
+        if (!confirm) return;
 
-    const handleDeleteTeam = () => {
-    }
-
-    const handleAddPlayer = () => {
+        try {
+            await dispatch(deleteTeamThunk(team.name)); // o team.id si usás ID real
+            navigate('/me');
+        } catch (error) {
+            console.error("Error al eliminar el equipo:", error);
+            alert("No se pudo eliminar el equipo.");
+        }
     };
 
-    const handleRemovePlayer = () => {
+    const handleAddPlayer = async () => {
+        const playerName = prompt("Nombre del jugador a agregar:");
+        if (!playerName) return;
+
+        try {
+            await dispatch(addPlayerThunk({ id: team.name, playerName }));
+        } catch (error) {
+            console.error("Error al agregar jugador:", error);
+            alert("No se pudo agregar el jugador.");
+        }
     };
 
-    return (
+
+    const handleRemovePlayer = async () => {
+        const playerName = prompt("Nombre del jugador a eliminar:");
+        if (!playerName) return;
+
+        try {
+            await dispatch(removePlayerThunk({ id: team.name, playerName }));
+        } catch (error) {
+            console.error("Error al eliminar jugador:", error);
+            alert("No se pudo eliminar el jugador.");
+        }
+    };
+
+
+    return editing ? (
+        <TeamContainer>
+            <ItemsForm key="updateTeam" itemCategory="updateTeam" onCancel={() => setEditing(false)} existingItem={team} />
+        </TeamContainer>
+    ) : (
         <TeamContainer>
             <ExpandedItemCardUI>
                 <ItemPageInfo>
@@ -41,7 +84,7 @@ const TeamPage = () => {
                     {team.logo && <ItemPageAuthor>Logo: {team.logo}</ItemPageAuthor>}
                 </ItemPageInfo>
                 <ButtonContainer>
-                    <ActionButton onClick={handleEditTeam}>Editar Equipo</ActionButton>
+                    <ActionButton onClick={() => setEditing(true)}>Editar Equipo</ActionButton>
                     <ActionButton onClick={handleDeleteTeam}>Eliminar equipo</ActionButton>
                 </ButtonContainer>
             </ExpandedItemCardUI>
@@ -53,7 +96,7 @@ const TeamPage = () => {
             </PlayersList>
             <ButtonContainer>
                 <ActionButton onClick={handleAddPlayer}>Agregar Jugador</ActionButton>
-                <ActionButton onClick={handleRemovePlayer}>Agregar Jugador</ActionButton>
+                <ActionButton onClick={handleRemovePlayer}>Eliminar Jugador</ActionButton>
             </ButtonContainer>
             <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
         </TeamContainer>

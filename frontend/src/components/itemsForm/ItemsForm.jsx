@@ -7,6 +7,7 @@ import {getFormConfig, getFormFields} from "../../formik/index.js";
 import {createItem, loadItemsByGenre} from "../../features/items/itemsAPI.js";
 import {updateField} from "../../features/fields/fieldsAPI.js";
 import {updateMatch} from "../../features/matches/matchesAPI.js";
+import {updateTeamThunk} from "../../features/teams/teamsSlice.js";
 
 const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
         const dispatch = useDispatch();
@@ -54,6 +55,16 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
             }
         }
 
+        const handleUpdateTeamSubmit = async (values) => {
+            try {
+                console.log("Intentando actualizar equipo con", values);
+                await dispatch(updateTeamThunk({ id: existingItem.name, teamData: values }));
+            } catch (error) {
+                console.error("Error al actualizar el equipo:", error);
+                alert("No se pudo actualizar el equipo: error visible en consola");
+            }
+        }
+
         let handleSubmit;
         switch (itemCategory) {
             case 'updateField':
@@ -61,6 +72,9 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
                 break;
             case 'updateMatch':
                 handleSubmit = handleUpdateMatchSubmit;
+                break;
+            case 'updateTeam':
+                handleSubmit = handleUpdateTeamSubmit;
                 break;
             default:
                 handleSubmit = handleCreateSubmit;

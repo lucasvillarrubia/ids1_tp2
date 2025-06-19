@@ -118,6 +118,14 @@ export const matchUpdateInitialValues = (match) => ({
     }
 });
 
+export const teamUpdateInitialValues = (team) => ({
+    name: team?.name || '',
+    logo: team?.logo || '',
+    colors: team?.colors || '',
+    skill: team?.skill || '',
+    players: team?.players || ['']
+});
+
 
 
 
