@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const BASE_URL = "/api/matches";
+import { BASE_URL } from "../../utils";
 
 export const joinMatch = (id) => async (dispatch) => {
     try {
@@ -21,7 +20,7 @@ export const leaveMatch = (id) => async (dispatch) => {
 
 export const startMatch = (id) => async (dispatch) => {
     try {
-        const res = await axios.post(`${BASE_URL}/start?id=${id}`);
+        const res = await axios.post(`${BASE_URL}/start`, { id });
         dispatch({ type: "matches/updateOne", payload: res.data });
     } catch (err) {
         console.error("startMatch failed", err);
@@ -30,7 +29,7 @@ export const startMatch = (id) => async (dispatch) => {
 
 export const closeMatch = (id) => async (dispatch) => {
     try {
-        await axios.post(`${BASE_URL}/close?id=${id}`);
+        await axios.post(`${BASE_URL}/close`, { id });
         dispatch({ type: "matches/updateOne", payload: { id, state: "CLOSED" } });
     } catch (err) {
         console.error("closeMatch failed", err);

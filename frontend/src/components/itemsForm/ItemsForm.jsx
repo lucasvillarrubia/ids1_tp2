@@ -6,11 +6,12 @@ import { useNavigate } from 'react-router-dom'
 import {getFormConfig, getFormFields} from "../../formik/index.js";
 import {createItem, loadItemsByGenre} from "../../features/items/itemsAPI.js";
 import {updateField} from "../../features/fields/fieldsAPI.js";
+import {updateMatch} from "../../features/matches/matchesAPI.js";
 
 const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
         const dispatch = useDispatch();
         const navigate = useNavigate();
-        const { initialValues, validationSchema } = (itemCategory === 'updateField') ? getFormConfig(itemCategory) : getFormConfig(itemCategory, existingItem);
+        const { initialValues, validationSchema } = (itemCategory.includes('update')) ? getFormConfig(itemCategory) : getFormConfig(itemCategory, existingItem);
         const formFields = getFormFields(itemCategory);
 
         const handleCreateSubmit = async (values, { setSubmitting }) => {
@@ -30,23 +31,47 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
             }
         };
 
-        const handleUpdateSubmit = (values) => {
+        const handleUpdateFieldSubmit = (values) => {
             try {
                 console.log("Intentando actualizar con", values);
                 dispatch(updateField(existingItem.id, values));
                 onCancel();
                 navigate('/me')
             } catch (error) {
-                alert('No se pudo actualizar el ítem: error visible en consola');
+                alert('No se pudo actualizar la cancha: error visible en consola');
             }
 
+        }
+
+        const handleUpdateMatchSubmit = (values) => {
+            try {
+                console.log("Intentando actualizar partido con", values);
+                dispatch(updateMatch(existingItem.id, values));
+                onCancel();
+                navigate('/me')
+            } catch (error) {
+                alert('No se pudo actualizar el partido: error visible en consola');
+            }
+        }
+
+        let handleSubmit;
+        switch (itemCategory) {
+            case 'updateField':
+                handleSubmit = handleUpdateFieldSubmit;
+                break;
+            case 'updateMatch':
+                handleSubmit = handleUpdateMatchSubmit;
+                break;
+            default:
+                handleSubmit = handleCreateSubmit;
+                break;
         }
 
         return (
                 <Formik
                         initialValues={initialValues}
                         validationSchema={validationSchema}
-                        onSubmit={itemCategory === 'updateField' ? handleUpdateSubmit : handleCreateSubmit}
+                        onSubmit={handleSubmit}
                 >
                         {({isSubmitting}) => (
                                 <Form>
@@ -66,9 +91,9 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
 
                                         ))}
                                         <ItemSubmit type='submit' disabled={isSubmitting}>
-                                            {(itemCategory === 'updateField') ? 'ACTUALIZAR' : 'CREAR'}
+                                            {(itemCategory.includes('update')) ? 'ACTUALIZAR' : 'CREAR'}
                                         </ItemSubmit>
-                                    {(itemCategory === 'updateField') &&
+                                    {(itemCategory.includes('update')) &&
                                         <ItemSubmit type='button' onClick={onCancel} disabled={isSubmitting}>CANCELAR</ItemSubmit>
                                     }
                                 </Form>

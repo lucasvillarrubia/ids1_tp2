@@ -36,7 +36,7 @@ export const MyProfileButton = styled.button`
         border: 2px solid black;
         padding: 1rem 3rem;
         border-radius: 30px;
-        font-size: 15px;
+        font-size: 30px;
         font-family: 'Bebas Neue', sans-serif;
         /* font-weight: bold; */
         text-transform: uppercase;

@@ -8,9 +8,21 @@ import { ItemPageInfo, ItemPageAuthor, ItemPageTitle, ActionButton, ButtonContai
 const TeamPage = () => {
     const { teamId } = useParams();
     const navigate = useNavigate();
-    const team = useSelector(state => state.teams.list[decodeURIComponent(teamId)]);
+    console.log(useSelector(state => state.teams.list));
+    console.log(useSelector(state => state.teams));
+    // const team = useSelector(state => state.teams.list[decodeURIComponent(teamId)]);
+
+    const team = useSelector(state =>
+        state.teams.list.find(team => team.name === decodeURIComponent(teamId))
+    );
 
     if (!team) return <p>Equipo no encontrado.</p>;
+
+    const handleEditTeam = () => {
+    }
+
+    const handleDeleteTeam = () => {
+    }
 
     const handleAddPlayer = () => {
     };
@@ -29,16 +41,20 @@ const TeamPage = () => {
                     {team.logo && <ItemPageAuthor>Logo: {team.logo}</ItemPageAuthor>}
                 </ItemPageInfo>
                 <ButtonContainer>
-                    <ActionButton onClick={handleAddPlayer}>Agregar jugador</ActionButton>
-                    <ActionButton onClick={handleRemovePlayer}>Eliminar jugador</ActionButton>
+                    <ActionButton onClick={handleEditTeam}>Editar Equipo</ActionButton>
+                    <ActionButton onClick={handleDeleteTeam}>Eliminar equipo</ActionButton>
                 </ButtonContainer>
             </ExpandedItemCardUI>
 
             <PlayersList>
                 {(team.players || []).map((playerName, idx) => (
-                    <PlayerCard key={idx} player={{ name: playerName }} />
+                    <PlayerCard key={idx} player={{ name: playerName }} idx={idx} />
                 ))}
             </PlayersList>
+            <ButtonContainer>
+                <ActionButton onClick={handleAddPlayer}>Agregar Jugador</ActionButton>
+                <ActionButton onClick={handleRemovePlayer}>Agregar Jugador</ActionButton>
+            </ButtonContainer>
             <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
         </TeamContainer>
     );

@@ -103,5 +103,21 @@ export const fieldUpdateInitialValues = (field) => ({
     }
 });
 
+export const matchUpdateInitialValues = (match) => ({
+    participationType: {
+        type: 'Open',
+        minPlayersCount: match?.participationType?.minPlayersCount || 0,
+        maxPlayersCount: match?.participationType?.maxPlayersCount || 0,
+        players: match?.participationType?.players || [''],
+    },
+    reservation: {
+        fieldId: match?.reservation?.fieldId || 0,
+        date: match?.reservation?.date || '',
+        start: match?.reservation?.start || '',
+        end: match?.reservation?.end || '',
+    }
+});
+
+
 
 
