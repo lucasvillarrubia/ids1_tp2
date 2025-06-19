@@ -17,11 +17,6 @@ public class MatchOrganizerDTO {
         this.availablePlayers = matchOrganizer.getAvailablePlayers();
         this.teamAPlayers = matchOrganizer.getTeamAPlayers();
         this.teamBPlayers = matchOrganizer.getTeamBPlayers();
-
-        // this.availablePlayers = new HashSet<>(matchOrganizer.getAvailablePlayers());
-        // this.teamAPlayers = new HashSet<>(matchOrganizer.getTeamAPlayers());
-        // this.teamBPlayers = new HashSet<>(matchOrganizer.getTeamBPlayers());
-        //
     }
 
     public Set<Long> getAvailablePlayers(){
