@@ -168,7 +168,7 @@ public class TestFieldSchedule {
     @Test
     public void testGetTimeSlotsForOpenDateWithReservations() {
         FieldSchedule schedule = buildValidSchedule(); // Abre lunes, miércoles y viernes de 8 a 22 con intervalos de 60 minutos -> intervalos totales: 14 por día
-        LocalDate date = LocalDate.of(2025, 6, 18); // Un miércoles
+        LocalDate date = LocalDate.of(2025, 7, 2); // Un miércoles
         List<Reservation> reservations = buildValidReservations(date); // 2 Reservas para el miércoles
         List<TimeSlot> slots = schedule.getTimeSlotsForDate(date, reservations);
 
@@ -179,7 +179,7 @@ public class TestFieldSchedule {
     @Test
     public void testGetTimeSlotsForOpenDateWithUnavailableTimeSlots() {
         FieldSchedule schedule = buildValidSchedule(); // Abre lunes, miércoles y viernes de 8 a 22 con intervalos de 60 minutos -> intervalos totales: 14 por día
-        LocalDate date = LocalDate.of(2025, 6, 18); // Un miércoles
+        LocalDate date = LocalDate.of(2025, 7, 2); // Un miércoles
 
         List<TimeSlot> unavailableSlots = List.of(
                 new TimeSlot(date, LocalTime.of(9, 0), LocalTime.of(10, 0)),
@@ -206,8 +206,8 @@ public class TestFieldSchedule {
     @Test
     public void testGetWeeklyOccupiedTimeSlotsForDateWithReservations() {
         FieldSchedule schedule = buildValidSchedule();
-        LocalDate date = LocalDate.of(2025, 6, 18); // Un miércoles
-        List<Reservation> reservations = buildValidReservations(date); // 2 Reservas para el miércoles
+        LocalDate date = LocalDate.of(2025, 6, 20); // Un viernes
+        List<Reservation> reservations = buildValidReservations(date); // 2 Reservas para el viernes
 
         int occupied_hours = schedule.getOccupiedHoursThisWeek(reservations);
         assertTrue(occupied_hours == 2); // Debería haber 2 horas ocupadas
@@ -225,7 +225,7 @@ public class TestFieldSchedule {
     @Test
     public void testGetMonthlyOccupiedTimeSlotsForDateWithReservations() {
         FieldSchedule schedule = buildValidSchedule();
-        LocalDate date = LocalDate.of(2025, 6, 18); // Un miércoles
+        LocalDate date = LocalDate.of(2025, 6, 25); // Un miércoles
         List<Reservation> reservations = new ArrayList<>(buildValidReservations(date));  // 2 Reservas para una semana
         LocalDate anotherDate = LocalDate.of(2025, 6, 30); // Un viernes
         reservations.addAll(buildValidReservations(anotherDate)); // Agregamos 2 reservas otra semana
