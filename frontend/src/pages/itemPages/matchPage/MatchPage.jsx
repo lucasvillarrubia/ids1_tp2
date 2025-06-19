@@ -22,6 +22,7 @@ const MatchPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [editing, setEditing] = useState(false);
+    const { currentUser } = useSelector(state => state.users);
 
     const match = useSelector(state => {
         const idNum = Number(matchId)
@@ -80,6 +81,17 @@ const MatchPage = () => {
         dispatch(deleteMatch(match.id))
     }
 
+    console.log("usuario actual:");
+    console.log(currentUser);
+    console.log("partido:");
+    console.log(match);
+    console.log("email organizador?");
+    console.log(match.reservation.organizerEmail);
+    console.log("participantes:");
+    console.log(match.participationType.players);
+    let iAmInMatch = match.participationType.players.includes(currentUser.email);
+    let iAmOwner = match.reservation.organizerEmail === currentUser.email;
+
     return editing ? (
         <MatchContainer>
             <ItemsForm key="updateMatch" itemCategory="updateMatch" onCancel={() => setEditing(false)} existingItem={match} />
@@ -98,14 +110,14 @@ const MatchPage = () => {
                     ))}
                 </PlayersList>
                 <ButtonContainer>
-                    <ActionButton onClick={handleJoin}>UNIRSE</ActionButton>
-                    <ActionButton onClick={handleLeave}>ABANDONAR</ActionButton>
+                    {!iAmInMatch && <ActionButton onClick={handleJoin}>UNIRSE</ActionButton>}
+                    {iAmInMatch && <ActionButton onClick={handleLeave}>ABANDONAR</ActionButton>}
                 </ButtonContainer>
                 <ButtonContainer>
-                    <ActionButton onClick={handleStart}>Iniciar</ActionButton>
-                    <ActionButton onClick={() => setEditing(true)}>Editar</ActionButton>
-                    <ActionButton onClick={handleClose}>Cerrar</ActionButton>
-                    <ActionButton onClick={handleDelete}>Eliminar</ActionButton>
+                    {iAmOwner && <ActionButton onClick={handleStart}>Iniciar</ActionButton>}
+                    {iAmOwner && <ActionButton onClick={() => setEditing(true)}>Editar</ActionButton>}
+                    {iAmOwner && <ActionButton onClick={handleClose}>Cerrar</ActionButton>}
+                    {iAmOwner && <ActionButton onClick={handleDelete}>Eliminar</ActionButton>}
                 </ButtonContainer>
             </ExpandedItemCardUI>
             <ActionButton onClick={() => navigate('/me')}>Volver a mi perfíl</ActionButton>
