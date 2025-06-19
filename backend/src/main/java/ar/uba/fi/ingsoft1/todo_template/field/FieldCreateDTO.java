@@ -5,6 +5,7 @@ import java.util.List;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,7 +16,7 @@ public record FieldCreateDTO(
         @Schema(description = "Direccion", example="Los Polvorines 1200")
         @NotNull @NotEmpty String location,
         @Schema(description = "Zona", example = "FLORENCIO_VARELA")
-        @NotNull UserZones zone,
+        @NotNull @Valid UserZones zone,
 
         @Schema(description = "Caracteristicas",example = "[\"GRASS\", \"ARTIFICIAL_TURF\", \"ROOF\"]" )
         @NotNull @NotEmpty List<FieldFeatures> features,

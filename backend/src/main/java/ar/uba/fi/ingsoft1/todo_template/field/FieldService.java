@@ -269,7 +269,6 @@ public class FieldService {
         User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
         Reservation newReservation = reservationRepository.save(reservation.asReservation(field, organizer));
         field.addReservation(newReservation);
-        // fieldRepository.save(field);
         return new ReservationDTO(newReservation);
     }
 

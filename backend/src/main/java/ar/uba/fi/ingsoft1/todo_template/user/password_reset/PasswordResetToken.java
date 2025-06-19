@@ -4,7 +4,6 @@ import ar.uba.fi.ingsoft1.todo_template.user.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Entity
 public class PasswordResetToken {
