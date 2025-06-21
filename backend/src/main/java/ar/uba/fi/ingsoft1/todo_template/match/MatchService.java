@@ -1,7 +1,6 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
-import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerService;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
@@ -15,7 +14,6 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +56,7 @@ public class MatchService {
 
     public void deleteMatch(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
-        if (match != null && match.isOrganizer(userService.getUserByEmail(userService.getCurrentUserEmail()))) {
+        if (match != null && isCurrentUserOrganizer(match)) {
             matchRepository.deleteById(id);
         }
 
@@ -90,11 +88,8 @@ public class MatchService {
     }
 
     public MatchDTO joinMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
-        User user = userService.getUserByEmail(email);
+        User user = userService.getCurrentUser();
 
         if (!match.join(user)) {
             throw new InvalidActionException("Can't join match");
@@ -106,11 +101,8 @@ public class MatchService {
     }
 
     public void leaveMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
-        User user = userService.getUserByEmail(email);
+        User user = userService.getCurrentUser();
 
         if (!match.leaveMatch(user)) {
             throw new InvalidActionException("Can't leave match");
@@ -120,12 +112,9 @@ public class MatchService {
     }
 
     public void closeMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
 
-        if (!match.isOrganizer(userService.getUserByEmail(email))) {
+        if (!isCurrentUserOrganizer(match)) {
             throw new InvalidActionException("You don't have permissions to close the match");
         }
         ParticipationType participationType = match.getParticipationType();
@@ -138,12 +127,9 @@ public class MatchService {
     }
 
     public MatchDTO startMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
 
-        if (!match.isOrganizer(userService.getUserByEmail(email))) {
+        if (!isCurrentUserOrganizer(match)) {
             throw new InvalidActionException("You don't have permissions to start the match");
         }
         matchOrganizerService.finish(match.getId());
@@ -191,6 +177,11 @@ public class MatchService {
 
     public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {
         return matchRepository.findAllWithOpenParticipation(pageable).map(MatchDTO::new);
+    }
+
+    private boolean isCurrentUserOrganizer(Match match) {
+        String userEmail = userService.getCurrentUserEmail();
+        return match.isOrganizer(userService.getUserByEmail(userEmail));
     }
 
 }
