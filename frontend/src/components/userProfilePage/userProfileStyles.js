@@ -65,7 +65,6 @@ export const ActionButton = styled.input`
         border-radius: 15px;
         font-size: 20px;
         font-family: 'Bebas Neue', sans-serif;
-        /* width: 100%; */
         ::placeholder {
                 opacity: 60%;
         }
@@ -87,7 +86,6 @@ export const ProfileInputField = styled.input`
         border-radius: 15px;
         font-size: 20px;
         font-family: 'Bebas Neue', sans-serif;
-        /* width: 100%; */
         ::placeholder {
                 opacity: 60%;
         }

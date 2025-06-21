@@ -9,7 +9,6 @@ const ProtectedRoute = ({ redirPath }) => {
                 return (<Navigate to={redirPath} />);
         }
         else return (<Outlet />);
-        // return currentUser ? (<Outlet />) : (<Navigate to={redirPath} />)
 }
 
 export default ProtectedRoute

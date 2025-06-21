@@ -23,7 +23,6 @@ export const NavTitle = styled.p`
         font-size: 20px;
         letter-spacing: 3px;
         cursor: pointer;
-        /* -webkit-text-stroke: 2px var(--marronzote); */
 `;
 
 export const ToolbarUI = styled.div`
@@ -35,7 +34,6 @@ export const ToolbarUI = styled.div`
         position: fixed;
         bottom: 0;
         padding: 10px 0 5px 0;
-        /* max-width: 1300px; */
         @media screen and (min-width: 768px) {
                 display: none;
         }
@@ -45,7 +43,6 @@ export const ToolbarUI = styled.div`
 export const NavIcon = styled.a`
         font-size: 30px;
         color: black;
-        /* background-color: black; */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -77,7 +74,6 @@ export const NavMenu = styled.div`
         justify-content: space-evenly;
         word-wrap: break-word;
         align-items: center;
-        /* font-size: 20px; */
         display: none;
         @media screen and (min-width: 768px) {
                 display: flex;

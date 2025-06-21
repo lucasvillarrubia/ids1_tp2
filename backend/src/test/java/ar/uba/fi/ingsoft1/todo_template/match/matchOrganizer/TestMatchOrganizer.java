@@ -46,8 +46,8 @@ public class TestMatchOrganizer {
 
     @Test
     void testMovePlayerToAvailable() {
-        organizer.movePlayer(1L, (short) 0); // move to A first
-        organizer.movePlayer(1L, (short) 1); // back to available
+        organizer.movePlayer(1L, (short) 0);
+        organizer.movePlayer(1L, (short) 1);
 
         assertTrue(organizer.getAvailablePlayers().contains(1L));
         assertFalse(organizer.getTeamAPlayers().contains(1L));
@@ -66,16 +66,16 @@ public class TestMatchOrganizer {
 
     @Test
     void testFinishThrowsIfPlayersUnassigned() {
-        organizer.addPlayer(1L); // still in available
+        organizer.addPlayer(1L);
         InvalidActionException ex = assertThrows(InvalidActionException.class, organizer::finish);
         assertEquals("You need to asign all players before starting", ex.getMessage());
     }
 
     @Test
     void testFinishThrowsIfUnequalTeams() {
-        organizer.movePlayer(1L, (short) 0); // A
-        organizer.movePlayer(2L, (short) 2); // B
-        organizer.movePlayer(3L, (short) 0); // A again
+        organizer.movePlayer(1L, (short) 0);
+        organizer.movePlayer(2L, (short) 2);
+        organizer.movePlayer(3L, (short) 0);
 
         InvalidActionException ex = assertThrows(InvalidActionException.class, organizer::finish);
         assertEquals("Both teams need to have the same number of players", ex.getMessage());
@@ -83,15 +83,14 @@ public class TestMatchOrganizer {
 
     @Test
     void testFinishSuccess() {
-        organizer.movePlayer(1L, (short) 0); // A
-        organizer.movePlayer(2L, (short) 2); // B
+        organizer.movePlayer(1L, (short) 0);
+        organizer.movePlayer(2L, (short) 2);
 
         assertDoesNotThrow(organizer::finish);
     }
 
     @Test
     void testGenerateRandomTeamsEvenSplit() {
-        // Add 4 players to available
         organizer.addPlayer(1L);
         organizer.addPlayer(2L);
         organizer.addPlayer(3L);

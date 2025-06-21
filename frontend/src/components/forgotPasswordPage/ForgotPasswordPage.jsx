@@ -66,7 +66,6 @@ const ForgotPasswordPage = () => {
             {({ isSubmitting }) => (
               <Form>
                 <InputField
-                  // label={"Correo electronico"}
                   name="email"
                   type={"email"}
                   placeholder={"tu_correo@example.com"}

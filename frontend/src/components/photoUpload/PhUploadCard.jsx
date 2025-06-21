@@ -3,7 +3,7 @@ import * as React from "react"
 import { cn } from "./UploadUtils.js"
 
 import React from "react";
-import { cn } from "./UploadUtils"; // Make sure this exists, or I can give you a fallback version
+import { cn } from "./UploadUtils";
 
 export function Card({ className, ...props }) {
     return (

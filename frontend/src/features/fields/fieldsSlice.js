@@ -14,7 +14,6 @@ const {
     extraReducers: (builder) => {
         builder
             .addCase("fields/updateOne", (state, action) => {
-                console.log("Actualizando cancha desde slice con id:", action.payload.id, "con datos:", action.payload)
                 const updated = action.payload
                 const idx = state.list.findIndex(f => f.id === updated.id)
                 if (idx !== -1) {

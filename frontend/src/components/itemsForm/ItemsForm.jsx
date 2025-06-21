@@ -18,10 +18,8 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
         const handleCreateSubmit = async (values, { setSubmitting }) => {
             try {
                 if (itemCategory === 'closed') {
-                    console.log("Intentando crear partido cerrado")
                     itemCategory = 'matches';
                 }
-                console.log("Submiting values: ", values)
                 await createItem(itemCategory, values);
                 await loadItemsByGenre(dispatch);
                 navigate('/congratulations');
@@ -34,7 +32,6 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
 
         const handleUpdateFieldSubmit = (values) => {
             try {
-                console.log("Intentando actualizar con", values);
                 dispatch(updateField(existingItem.id, values));
                 onCancel();
                 navigate('/me')
@@ -46,7 +43,6 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
 
         const handleUpdateMatchSubmit = (values) => {
             try {
-                console.log("Intentando actualizar partido con", values);
                 dispatch(updateMatch(existingItem.id, values));
                 onCancel();
                 navigate('/me');
@@ -57,7 +53,6 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
 
         const handleUpdateTeamSubmit = async (values) => {
             try {
-                console.log("Intentando actualizar equipo con", values);
                 await dispatch(updateTeamThunk({ id: existingItem.name, teamData: values }));
                 onCancel();
                 navigate('/me');
@@ -93,13 +88,6 @@ const ItemsForm = ({ itemCategory, onCancel, existingItem }) => {
                                 <Form>
                                         {formFields.map(field => (
                                             <ItemsInput
-                                                // key={field.name}
-                                                // name={field.name}
-                                                // type={field.type}
-                                                // id={field.id}
-                                                // htmlFor={field.htmlFor}
-                                                // placeholder={field.placeholder}
-                                                // options={field.options}
                                                 {...field}
                                             >
                                                 {field.label}

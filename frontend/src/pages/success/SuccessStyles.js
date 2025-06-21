@@ -10,7 +10,6 @@ export const SuccessBG = styled.section`
         gap: 50px;
         font-size: 60px;
         line-height: 100px;
-        /* text-shadow: var(--borde_texto); */
         letter-spacing: 3px;
         color: black;
         & p {

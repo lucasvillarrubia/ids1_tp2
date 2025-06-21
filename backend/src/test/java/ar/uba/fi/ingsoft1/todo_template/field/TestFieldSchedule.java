@@ -161,7 +161,6 @@ public class TestFieldSchedule {
         FieldSchedule schedule = buildValidSchedule(); // Abre lunes, miércoles y viernes de 8 a 22 con intervalos de 60 minutos -> intervalos totales: 14 por día
         List<TimeSlot> slots = schedule.getTimeSlotsForDate(LocalDate.of(2025, 6, 18), List.of()); // Un miércoles
 
-        System.out.println(slots);
         assertTrue(slots.size() == 14);
     }
 
@@ -172,7 +171,6 @@ public class TestFieldSchedule {
         List<Reservation> reservations = buildValidReservations(date); // 2 Reservas para el miércoles
         List<TimeSlot> slots = schedule.getTimeSlotsForDate(date, reservations);
 
-        System.out.println(slots);
         assertTrue(slots.size() == 12); // Debería quedar 12 intervalos disponibles
     }
 
@@ -190,7 +188,6 @@ public class TestFieldSchedule {
 
         List<TimeSlot> slots = schedule.getTimeSlotsForDate(date, List.of());
 
-        System.out.println(slots);
         assertTrue(slots.size() == 12); // Debería quedar 12 intervalos disponibles
     }
 

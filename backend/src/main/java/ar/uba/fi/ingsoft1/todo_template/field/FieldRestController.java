@@ -223,8 +223,6 @@ public class FieldRestController {
         return ResponseEntity.ok().build();
     }
 
-    // PATCH
-
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Update a field by its id")
     @ApiResponse(responseCode = "200", description = "Field updated successfully", content = @Content(mediaType = "application/json"))

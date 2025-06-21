@@ -99,7 +99,7 @@ public class TeamTest {
     @Test
     public void addPlayer_shouldAddValidPlayer() {
         Team validTeam = getValidTeam();
-        validTeam.setPlayers(new ArrayList<>(Arrays.asList("Existing Player"))); // Start with 4 players
+        validTeam.setPlayers(new ArrayList<>(Arrays.asList("Existing Player")));
         validTeam.addPlayer("New Player");
         assertTrue(validTeam.getPlayers().contains("New Player"));
         assertEquals(5, validTeam.getPlayers().size());
@@ -119,7 +119,7 @@ public class TeamTest {
     public void addPlayer_shouldNotAddDuplicatePlayer() {
         Team validTeam = getValidTeam();
         validTeam.setPlayers(new ArrayList<>(Arrays.asList("Existing Player")));
-        validTeam.addPlayer("Existing Player"); //no guarda duplicado -> players = [ captain, player2, player3, Existing Player]
+        validTeam.addPlayer("Existing Player");
         assertEquals(4, validTeam.getPlayers().size());
     }
 
@@ -127,7 +127,7 @@ public class TeamTest {
     @Test
     public void removePlayer_shouldRemoveExistingPlayer() {
         Team validTeam = getValidTeam();
-        validTeam.setPlayers(new ArrayList<>(Arrays.asList("P1", "P2", "P3"))); // 6 players actually
+        validTeam.setPlayers(new ArrayList<>(Arrays.asList("P1", "P2", "P3")));
         validTeam.removePlayer("P3");
         assertFalse(validTeam.getPlayers().contains("P3"));
         assertEquals(5, validTeam.getPlayers().size());
@@ -144,9 +144,9 @@ public void removePlayer_shouldNotRemoveNonExistingPlayer() {
     public void removePlayer_shouldNotRemoveIfOnlyOnePlayerLeft() {
         Team validTeam = getValidTeam();
         validTeam.setPlayers(new ArrayList<>(Collections.singletonList("Single Player")));
-        int initialSize = validTeam.getPlayers().size(); // Should be 4
+        int initialSize = validTeam.getPlayers().size();
         validTeam.removePlayer("Single Player");
-        assertEquals(initialSize-1, validTeam.getPlayers().size()); // Should still be 3
+        assertEquals(initialSize-1, validTeam.getPlayers().size());
     }
 
     @Test

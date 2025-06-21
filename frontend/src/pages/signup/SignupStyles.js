@@ -2,7 +2,6 @@ import { styled } from "styled-components";
 
 export const SignupBG = styled.div`
         background: linear-gradient(0deg, var(--marroncito) 0%, var(--amarillo) 100%);
-        /* background-color: var(--marroncito); */
         padding: 200px 20px;
         display: flex;
         flex-direction: column;

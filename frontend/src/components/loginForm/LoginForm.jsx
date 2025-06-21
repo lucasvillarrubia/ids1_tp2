@@ -18,13 +18,7 @@ const LoginForm = () => {
         const [redirectAfterClose, setRedirectAfterClose] = useState(false);
         const { currentUser } = useSelector(state => state.users);
 
-        // useEffect(() => {
-        //         if (currentUser) { navigate('/');
-        //         }
-        // }, [currentUser, navigate]);
-
         const showLoginMessage = (type, msg, shouldRedirect = false) => {
-                console.log('Showing login message:', msg);
                 setTimeout(() => {
                         setType(type);
                         setMsg(msg);
@@ -37,22 +31,14 @@ const LoginForm = () => {
                         const { token, name } = await loginUser(values.email, values.password);
                         if (token) {
                                 showLoginMessage('success', 'Inicio de sesión exitoso', true);
-                                // dispatch(setCurrentUser({ name, token }));
-                                // dispatch(setAuth({ user: { name, email: values.email }, token }));
-                                // console.log(currentUser);
-                                // alert("Entraste!");
-                                // navigate('/');
+
                                setTimeout(() => {
                                        dispatch(setCurrentUser({ name, token }));
                                        dispatch(setAuth({ user: { name, email: values.email }, token }));
-                                       console.log(currentUser);
-                                       //  alert("Entraste!");
-                                       // navigate('/');
                                }, 5000);
                         }
                 } catch (error) {
                         showLoginMessage('error', 'Error al iniciar sesión');
-                        // alert(error.message);
                 } finally {
                         setSubmitting(false);
                 }
@@ -60,9 +46,6 @@ const LoginForm = () => {
 
         const handleCloseMessage = () => {
                 setMsg(null);
-                // if (redirectAfterClose) {
-                        // navigate('/');
-                // }
         };
 
         let message_duration = redirectAfterClose ? 5000 : 0;
@@ -78,11 +61,6 @@ const LoginForm = () => {
                             fromLogin={true}
                         />
                     )}
-                    {/*{msg && (*/}
-                    {/*    <div style={{ background: "yellow", padding: "10px" }}>*/}
-                    {/*            {msg}*/}
-                    {/*    </div>*/}
-                    {/*)}*/}
                     <Formik
                         initialValues={loginInitialValues}
                         validationSchema={loginValidationSchema}

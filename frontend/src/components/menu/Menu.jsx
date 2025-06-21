@@ -23,14 +23,11 @@ const Menu = ({ menuDisplay, setMenuDisplay }) => {
                                 <MenuUI>
                                         <MenuExit onClick={() => setMenuDisplay(!menuDisplay)}>X</MenuExit>
                                         <Link to={'/'} onClick={() => setMenuDisplay(!menuDisplay)}>Home</Link>
-                                        {/* <Link to={'/'} onClick={() => setMenuDisplay(!menuDisplay)}>Categorias</Link> */}
-                                        {/* <Link to={'/'} onClick={() => setMenuDisplay(!menuDisplay)}>Productos</Link> */}
                                         {currentUser ? (
                                             <p onClick={handleLogout} style={{ cursor: "pointer" }}>Cerrar Sesión</p>
                                         ) : (
                                             <Link to="/login" onClick={() => setMenuDisplay(false)}>Iniciar Sesión</Link>
                                         )}
-                                        {/*<Link to={'/login'} onClick={() => setMenuDisplay(!menuDisplay)}>Iniciar Sesión</Link>*/}
                                         <Link to={'/signup'} onClick={() => setMenuDisplay(!menuDisplay)}>Registrarse</Link>
                                 </MenuUI>
                         }

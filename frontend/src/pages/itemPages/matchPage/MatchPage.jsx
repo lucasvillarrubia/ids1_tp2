@@ -81,14 +81,6 @@ const MatchPage = () => {
         dispatch(deleteMatch(match.id))
     }
 
-    // console.log("usuario actual:");
-    // console.log(currentUser);
-    // console.log("partido:");
-    // console.log(match);
-    // console.log("email organizador?");
-    // console.log(match.reservation.organizerEmail);
-    // console.log("participantes:");
-    // console.log(match.participationType.players);
     let iAmInMatch = match.participationType.players.includes(currentUser.email);
     let iAmOwner = match.reservation.organizerEmail === currentUser.email;
 

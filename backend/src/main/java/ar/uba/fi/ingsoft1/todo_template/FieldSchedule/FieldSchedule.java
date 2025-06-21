@@ -115,8 +115,6 @@ public class FieldSchedule implements Serializable{
             actualTimeSlotStart = nextTimeSlotStart;
         }
 
-        System.out.println("Reserved time slots for " + date + ": " + reservations.stream().map(res -> res.getStart() + " - " + res.getEnd()).toList());
-
         timeSlots.removeIf(slot -> reservations.stream()
             .anyMatch(reservation -> 
                 slot.getStartHour().isBefore(reservation.getEnd()) &&

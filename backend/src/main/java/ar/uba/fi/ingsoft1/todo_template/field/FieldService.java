@@ -77,7 +77,6 @@ public class FieldService {
         fieldRepository.delete(field);
     }
 
-    // GET
     public FieldDTO getFieldById(Long fieldId) {
         return fieldRepository.findById(fieldId).map(FieldDTO::new)
                 .orElseThrow(() -> new EntityNotFoundException("Field not found"));
@@ -194,7 +193,6 @@ public class FieldService {
         fieldRepository.save(field);
     }
 
-    // UPDATE
     public FieldDTO updateFieldDescription(Long fieldId, String description) {
         Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new EntityNotFoundException("Field not found"));
@@ -308,7 +306,6 @@ public class FieldService {
         return new FieldDTO(fieldRepository.save(field));
     }
 
-    // edit field
     public FieldDTO updateField(Long fieldId, FieldUpdateDTO fieldEdit) {
         Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new EntityNotFoundException("Field not found"));
