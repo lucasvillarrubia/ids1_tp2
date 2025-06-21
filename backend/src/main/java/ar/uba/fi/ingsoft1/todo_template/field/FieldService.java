@@ -53,18 +53,8 @@ public class FieldService {
         this.userService = userService;
     }
 
-    public User getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof JwtUserDetails)) {
-            throw new EntityNotFoundException("No se ha encontrado el usuario actual");
-        }
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        User currentUser = userService.getUserByEmail(userDetails.username());
-        return currentUser;
-    }
-
     public FieldDTO createField(FieldCreateDTO fieldCreate) {
-        Field newField = fieldCreate.asField(getCurrentUser());
+        Field newField = fieldCreate.asField(userService.getCurrentUser());
         if (!fieldRepository.findByName(newField.getName()).isEmpty()) {
             throw new DuplicateEntityException("Field", "name");
         }
@@ -76,7 +66,7 @@ public class FieldService {
     public void deleteField(Long fieldId) {
         Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        if (!field.getOwner().getEmail().equals(getCurrentUser().getEmail())) {
+        if (!field.getOwner().getEmail().equals(userService.getCurrentUser().getEmail())) {
             throw new InvalidActionException("Solo el propietario del campo puede eliminarlo");
         }
 
@@ -97,12 +87,15 @@ public class FieldService {
         return fieldRepository.findAll().stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
+    public List<FieldDTO> getCurrentUserOwnedFields() {
+        return getFieldsByOwner(userService.getCurrentUserEmail());
+    }
+
     public List<FieldDTO> getFieldsByOwner(String ownerEmail) {
-        User user = userService.getUserByEmail(ownerEmail);
+        User user = userService.getCurrentUser();
         if (user == null) {
             throw new EntityNotFoundException("User not found with email: " + ownerEmail);
         }
-
         return fieldRepository.findByOwnerId(user.getId()).stream().map(FieldDTO::new).collect(Collectors.toList());
     }
 
@@ -138,6 +131,10 @@ public class FieldService {
                 .collect(Collectors.toList());
     }
 
+    public List<ReservationDTO> getCurrentUserReservations(){
+        return getReservationByOrganizerEmail(userService.getCurrentUserEmail());
+    }
+
     public List<ReservationDTO> getReservationByOrganizerEmail(String organizerEmail) {
         return reservationRepository.findByOrganizerEmail(organizerEmail).stream()
                 .map(ReservationDTO::new)
@@ -169,7 +166,7 @@ public class FieldService {
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
 
         Field field = reservation.getField();
-        User currentUser = getCurrentUser();
+        User currentUser = userService.getCurrentUser();
 
         if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
             throw new InvalidActionException("Solo el propietario del campo puede eliminar reservas");
@@ -184,7 +181,7 @@ public class FieldService {
     public void deleteReservationByOrganizer(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found"));
-        User currentUser = getCurrentUser();
+        User currentUser = userService.getCurrentUser();
         Field field = reservation.getField();
 
         if (!reservation.getOrganizer().getEmail().equals(currentUser.getEmail())) {
@@ -266,7 +263,7 @@ public class FieldService {
             throw new DuplicateEntityException("Blocked slot", "time slot");
         }
 
-        User organizer = userService.getUserByEmail(getCurrentUser().getEmail());
+        User organizer = userService.getUserByEmail(userService.getCurrentUser().getEmail());
         Reservation newReservation = reservationRepository.save(reservation.asReservation(field, organizer));
         field.addReservation(newReservation);
         return new ReservationDTO(newReservation);
@@ -287,7 +284,7 @@ public class FieldService {
         Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new EntityNotFoundException("Field not found"));
 
-        User currentUser = getCurrentUser();
+        User currentUser = userService.getCurrentUser();
         if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
             throw new InvalidActionException("Solo el propietario del campo puede editarlo");
         }
@@ -315,7 +312,7 @@ public class FieldService {
     public FieldDTO updateField(Long fieldId, FieldUpdateDTO fieldEdit) {
         Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new EntityNotFoundException("Field not found"));
-        User currentUser = getCurrentUser();
+        User currentUser = userService.getCurrentUser();
         if (!field.getOwner().getEmail().equals(currentUser.getEmail())) {
             throw new InvalidActionException("Solo el propietario del campo puede editarlo");
         }

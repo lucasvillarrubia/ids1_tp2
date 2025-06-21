@@ -108,6 +108,22 @@ public class UserService {
         return user.get();
     }
 
+    public User getCurrentUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof JwtUserDetails)) {
+            throw new EntityNotFoundException("No se ha encontrado el usuario actual");
+        }
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        return getUserByEmail(userDetails.username());
+    }
+
+
+    public String getCurrentUserEmail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JwtUserDetails userDetails = (JwtUserDetails) principal;
+        return userDetails.username();
+    }
+
     public String getCurrentUserName() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         JwtUserDetails userDetails = (JwtUserDetails) principal;

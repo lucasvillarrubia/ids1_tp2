@@ -58,7 +58,7 @@ public class MatchService {
 
     public void deleteMatch(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
-        if (match != null && match.isOrganizer(userService.getUserByEmail(getUserEmail()))) {
+        if (match != null && match.isOrganizer(userService.getUserByEmail(userService.getCurrentUserEmail()))) {
             matchRepository.deleteById(id);
         }
 
@@ -160,14 +160,14 @@ public class MatchService {
     }
 
     public Page<MatchDTO> getSelfOrganizedMatches(@Valid Pageable pageable) {
-        return matchRepository.findAllMatchesOrganizedByActualUser(pageable, getUserEmail()).map(MatchDTO::new);
+        return matchRepository.findAllMatchesOrganizedByActualUser(pageable, userService.getCurrentUserEmail()).map(MatchDTO::new);
     }
 
     public Page<MatchDTO> getMatchesActualPlayerParticipatesIn(@Valid Pageable pageable) {
-        String email = getUserEmail();
+        String email = userService.getCurrentUserEmail();
 
         // Open Matches where the user is in
-        Page<Match> openMatches = matchRepository.findAllOpenMatchesTheUserIsIn(pageable, userService.getUserByEmail(getUserEmail()).getId());
+        Page<Match> openMatches = matchRepository.findAllOpenMatchesTheUserIsIn(pageable, userService.getUserByEmail(email).getId());
 
         // Matches where the user is in a Team
         Page<Match> closeMatches = matchRepository.findAllCloseMatchesTheUserIsIn(pageable, email);
@@ -191,12 +191,6 @@ public class MatchService {
 
     public Page<MatchDTO> getAllAvailableMatches(@Valid Pageable pageable) {
         return matchRepository.findAllWithOpenParticipation(pageable).map(MatchDTO::new);
-    }
-
-    private String getUserEmail() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        return userDetails.username();
     }
 
 }

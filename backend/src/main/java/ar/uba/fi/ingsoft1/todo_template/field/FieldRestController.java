@@ -71,8 +71,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Owner not found", content = @Content)
     public ResponseEntity<?> getFieldsOwns() {
-        String ownerEmail = fieldService.getCurrentUser().getEmail();
-        return ResponseEntity.ok(fieldService.getFieldsByOwner(ownerEmail).stream().toList());
+        return ResponseEntity.ok(fieldService.getCurrentUserOwnedFields().stream().toList());
     }
 
     @GetMapping(value = "/zone/{zone}", produces = "application/json")
@@ -134,8 +133,7 @@ public class FieldRestController {
     @Operation(summary = "Get all reservations for a field by its id")
     @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
     public List<ReservationDTO> getMyReservations() {
-        String organizerEmail = fieldService.getCurrentUser().getEmail();
-        return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
+        return fieldService.getCurrentUserReservations().stream().toList();
     }
 
     @GetMapping(value = "/{id}/reservations/statistics", produces = "application/json")
