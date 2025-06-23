@@ -6,6 +6,7 @@ import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTyp
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationService;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
@@ -28,14 +29,16 @@ public class MatchService {
     private final ParticipationTypeService participationTypeService;
     private final MatchOrganizerService matchOrganizerService;
     private final FieldService fieldService;
+    private final ReservationService reservationService;
 
     public MatchService(MatchRepository matchRepository, UserService userService,
-            ParticipationTypeService participationTypeService, FieldService fieldService, MatchOrganizerService matchOrganizerService) {
+                        ParticipationTypeService participationTypeService, FieldService fieldService, MatchOrganizerService matchOrganizerService, ReservationService reservationService) {
         this.matchRepository = matchRepository;
         this.userService = userService;
         this.participationTypeService = participationTypeService;
         this.matchOrganizerService = matchOrganizerService;
         this.fieldService = fieldService;
+        this.reservationService = reservationService;
     }
 
     public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) {
@@ -49,7 +52,7 @@ public class MatchService {
         ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
 
         ReservationDTO reservationDTO = fieldService.addReservationToField(matchCreateDTO.getReservation());
-        Reservation reservation = fieldService.getReservationById(reservationDTO.getId());
+        Reservation reservation = reservationService.getReservationById(reservationDTO.getId());
 
         return matchCreateDTO.asMatch(partType, reservation);
     }
@@ -60,7 +63,7 @@ public class MatchService {
             matchRepository.deleteById(id);
         }
 
-        fieldService.deleteReservationByOrganizer(match.getReservation().getId());
+        fieldService.deleteReservation(match.getReservation().getId());
     }
 
     public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {

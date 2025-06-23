@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import ar.uba.fi.ingsoft1.todo_template.FieldSchedule.FieldSchedule;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import jakarta.persistence.*;
@@ -243,7 +244,7 @@ public class Field {
         this.reservations.removeIf(reservation -> reservation.getId().equals(id));
     }
 
-    public double getWeeklyOcupation(List<Reservation> reservations) {
+    public double getWeeklyOcupation(List<ReservationDTO> reservations) {
         if (reservations == null || reservations.isEmpty()) {
             return 0;
         }
@@ -253,7 +254,7 @@ public class Field {
         return occupiedHours / (double) total_hours;
     }
 
-    public double getMonthlyOcupation(List<Reservation> reservations) {
+    public double getMonthlyOcupation(List<ReservationDTO> reservations) {
         if (reservations == null || reservations.isEmpty()) {
             return 0;
         }
