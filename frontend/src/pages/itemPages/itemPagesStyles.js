@@ -44,8 +44,6 @@ export const FieldContainer = styled.div`
 
 const ItemCardUI = styled.div`
         width: 300px;
-        /* min-height: 500px; */
-        /* background-color: var(--marroncito); */
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -55,7 +53,6 @@ const ItemCardUI = styled.div`
 
 export const ExpandedItemCardUI = styled(ItemCardUI)`
     width: 70vw;
-    //margin-top: 200px;
     font-family: Bebas Neue, sans-serif;
     background-color: black;
     padding: 50px;
@@ -97,7 +94,6 @@ export const ItemPageInfo = styled.div`
         align-items: center;
         color: white;
         min-height: 375px;
-        /* padding: 10px 20px 0; */
         & img {
                 max-width: 90%;
                 padding: 20px 5px;
@@ -122,7 +118,6 @@ export const ItemPageAuthor = styled.h4`
         text-align: left;
         padding: 0 25px;
         padding-top: 10px;
-        //letter-spacing: 2px;
 `;
 
 export const PlayerCardUI = styled.div`

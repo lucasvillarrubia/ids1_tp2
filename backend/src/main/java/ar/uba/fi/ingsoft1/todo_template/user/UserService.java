@@ -4,16 +4,12 @@ import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityExceptio
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtService;
 import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.user.email_validation.EmailService;
-import ar.uba.fi.ingsoft1.todo_template.user.password_reset.PasswordChangeService;
-import ar.uba.fi.ingsoft1.todo_template.user.password_reset.PasswordResetService;
-import ar.uba.fi.ingsoft1.todo_template.user.password_reset.PasswordResetTokenRepository;
 import ar.uba.fi.ingsoft1.todo_template.user.refresh_token.RefreshToken;
 import ar.uba.fi.ingsoft1.todo_template.user.refresh_token.RefreshTokenService;
 
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,10 +27,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final EmailService emailService;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final PasswordResetService passwordResetService;
-    private final PasswordChangeService passwordChangeService;
-
 
     @Autowired
     UserService(
@@ -42,15 +34,12 @@ public class UserService {
             PasswordEncoder passwordEncoder,
             UserRepository userRepository,
             RefreshTokenService refreshTokenService,
-            EmailService emailService, PasswordResetTokenRepository passwordResetTokenRepository, PasswordResetService passwordResetService, PasswordChangeService passwordChangeService) {
+            EmailService emailService) {
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.refreshTokenService = refreshTokenService;
         this.emailService = emailService;
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
-        this.passwordResetService = passwordResetService;
-        this.passwordChangeService = passwordChangeService;
     }
 
     public Optional<TokenDTO> createUser(UserCreateDTO data) {
@@ -108,20 +97,23 @@ public class UserService {
         return user.get();
     }
 
-    public String getCurrentUserName() {
+    public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        User currentUser = getUserByEmail(userDetails.username());
-        return currentUser.getName();
-    }
-    public UserProfileDTO getCurrentUserProfile() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof JwtUserDetails userDetails) {
-            User user = getUserByEmail(userDetails.username());
-            user.getZones();
-            return UserProfileDTO.fromUser(user);
+        if (!(principal instanceof JwtUserDetails userDetails)) {
+            throw new EntityNotFoundException("No se ha encontrado el usuario actual");
         }
-        throw new AccessDeniedException("User not authenticated or principal type is incorrect");
+        return getUserByEmail(userDetails.username());
+    }
+
+    public String getCurrentUserEmail() {
+        return getCurrentUser().getEmail();
+    }
+
+    public String getCurrentUserName() {
+        return getCurrentUser().getName();
+    }
+
+    public UserProfileDTO getCurrentUserProfile() {
+        return UserProfileDTO.fromUser(getCurrentUser());
     }
 }

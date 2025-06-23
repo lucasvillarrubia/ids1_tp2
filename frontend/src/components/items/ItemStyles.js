@@ -3,7 +3,6 @@ import styled from "styled-components";
 
 
 export const ItemCardsContainer = styled.div`
-        /* background-color: var(--rosa); */
         display: grid;
         width: 100%;
         grid-template-columns: repeat(auto-fit, 300px);
@@ -15,8 +14,6 @@ export const ItemCardsContainer = styled.div`
 
 export const ItemCardUI = styled.div`
         width: 300px;
-        /* min-height: 500px; */
-        /* background-color: var(--marroncito); */
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -37,7 +34,6 @@ export const AddInstanceButtonUI = styled.button`
         &:hover {
                 background-color: white;
                 color: black;
-                /* border: 3px solid black; */
                 font-weight: bold;
                 border-radius: 10px;
                 font-size: 35px;
@@ -57,7 +53,6 @@ export const ItemInfo = styled.div`
         align-items: center;
         color: white;
         min-height: 375px;
-        /* padding: 10px 20px 0; */
         & img {
                 max-width: 90%;
                 padding: 20px 5px;
@@ -72,7 +67,6 @@ export const ItemTitle = styled.h3`
         text-align: left;
         padding-left: 25px;
         padding-right: 25px;
-        //margin-bottom: 10px;
         line-height: 30px;
 `;
 
@@ -109,7 +103,6 @@ export const ItemButton = styled.button`
         &:hover {
                 background-color: white;
                 color: black;
-                /* border: 3px solid black; */
                 font-weight: bold;
                 border-radius: 10px;
                 font-size: 16px;

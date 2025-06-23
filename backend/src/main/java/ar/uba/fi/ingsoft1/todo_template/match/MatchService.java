@@ -1,12 +1,12 @@
 package ar.uba.fi.ingsoft1.todo_template.match;
 
 import ar.uba.fi.ingsoft1.todo_template.common.exception.InvalidActionException;
-import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import ar.uba.fi.ingsoft1.todo_template.match.matchOrganizer.MatchOrganizerService;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationType;
 import ar.uba.fi.ingsoft1.todo_template.match.participationType.ParticipationTypeService;
 import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
 import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationService;
 import ar.uba.fi.ingsoft1.todo_template.user.User;
 import ar.uba.fi.ingsoft1.todo_template.user.UserService;
 import ar.uba.fi.ingsoft1.todo_template.field.FieldService;
@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,14 +29,16 @@ public class MatchService {
     private final ParticipationTypeService participationTypeService;
     private final MatchOrganizerService matchOrganizerService;
     private final FieldService fieldService;
+    private final ReservationService reservationService;
 
     public MatchService(MatchRepository matchRepository, UserService userService,
-            ParticipationTypeService participationTypeService, FieldService fieldService, MatchOrganizerService matchOrganizerService) {
+                        ParticipationTypeService participationTypeService, FieldService fieldService, MatchOrganizerService matchOrganizerService, ReservationService reservationService) {
         this.matchRepository = matchRepository;
         this.userService = userService;
         this.participationTypeService = participationTypeService;
         this.matchOrganizerService = matchOrganizerService;
         this.fieldService = fieldService;
+        this.reservationService = reservationService;
     }
 
     public MatchDTO createMatch(MatchCreateDTO matchCreateDTO) {
@@ -51,18 +52,18 @@ public class MatchService {
         ParticipationType partType = participationTypeService.buildFromDTO(matchCreateDTO.getParticipationType());
 
         ReservationDTO reservationDTO = fieldService.addReservationToField(matchCreateDTO.getReservation());
-        Reservation reservation = fieldService.getReservationById(reservationDTO.getId());
+        Reservation reservation = reservationService.getReservationById(reservationDTO.getId());
 
         return matchCreateDTO.asMatch(partType, reservation);
     }
 
     public void deleteMatch(Long id) {
         Match match = matchRepository.findById(id).orElse(null);
-        if (match != null && match.isOrganizer(userService.getUserByEmail(getUserEmail()))) {
+        if (match != null && isCurrentUserOrganizer(match)) {
             matchRepository.deleteById(id);
         }
 
-        fieldService.deleteReservationByOrganizer(match.getReservation().getId());
+        fieldService.deleteReservation(match.getReservation().getId());
     }
 
     public MatchDTO updateMatch(Long id, MatchCreateDTO matchCreateDTO) {
@@ -90,11 +91,8 @@ public class MatchService {
     }
 
     public MatchDTO joinMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
-        User user = userService.getUserByEmail(email);
+        User user = userService.getCurrentUser();
 
         if (!match.join(user)) {
             throw new InvalidActionException("Can't join match");
@@ -106,11 +104,8 @@ public class MatchService {
     }
 
     public void leaveMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
-        User user = userService.getUserByEmail(email);
+        User user = userService.getCurrentUser();
 
         if (!match.leaveMatch(user)) {
             throw new InvalidActionException("Can't leave match");
@@ -120,12 +115,9 @@ public class MatchService {
     }
 
     public void closeMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
 
-        if (!match.isOrganizer(userService.getUserByEmail(email))) {
+        if (!isCurrentUserOrganizer(match)) {
             throw new InvalidActionException("You don't have permissions to close the match");
         }
         ParticipationType participationType = match.getParticipationType();
@@ -138,12 +130,9 @@ public class MatchService {
     }
 
     public MatchDTO startMatch(Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        String email = userDetails.username();
         Match match = getMatchById(id);
 
-        if (!match.isOrganizer(userService.getUserByEmail(email))) {
+        if (!isCurrentUserOrganizer(match)) {
             throw new InvalidActionException("You don't have permissions to start the match");
         }
         matchOrganizerService.finish(match.getId());
@@ -160,14 +149,14 @@ public class MatchService {
     }
 
     public Page<MatchDTO> getSelfOrganizedMatches(@Valid Pageable pageable) {
-        return matchRepository.findAllMatchesOrganizedByActualUser(pageable, getUserEmail()).map(MatchDTO::new);
+        return matchRepository.findAllMatchesOrganizedByActualUser(pageable, userService.getCurrentUserEmail()).map(MatchDTO::new);
     }
 
     public Page<MatchDTO> getMatchesActualPlayerParticipatesIn(@Valid Pageable pageable) {
-        String email = getUserEmail();
+        String email = userService.getCurrentUserEmail();
 
         // Open Matches where the user is in
-        Page<Match> openMatches = matchRepository.findAllOpenMatchesTheUserIsIn(pageable, userService.getUserByEmail(getUserEmail()).getId());
+        Page<Match> openMatches = matchRepository.findAllOpenMatchesTheUserIsIn(pageable, userService.getUserByEmail(email).getId());
 
         // Matches where the user is in a Team
         Page<Match> closeMatches = matchRepository.findAllCloseMatchesTheUserIsIn(pageable, email);
@@ -193,10 +182,9 @@ public class MatchService {
         return matchRepository.findAllWithOpenParticipation(pageable).map(MatchDTO::new);
     }
 
-    private String getUserEmail() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        return userDetails.username();
+    private boolean isCurrentUserOrganizer(Match match) {
+        String userEmail = userService.getCurrentUserEmail();
+        return match.isOrganizer(userService.getUserByEmail(userEmail));
     }
 
 }

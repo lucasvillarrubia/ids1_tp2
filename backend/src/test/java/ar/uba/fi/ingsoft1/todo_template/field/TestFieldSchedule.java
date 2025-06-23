@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,12 +55,12 @@ public class TestFieldSchedule {
         );
     }
 
-    public List<Reservation> buildValidReservations(LocalDate date) {
+    public List<ReservationDTO> buildValidReservations(LocalDate date) {
         User user = buildValidUser();
         Field field = buildValidField();
         return List.of(
-                new Reservation(field, date, LocalTime.of(10, 0), LocalTime.of(11, 0), user),
-                new Reservation(field, date, LocalTime.of(12, 0), LocalTime.of(13, 0), user)
+                new ReservationDTO(new Reservation(field, date, LocalTime.of(10, 0), LocalTime.of(11, 0), user)),
+                new ReservationDTO(new Reservation(field, date, LocalTime.of(12, 0), LocalTime.of(13, 0), user))
         );
     }
 
@@ -161,7 +162,6 @@ public class TestFieldSchedule {
         FieldSchedule schedule = buildValidSchedule(); // Abre lunes, miércoles y viernes de 8 a 22 con intervalos de 60 minutos -> intervalos totales: 14 por día
         List<TimeSlot> slots = schedule.getTimeSlotsForDate(LocalDate.of(2025, 6, 18), List.of()); // Un miércoles
 
-        System.out.println(slots);
         assertTrue(slots.size() == 14);
     }
 
@@ -169,10 +169,9 @@ public class TestFieldSchedule {
     public void testGetTimeSlotsForOpenDateWithReservations() {
         FieldSchedule schedule = buildValidSchedule(); // Abre lunes, miércoles y viernes de 8 a 22 con intervalos de 60 minutos -> intervalos totales: 14 por día
         LocalDate date = LocalDate.of(2025, 7, 2); // Un miércoles
-        List<Reservation> reservations = buildValidReservations(date); // 2 Reservas para el miércoles
+        List<ReservationDTO> reservations = buildValidReservations(date); // 2 Reservas para el miércoles
         List<TimeSlot> slots = schedule.getTimeSlotsForDate(date, reservations);
 
-        System.out.println(slots);
         assertTrue(slots.size() == 12); // Debería quedar 12 intervalos disponibles
     }
 
@@ -190,14 +189,13 @@ public class TestFieldSchedule {
 
         List<TimeSlot> slots = schedule.getTimeSlotsForDate(date, List.of());
 
-        System.out.println(slots);
         assertTrue(slots.size() == 12); // Debería quedar 12 intervalos disponibles
     }
 
     @Test
     public void testGetWeeklyOccupiedTimeSlotsForDateWithoutReservations() {
         FieldSchedule schedule = buildValidSchedule();
-        List<Reservation> reservations = List.of();
+        List<ReservationDTO> reservations = List.of();
 
         int occupied_hours = schedule.getOccupiedHoursThisWeek(reservations);
         assertTrue(occupied_hours == 0); // No debería haber horas ocupadas
@@ -206,8 +204,8 @@ public class TestFieldSchedule {
     @Test
     public void testGetWeeklyOccupiedTimeSlotsForDateWithReservations() {
         FieldSchedule schedule = buildValidSchedule();
-        LocalDate date = LocalDate.of(2025, 6, 20); // Un viernes
-        List<Reservation> reservations = buildValidReservations(date); // 2 Reservas para el viernes
+        LocalDate date = LocalDate.of(2025, 6, 27); // Un viernes
+        List<ReservationDTO> reservations = buildValidReservations(date); // 2 Reservas para el viernes
 
         int occupied_hours = schedule.getOccupiedHoursThisWeek(reservations);
         assertTrue(occupied_hours == 2); // Debería haber 2 horas ocupadas
@@ -216,7 +214,7 @@ public class TestFieldSchedule {
     @Test
     public void testGetMonthlyOccupiedTimeSlotsForDateWithoutReservations() {
         FieldSchedule schedule = buildValidSchedule();
-        List<Reservation> reservations = List.of();
+        List<ReservationDTO> reservations = List.of();
 
         int occupied_hours = schedule.getOccupiedHoursThisMonth(reservations);
         assertTrue(occupied_hours == 0); // No debería haber horas ocupadas
@@ -226,7 +224,7 @@ public class TestFieldSchedule {
     public void testGetMonthlyOccupiedTimeSlotsForDateWithReservations() {
         FieldSchedule schedule = buildValidSchedule();
         LocalDate date = LocalDate.of(2025, 6, 25); // Un miércoles
-        List<Reservation> reservations = new ArrayList<>(buildValidReservations(date));  // 2 Reservas para una semana
+        List<ReservationDTO> reservations = new ArrayList<>(buildValidReservations(date));  // 2 Reservas para una semana
         LocalDate anotherDate = LocalDate.of(2025, 6, 30); // Un viernes
         reservations.addAll(buildValidReservations(anotherDate)); // Agregamos 2 reservas otra semana
         int occupied_hours = schedule.getOccupiedHoursThisMonth(reservations);

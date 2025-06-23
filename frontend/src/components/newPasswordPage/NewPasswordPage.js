@@ -77,7 +77,6 @@ export const NewPasswordInput =  styled.input.attrs(props => ({
   border-radius: 15px;
   font-size: 20px;
   font-family: 'Bebas Neue', sans-serif;
-  /* width: 100%; */
   ::placeholder {
     opacity: 50%;
   }
@@ -87,8 +86,6 @@ export const NewPasswordInput =  styled.input.attrs(props => ({
     -webkit-box-shadow: 0 0 0 10px white inset; /* Cambié var(--gray-bg) a white si el background es blanco */
     -webkit-text-fill-color: gray; /* Mantenemos el color de texto para autofill */
   }
-  /* Quitamos esta línea ya que ahora es un input */
-  /* -webkit-text-fill-color: gray; */ 
   
   @media screen and (min-width: 768px) {
     width: 500px;

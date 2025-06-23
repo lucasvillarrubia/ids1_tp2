@@ -35,7 +35,6 @@ public class EmailService {
         String validationLink = "Te damos la bienvenida a FutbolApp\n" +
                 frontendBaseUrl + "/verify-email?" + to + "&token=" + validationToken
                 +  "\n\n¡Gracias por unirte a FutbolApp!";;
-        System.out.println("Enviando mail a: " + to + " con token de acceso: " + validationToken);
         sendEmail(to, subject, validationLink);
     }
 

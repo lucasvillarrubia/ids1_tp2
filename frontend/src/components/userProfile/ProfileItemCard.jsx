@@ -12,36 +12,29 @@ const ProfileItemCard = (item) => {
 
     let label = ''
     let extraInfo = ''
-    // let keyOrId = ''
     const keyOrId = item.id ?? item._id ?? item.name
     const encodedKey = encodeURIComponent(keyOrId)
     switch (item.category) {
         case 'teams':
             label = `Equipo: ${item.name}`
-            // keyOrId = item.name
             extraInfo = `Capitán: ${item.captain}`
             break
 
         case 'fields':
             label = `Cancha: ${item.name}`
-            // keyOrId = item.id
             extraInfo = `Ubicación: ${item.location}`
             break
 
         case 'matches':
             label = `Partido #${item.id}`
-            // keyOrId = item.id
             extraInfo = `Tipo: ${item.participationType.type}`
             break
 
         default:
             label = 'Ítem'
-            // keyOrId = 'unknown'
-            // extraInfo = ''
     }
 
     return (
-        // <ProfileItemCardUI onClick={() => navigate(`/${item.category}/${keyOrId}`)}>
         <ProfileItemCardUI onClick={() => navigate(`/${item.category}/${encodedKey}`)}>
             <ProfileItemCardNumber>{label}</ProfileItemCardNumber>
             {extraInfo && <ProfileItemCardDate>{extraInfo}</ProfileItemCardDate>}

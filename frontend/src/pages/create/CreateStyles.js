@@ -10,7 +10,6 @@ export const CreateBG = styled.section`
         padding-top: 150px;
         @media screen and (max-width: 768px) {
                 padding-top: 100px;
-                /* font-size: 20px; */
         }
 `;
 
@@ -34,9 +33,6 @@ export const CreateInfo = styled.div`
         justify-content: center;
         align-items: center;
         gap: 20px;
-        /* & input {
-                margin: 0 20px;
-        } */
         @media screen and (min-width: 768px) {
                 justify-content: baseline;
                 align-items: baseline;
@@ -47,7 +43,6 @@ export const CreateTitle = styled.h2`
         font-size: 20px;
         letter-spacing: 1px;
         color: black;
-        /* text-shadow: var(--borde_fino); */
         font-family: 'Bebas Neue', sans-serif;
         text-overflow: ellipsis;
         word-wrap: break-word;

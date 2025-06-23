@@ -2,7 +2,6 @@ import { styled } from "styled-components";
 
 export const LoginBG = styled.div`
         background: linear-gradient(0deg, var(--marroncito) 0%, var(--tomato) 100%);
-        /* background-color: var(--marroncito); */
         padding: 200px 20px;
         display: flex;
         flex-direction: column;
@@ -32,9 +31,7 @@ export const LoginTitle = styled.h2`
 export const LoginText = styled.p`
         text-align: center;
         text-justify: auto;
-        /* font-style: italic; */
         font-family: 'Bebas Neue', sans-serif;
-        /* text-shadow: var(--borde_fino); */
         color: black;
         padding: 10px;
         @media screen and (max-width: 768px) {
@@ -50,7 +47,6 @@ export const LoginButton = styled.button`
         border-radius: 30px;
         font-size: 15px;
         font-family: 'Bebas Neue', sans-serif;
-        /* font-weight: bold; */
         text-transform: uppercase;
         text-align: center;
         background: var(--amarillo);

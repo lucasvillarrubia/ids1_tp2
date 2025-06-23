@@ -43,6 +43,7 @@ public class MatchOrganizer implements Serializable {
     public void addPlayer(Long playerId) {
         this.availablePlayers.add(playerId);
     }
+
     public void removePlayer(Long playerId) {
         this.availablePlayers.remove(playerId);
     }
@@ -54,15 +55,18 @@ public class MatchOrganizer implements Serializable {
             teamBPlayers.remove(id);
             teamAPlayers.add(id);
         }
-        if (team == 1){
+        else if (team == 1){
             availablePlayers.add(id);
             teamAPlayers.remove(id);
             teamBPlayers.remove(id);
         }
-        if (team == 2){
+        else if (team == 2){
             availablePlayers.remove(id);
             teamAPlayers.remove(id);
             teamBPlayers.add(id);
+        }
+        else{
+            throw new InvalidActionException("Invalid team");
         }
     }
 

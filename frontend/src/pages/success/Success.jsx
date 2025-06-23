@@ -8,7 +8,6 @@ const Success = () => {
     <SuccessBG>
         <p>¡Felicidades! Operación exitosa.</p>
         <SuccessButton onClick={() => { navigate('/') }}>Ir a home</SuccessButton>
-        {/*<SuccessButton onClick={() => { navigate('/my-profile') }}>Mirá tus cosas</SuccessButton>*/}
     </SuccessBG>
   )
 }

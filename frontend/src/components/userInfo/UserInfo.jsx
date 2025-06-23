@@ -8,8 +8,6 @@ const UserInfo = () => {
   return (
     <UserInfoUI>
         <p>Usuario: {currentUser.name}</p>
-        {/*<p>Correo: {currentUser.user.email}</p>*/}
-        {/*<p>Tipo de usuario: </p>*/}
     </UserInfoUI>
   )
 }

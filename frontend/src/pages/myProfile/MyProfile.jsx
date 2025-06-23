@@ -23,7 +23,6 @@ const MyProfile = () => {
 		<MyProfileUI>
 			<MyProfileTitle>Feed</MyProfileTitle>
 			<UserProfilePage />
-			{/* <UserInfo />*/}
 			<ProfileItemsSection category={"matches"} />
 			<ProfileItemsSection category={"teams"} />
 			<ProfileItemsSection category={"fields"} />

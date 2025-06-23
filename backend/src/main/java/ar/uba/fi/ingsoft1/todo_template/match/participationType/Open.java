@@ -26,6 +26,10 @@ public class Open extends ParticipationType {
     public Open(){}
 
     public Open(@Positive @NotNull Integer minPlayersCount, @Positive @NotNull Integer maxPlayersCount, HashSet<User> players) {
+        if (minPlayersCount > maxPlayersCount){
+            throw new IllegalArgumentException("Minimum player count is bigger than the maximum player count");
+        }
+
         this.maxPlayersCount = maxPlayersCount;
         this.minPlayersCount = minPlayersCount;
         this.players = players != null ? players : new HashSet<>();

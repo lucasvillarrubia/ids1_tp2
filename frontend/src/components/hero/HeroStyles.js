@@ -7,7 +7,6 @@ export const HeroUI = styled.div`
         background-color: var(--marroncito);
         background-repeat: repeat;
         background-size: 50%;
-        /* background-image: url('./images/hero2.jpg'); */
 `;
 
 export const HeroBGBlur = styled.div`
@@ -28,15 +27,11 @@ export const HeroTitle = styled.h1`
         font-size: 15vw;
         font-family: 'Bebas Neue', sans-serif;
         color: white;
-        /* font-style: italic; */
         text-align: center;
-        /* font-weight: bold; */
         letter-spacing: 3px;
         word-wrap: break-word;
         word-break: break-all;
-        /* text-overflow: ; */
         line-height: 15vw;
-        /* width: 75vw; */
 `;
 
 export const HeroButton = styled.button`

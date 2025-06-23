@@ -36,7 +36,6 @@ const ProfileItemsSection = ({ category }) => {
 		if (!items || items.length === 0) {
 			return <h6>No creaste nada todavía</h6>
 		}
-		console.log(items);
 		return Array.isArray(items) && items.map((item, i) => (
 			<ProfileItemCard key={item._id || item.name || i} {...item} category={category} />
 		))

@@ -20,7 +20,6 @@ export const MenuUI = styled.ul`
         background-color: rgb(0, 0, 0);
         backdrop-filter: blur(10px);
         z-index: 3;
-        /* padding-top: 20px; */
         display: flex;
         flex-direction: column;
         justify-content: last baseline;
@@ -48,16 +47,6 @@ export const MenuUI = styled.ul`
                 padding-right: 20px;
             }
         }
-        /* & li {
-                font-size: 30px;
-                font-family: 'Kanit', sans-serif;
-                color: white;
-                padding-right: 50px;
-                @media screen and (max-width: 768px) {
-                        width: 100%;
-                        padding-right: 20px;
-                }
-        } */
         & a:hover {
                 text-decoration: underline;
                 @media screen and (max-width: 768px) {
@@ -74,15 +63,6 @@ export const MenuUI = styled.ul`
                 text-decoration: none;
             }
         }
-        /* & li:hover {
-                text-decoration: underline;
-                @media screen and (max-width: 768px) {
-                        background-color: white;
-                        & a {
-                                color: black;
-                        }
-                }
-        } */
         @media screen and (max-width: 768px) {
                 background-color: rgba(0, 0, 0, 0.7);
         }

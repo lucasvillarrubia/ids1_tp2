@@ -24,7 +24,7 @@ public class SecurityConfig {
     public static final String[] PUBLIC_ENDPOINTS = {"/users", "/sessions",
             "/users/login" , "/partido/","/partido","/partido/partido",
             "/partido/availablePartidos", "/fields/**","/mail/sendEmail", "/mail/verify-email/**","/password_reset/new-password/**",
-            "/password_reset/request-reset/**" }; // "/fields", "/fields/", "/fields/**"
+            "/password_reset/request-reset/**" };
 
 
     private final JwtAuthFilter authFilter;

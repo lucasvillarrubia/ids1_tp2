@@ -41,8 +41,6 @@ const Items = () => {
               <p>Todavía no hay resultados de esto. Creá uno!</p>
           )}
         <AddInstanceButton onClick={() => {
-            console.log('Navigating to create page');
-            console.log('Selected Category:', selectedCat);
             navigate('/create');
         }}/>
       </ItemCardsContainer>

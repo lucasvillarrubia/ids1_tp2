@@ -3,6 +3,7 @@ package ar.uba.fi.ingsoft1.todo_template.field;
 import java.time.LocalDate;
 import java.util.List;
 
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationService;
 import ar.uba.fi.ingsoft1.todo_template.user.UserZones;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,11 @@ public class FieldRestController {
 
     private final FieldService fieldService;
 
-    public FieldRestController(FieldService fieldService) {
+    private final ReservationService reservationService;
+
+    public FieldRestController(FieldService fieldService, ReservationService reservationService) {
         this.fieldService = fieldService;
+        this.reservationService = reservationService;
     }
 
     @GetMapping(produces = "application/json")
@@ -71,8 +75,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Fields found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Owner not found", content = @Content)
     public ResponseEntity<?> getFieldsOwns() {
-        String ownerEmail = fieldService.getCurrentUser().getEmail();
-        return ResponseEntity.ok(fieldService.getFieldsByOwner(ownerEmail).stream().toList());
+        return ResponseEntity.ok(fieldService.getCurrentUserOwnedFields().stream().toList());
     }
 
     @GetMapping(value = "/zone/{zone}", produces = "application/json")
@@ -110,7 +113,7 @@ public class FieldRestController {
     @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "404", description = "Field not found", content = @Content)
     public ResponseEntity<?> getReservationsByFieldId(@PathVariable @Positive Long id) {
-        return ResponseEntity.ok(fieldService.getReservationsByFieldId(id).stream().toList());
+        return ResponseEntity.ok(reservationService.getReservationsByFieldId(id).stream().toList());
     }
 
     @GetMapping(value = "{id}/reservations/availableSlots", produces = "application/json")
@@ -127,15 +130,14 @@ public class FieldRestController {
     @Operation(summary = "Get all reservations for a field by its id")
     @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
     public List<ReservationDTO> getReservationsByOrganizer(@PathVariable @Positive String organizerEmail) {
-        return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
+        return reservationService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
     }
 
     @GetMapping(value = "/reservations/organizer/me", produces = "application/json")
     @Operation(summary = "Get all reservations for a field by its id")
     @ApiResponse(responseCode = "200", description = "Reservations found", content = @Content(mediaType = "application/json"))
     public List<ReservationDTO> getMyReservations() {
-        String organizerEmail = fieldService.getCurrentUser().getEmail();
-        return fieldService.getReservationByOrganizerEmail(organizerEmail).stream().toList();
+        return reservationService.getCurrentUserReservations().stream().toList();
     }
 
     @GetMapping(value = "/{id}/reservations/statistics", produces = "application/json")
@@ -221,11 +223,9 @@ public class FieldRestController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> deleteReservation(
             @PathVariable @Positive Long reservationId) {
-        fieldService.deleteReservationByOwner(reservationId);
+        fieldService.deleteReservation(reservationId);
         return ResponseEntity.ok().build();
     }
-
-    // PATCH
 
     @PatchMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
     @Operation(summary = "Update a field by its id")
