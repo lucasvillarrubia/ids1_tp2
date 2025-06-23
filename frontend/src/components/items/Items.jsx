@@ -47,22 +47,6 @@ const Items = () => {
             }}/>
           </ItemCardsContainer>)}
         {!selectedCat && (<HomeTitle>MIRÁ LO QUE HAY, SELECCIONÁ UNA CATEGORÍA</HomeTitle>)}
-      {/* {(renderCount >= INITIAL_LIMIT) && (
-        <ButtonContainer>
-          <ItemsSectionButton
-            onClick={() => setLimit(previous => previous - INITIAL_LIMIT)}
-            disabled={limit === INITIAL_LIMIT}
-          >
-            Ver menos
-          </ItemsSectionButton>
-          <ItemsSectionButton
-            onClick={() => setLimit(previous => previous + INITIAL_LIMIT)}
-            disabled={(renderCount % INITIAL_LIMIT) !== 0}
-          >
-            Más productos
-          </ItemsSectionButton>
-        </ButtonContainer>
-      )} */}
     </HomeSection>
   );
 };

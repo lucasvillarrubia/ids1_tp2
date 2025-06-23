@@ -122,7 +122,6 @@ const ItemCard = ({ id, name, ownerEmail, location, zone, price, features, sched
     );
   };
 
-  // itemIdentifier is the id (if exists), otherwise the name
   const itemIdentifier = id || name || organizer || 'Sin Identificador';
   const encodedKey = encodeURIComponent(itemIdentifier)
   const navigate = useNavigate();

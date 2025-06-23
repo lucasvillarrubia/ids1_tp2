@@ -7,7 +7,6 @@ import Home from '../pages/home/Home';
 import ProtectedRoute from '../components/globalComponents/ProtectedRoute/ProtectedRoute';
 import Create from '../pages/create/Create';
 import Success from '../pages/success/Success';
-import UserProfilePage from "../components/userProfilePage/UserProfilePage.jsx";
 import VerifyEmailPage from "../components/verifyEmailPage/verifyEmailPage.jsx";
 import ForgotPasswordPage from "../components/forgotPasswordPage/ForgotPasswordPage.jsx";
 import NewPasswordPage from "../components/newPasswordPage/NewPasswordPage.jsx";
