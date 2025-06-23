@@ -2,7 +2,7 @@ import React from 'react'
 import { MenuBG, MenuUI, MenuExit } from './MenuStyles'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { logout } from "../../features/users/usersSlice.js";
+import {logoutUser} from "../../features/users/usersAPI.js";
 
 
 const Menu = ({ menuDisplay, setMenuDisplay }) => {
@@ -10,7 +10,7 @@ const Menu = ({ menuDisplay, setMenuDisplay }) => {
         const { currentUser } = useSelector(state => state.users);
 
         const handleLogout = () => {
-                dispatch(logout());
+                dispatch(logoutUser);
                 setMenuDisplay(false);
         };
 

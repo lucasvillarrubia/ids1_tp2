@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import { ItemCardsContainer, ItemsSectionButton, ButtonContainer } from "./ItemStyles.js";
 import ItemCard from "./ItemCard.jsx";
 import { HomeTitle, HomeSection } from "../../pages/home/HomeStyles";
 import { useSelector, useDispatch } from "react-redux";
-import { INITIAL_LIMIT } from "../../utils/constants"
+import { INITIAL_LIMIT } from "../../utils/index.js"
 import AddInstanceButton from "./AddInstanceButton";
 import { loadItemsByGenre } from "../../features/items/itemsAPI.js";
 import { setItems } from "../../features/items/itemsSlice.js";
@@ -31,21 +31,22 @@ const Items = () => {
 
   return (
     <HomeSection>
-      <HomeTitle>RESULTADOS</HomeTitle>
-      <ItemCardsContainer>
-          {items.length > 0 ? (
-              items.slice(0, limit).map(item => (
-                  <ItemCard key={item.id} {...item} />
-              ))
-          ) : (
-              <p>Todavía no hay resultados de esto. Creá uno!</p>
-          )}
-        <AddInstanceButton onClick={() => {
-            console.log('Navigating to create page');
-            console.log('Selected Category:', selectedCat);
-            navigate('/create');
-        }}/>
-      </ItemCardsContainer>
+        {selectedCat && (<HomeTitle>RESULTADOS</HomeTitle>)}
+        {selectedCat && (<ItemCardsContainer>
+              {items.length > 0 ? (
+                  items.slice(0, limit).map(item => (
+                      <ItemCard key={item.id} {...item} />
+                  ))
+              ) : (
+                  <p>Todavía no hay resultados de esto. Creá uno!</p>
+              )}
+            <AddInstanceButton onClick={() => {
+                console.log('Navigating to create page');
+                console.log('Selected Category:', selectedCat);
+                navigate('/create');
+            }}/>
+          </ItemCardsContainer>)}
+        {!selectedCat && (<HomeTitle>MIRÁ LO QUE HAY, SELECCIONÁ UNA CATEGORÍA</HomeTitle>)}
       {/* {(renderCount >= INITIAL_LIMIT) && (
         <ButtonContainer>
           <ItemsSectionButton

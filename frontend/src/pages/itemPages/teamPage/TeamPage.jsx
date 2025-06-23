@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import PlayerCard from './PlayerCard.jsx';
 import {
@@ -11,17 +11,19 @@ import {
     ButtonContainer,
     ExpandedItemCardUI,
     PlayersList,
-    TeamContainer,
-    MatchContainer
+    TeamContainer
 } from '../itemPagesStyles.js';
 import ItemsForm from "../../../components/itemsForm/ItemsForm.jsx";
-import {addPlayerThunk, deleteTeamThunk, removePlayerThunk} from "../../../features/teams/teamsSlice.js";
+import {addPlayerThunk, deleteTeamThunk, fetchTeams, removePlayerThunk} from "../../../features/teams/teamsSlice.js";
 
 const TeamPage = () => {
     const { teamId } = useParams();
     const [editing, setEditing] = useState(false);
     const navigate = useNavigate();
-    const { dispatch } = useDispatch();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchTeams());
+    }, [dispatch]);
     const { currentUser } = useSelector(state => state.users);
     console.log(useSelector(state => state.teams.list));
     console.log(useSelector(state => state.teams));
@@ -53,7 +55,6 @@ const TeamPage = () => {
         try {
             await dispatch(addPlayerThunk({ id: team.name, playerName }));
             navigate('/me');
-
         } catch (error) {
             console.error("Error al agregar jugador:", error);
             alert("No se pudo agregar el jugador.");

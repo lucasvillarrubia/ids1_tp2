@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -16,10 +16,14 @@ import {
 import { joinMatch, leaveMatch, startMatch, closeMatch, updateMatch, deleteMatch } from '../../../features/matches/matchesAPI.js'
 import ItemsForm from "../../../components/itemsForm/ItemsForm.jsx";
 import PlayerCard from "../teamPage/PlayerCard.jsx";
+import {fetchMatches} from "../../../features/matches/matchesSlice.js";
 
 const MatchPage = () => {
     const { matchId } = useParams();
     const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchMatches());
+    }, [dispatch]);
     const navigate = useNavigate();
     const [editing, setEditing] = useState(false);
     const { currentUser } = useSelector(state => state.users);

@@ -4,6 +4,10 @@ import { ProfileItemCardsContainer, ProfileSectionTitle } from './ProfileStyles'
 import { useSelector } from 'react-redux'
 
 const ProfileItemsSection = ({ category }) => {
+	if (!category) {
+		return <h6>Error al renderizar items</h6>
+	}
+
 	const items = useSelector(state => {
 		switch (category) {
 			case 'matches':
@@ -33,12 +37,12 @@ const ProfileItemsSection = ({ category }) => {
 	}
 
 	function renderProfileItemsSection() {
-		if (!items || items.length === 0) {
+		if (!items || items.length === 0 || items === [] || items === {} || items === '' || !Array.isArray(items)) {
 			return <h6>No creaste nada todavía</h6>
 		}
 		console.log(items);
-		return Array.isArray(items) && items.map((item, i) => (
-			<ProfileItemCard key={item._id || item.name || i} {...item} category={category} />
+		return items.map((item, i) => (
+			<ProfileItemCard key={item?._id || item.name || i} {...item} category={category} />
 		))
 	}
 
