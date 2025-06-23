@@ -22,12 +22,11 @@ export const loadItemsByGenre = (genre) => async (dispatch) => {
                         ? data.content
                         : [];
 
-                if (itemsArray.length === 0) {
+                if (itemsArray.length === 0 || !itemsArray[0] || typeof itemsArray[0] !== 'object') {
                         dispatch(setItems([]));
                         return;
                 }
 
-                // Optional: gather all keys if needed
                 const allKeys = new Set();
                 itemsArray.forEach(item => {
                         Object.keys(item).forEach(key => allKeys.add(key));

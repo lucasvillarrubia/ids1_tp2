@@ -19,6 +19,7 @@ export const ItemCardUI = styled.div`
         justify-content: center;
         align-items: center;
         gap: 10px;
+        cursor: pointer;
 `;
 
 export const AddInstanceButtonUI = styled.button`

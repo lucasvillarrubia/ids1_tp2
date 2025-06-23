@@ -8,7 +8,7 @@ const Categories = ({ fromPage }) => {
   const categories = useSelector(state => state.categories.categories);
   return (
     <HomeSection>
-      <HomeTitle>{(fromPage === 'create') ? "Elegí entre estas categorías" : "MIRÁ LO QUE HAY"}</HomeTitle>
+      <HomeTitle>{(fromPage === 'create') ? "Elegí entre estas categorías" : "FEED"}</HomeTitle>
       <CategoryCardsContainer>
         {
             categories

@@ -1,6 +1,8 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/constants"
-import {logout, setCurrentUser,setAuth} from "./usersSlice.js";
+import {logout} from "./usersSlice.js";
+import {selectCategory} from "../categories/categoriesSlice.js";
+import {clearItems} from "../items/itemsSlice.js";
 
 
 /**
@@ -30,15 +32,6 @@ export const createUser = async (userData) => {
         }
 };
 
-export const verifyUser = async (email, code) => {
-        try {
-                const { data } = await axios.patch(`${BASE_URL}/auth/verify`, { email, code });
-                return data;
-        } catch (error) {
-                return alert(error.response.data.msg);
-        }
-}
-
 
 export const loginUser = async (email, password) => {
 
@@ -46,7 +39,7 @@ export const loginUser = async (email, password) => {
         try {
                 const response = await axios.post(`${BASE_URL}/sessions`, { email, password });
                 const token = response.data.accessToken;
-
+                localStorage.setItem('token', token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 const userResponse = await axios.get(`${BASE_URL}/sessions/me`);
                 const name = userResponse.data.name;
@@ -84,6 +77,10 @@ export const getUserProfile = async (token) => {
 
 
 export const logoutUser = (dispatch) => {
+        console.log("Se cerró sesión");
         delete axios.defaults.headers.common["Authorization"];
+        localStorage.removeItem('token');
+        dispatch(selectCategory(null));
+        dispatch(clearItems());
         dispatch(logout());
 };

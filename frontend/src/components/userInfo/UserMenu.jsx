@@ -21,7 +21,7 @@ const UserMenu = () => {
                                           dispatch(toggleUserMenuDisplay());
                                           navigate("/me");
                                   }}>
-                                          Feed
+                                          Mí Perfíl
                                   </p>
                                   {/*<p onClick={() => {*/}
                                   {/*        dispatch(toggleUserMenuDisplay());*/}

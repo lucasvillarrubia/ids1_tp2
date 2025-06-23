@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   ItemCardUI,
   ItemTitle,
@@ -120,10 +122,16 @@ const ItemCard = ({ id, name, ownerEmail, location, zone, price, features, sched
     );
   };
 
+  // itemIdentifier is the id (if exists), otherwise the name
+  const itemIdentifier = id || name || organizer || 'Sin Identificador';
+  const encodedKey = encodeURIComponent(itemIdentifier)
+  const navigate = useNavigate();
+  const itemCategory = useSelector(state => state.categories.selectedCategory);
+
   return (
-    <ItemCardUI>
+    <ItemCardUI onClick={() => navigate(`/${itemCategory}/${encodedKey}`)}>
       <ItemInfo>
-        <ItemAuthor>#{id}</ItemAuthor>
+        <ItemAuthor>#{itemIdentifier}</ItemAuthor>
 
         <ItemTitle>{name || organizer}</ItemTitle>
 

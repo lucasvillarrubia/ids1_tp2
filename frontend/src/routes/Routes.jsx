@@ -38,9 +38,15 @@ function Routes () {
                         <Route element={<ProtectedRoute redirPath={'/login'} />}>
                             <Route path='/congratulations' element={<Success />} />
                         </Route>
-                        <Route path="/teams/:teamId" element={<TeamPage />} />
-                        <Route path="/matches/:matchId" element={<MatchPage />} />
-                        <Route path="/fields/:fieldId" element={<FieldPage />} />
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path="/teams/:teamId" element={<TeamPage />} />
+                        </Route>
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path="/matches/:matchId" element={<MatchPage />} />
+                        </Route>
+                        <Route element={<ProtectedRoute redirPath={'/login'} />}>
+                            <Route path="/fields/:fieldId" element={<FieldPage />} />
+                        </Route>
                         <Route path='*' element={<NotFound />} />
                 </AllRoutes>
         )

@@ -1,6 +1,15 @@
 import axios from "axios";
 import { BASE_URL } from "../../utils";
 
+export const getMyMatches = () => async (dispatch) => {
+    try {
+        const res = await axios.get(`${BASE_URL}/matches/organizedMatches`);
+        dispatch({ type: "matches/setList", payload: res.data });
+    } catch (err) {
+        console.error("getMyMatches failed", err);
+    }
+}
+
 export const joinMatch = (id) => async (dispatch) => {
     try {
         const res = await axios.post(`${BASE_URL}/matches/join/${id}`);

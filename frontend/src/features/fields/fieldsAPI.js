@@ -1,6 +1,16 @@
 import axios from "axios"
 import { BASE_URL } from "../../utils/index.js"
 
+export const getMyFields = (ownerEmail) => async (dispatch) => {
+    try {
+        console.log("Obteniendo canchas del usuario")
+        const res = await axios.get(`${BASE_URL}/fields/owner/${ownerEmail}`)
+        dispatch({ type: "fields/setMyFields", payload: res.data })
+    } catch (err) {
+        console.error("Error al obtener las canchas del usuario:", err)
+    }
+}
+
 export const updateField = (id, fieldDTO) => async (dispatch) => {
     try {
         const res = await axios.patch(`${BASE_URL}/fields/${id}`, fieldDTO)

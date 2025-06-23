@@ -7,6 +7,7 @@ export const HomeSection = styled.section`
         justify-content: center;
         align-items: center;
         max-width: 100%;
+        padding-bottom: 100px;
 `;
 
 export const HomeTitle = styled.h2`

@@ -8,11 +8,17 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 const ProfileItemCard = (item) => {
+    if (!item || !item.category) {
+        return <h6>Error al renderizar el ítem</h6>
+    }
     const navigate = useNavigate()
 
     let label = ''
     let extraInfo = ''
     const keyOrId = item.id ?? item._id ?? item.name
+    if (!keyOrId || keyOrId === '') {
+        return <h6>Error al renderizar el ítem</h6>
+    }
     const encodedKey = encodeURIComponent(keyOrId)
     switch (item.category) {
         case 'teams':

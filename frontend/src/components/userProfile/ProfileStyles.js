@@ -80,7 +80,7 @@ export const ProfileItemCardUI = styled.div`
         flex-direction: column;
         justify-content: center;
         align-items: baseline;
-        width: 450px;
+        width: 60vw;
         height: 200px;
         /* background: #353535; */
         border-radius: 15px;

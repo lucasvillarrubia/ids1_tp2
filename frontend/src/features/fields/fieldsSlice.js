@@ -25,6 +25,10 @@ const {
             .addCase("fields/removeField", (state, action) => {
                 state.list = state.list.filter(f => f.id !== action.payload)
             })
+            .addCase("fields/setMyFields", (state, action) => {
+                console.log("Estableciendo canchas del usuario desde slice:", action.payload)
+                state.list = action.payload
+            })
     }
 })
 

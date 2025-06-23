@@ -23,7 +23,7 @@ export const deleteTeamThunk = createAsyncThunk(
 export const addPlayerThunk = createAsyncThunk(
     'teams/addPlayer',
     async ({ id, playerName }) => {
-        const player = await addPlayer({ id, playerName });
+        const player = await addPlayer(id, playerName);
         return { id, player };
     }
 );
@@ -31,7 +31,7 @@ export const addPlayerThunk = createAsyncThunk(
 export const removePlayerThunk = createAsyncThunk(
     'teams/removePlayer',
     async ({ id, playerName }) => {
-        await removePlayer({ id, playerName });
+        await removePlayer(id, playerName);
         return { id, playerName };
     }
 );

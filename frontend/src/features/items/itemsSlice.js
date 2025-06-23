@@ -14,10 +14,14 @@ export const itemsSlice = createSlice({
                 setItems(state, action) {
                         state.items = action.payload;
                         state.totalItems = action.payload.length;
+                },
+                clearItems(state) {
+                        state.items = [];
+                        state.totalItems = 0;
                 }
         }
 });
 
-export const { getItems, setItems } = itemsSlice.actions;
+export const { getItems, setItems, clearItems } = itemsSlice.actions;
 
 export default itemsSlice.reducer;
