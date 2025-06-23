@@ -1,12 +1,7 @@
 package ar.uba.fi.ingsoft1.todo_template.team;
 import java.util.ArrayList;
 import java.util.List;
-
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import ar.uba.fi.ingsoft1.todo_template.config.security.JwtUserDetails;
 import jakarta.persistence.*;
 
 @Entity(name = "teams")
@@ -32,18 +27,11 @@ public class Team {
     @ElementCollection
     private List<String> players;
 
-    public Team() {
+    public Team(){}
+
+    public Team(String captain) {
         this.name = name;
-        this.captain = getUser();
-        this.logo = null;
-        this.colors = null;
-        this.skill = null;
-        this.players = new ArrayList<>();
-        this.players.add(captain);
-    }
-    public Team(String name) {
-        this.name = name;
-        this.captain = getUser();
+        this.captain = captain;
         this.logo = null;
         this.colors = null;
         this.skill = null;
@@ -134,11 +122,4 @@ public class Team {
     public boolean isComplete() {
         return this.players.size() == 5;
     }
-
-    private String getUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        JwtUserDetails userDetails = (JwtUserDetails) principal;
-        return userDetails.username();
-            
-    }    
 }

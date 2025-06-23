@@ -65,7 +65,6 @@ const NewPasswordPage = () => {
         setPasswordResetSuccesful(true);
         setStatusMessage('¡Contraseña restablecida con éxito! Serás redirigido al inicio de sesión.');
         resetForm();
-        //setTimeout(() => navigate('/login'), 4000); // Redirigir al login después de un éxito
       } else {
         const errorData = await response.json().catch(() => ({ message: 'Error desconocido' }));
         setStatusMessage(`Error al restablecer la contraseña: ${errorData.message || response.statusText || 'Inténtalo de nuevo.'}`);

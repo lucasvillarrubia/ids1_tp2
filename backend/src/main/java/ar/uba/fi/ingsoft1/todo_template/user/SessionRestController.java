@@ -77,7 +77,7 @@ class SessionRestController {
     @Operation(summary =  "Get zones")
         public List<String> getAllUserZones() {
             return Arrays.stream(UserZones.values())
-                    .map(Enum::name) // Gets the enum name (e.g., "VICENTE_LOPEZ")
+                    .map(Enum::name)
                     .collect(Collectors.toList());
         }
 

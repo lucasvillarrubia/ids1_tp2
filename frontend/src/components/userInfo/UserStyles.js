@@ -32,9 +32,7 @@ export const UserMenuUI = styled.div`
         top: 25%;
         right: 0;
         width: 25vw;
-        //height: 25vh;
         min-width: 320px;
-        /* background-color: rgb(0, 0, 0); */
         background-color: var(--marronzote);
         backdrop-filter: blur(10px);
         z-index: 3;
@@ -49,14 +47,12 @@ export const UserMenuUI = styled.div`
         & p {
                 color: white;
                 font-size: 25px;
-                /* width: 100%; */
                 text-align: left;
                 cursor: pointer;
         }
         & h6 {
                 color: white;
                 font-size: 30px;
-                /* width: 100%; */
                 text-align: left;
         }
         & p:hover {

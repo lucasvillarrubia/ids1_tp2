@@ -13,9 +13,6 @@ export const getMyTeams = (email) => async (dispatch) => {
 
 export const updateTeam = async (id, teamData) => {
     const response = await axios.patch(`${BASE_URL}/teams/${id}`, teamData);
-    if (response) {
-        console.log("Se actualizó equipo", res.data);
-    }
     return response.data;
 };
 
@@ -37,8 +34,5 @@ export const removePlayer = async (id, playerName) => {
 
 export const deleteTeam = async (id) => {
     const response = await axios.delete(`${BASE_URL}/teams/${id}`);
-    if (response) {
-        console.log("Se eliminó equipo", res.data);
-    }
     return response.data;
 };

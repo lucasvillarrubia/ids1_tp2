@@ -7,7 +7,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import ar.uba.fi.ingsoft1.todo_template.reservation.Reservation;
+import ar.uba.fi.ingsoft1.todo_template.common.exception.DuplicateEntityException;
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationCreateDTO;
+import ar.uba.fi.ingsoft1.todo_template.reservation.ReservationDTO;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -96,7 +98,7 @@ public class FieldSchedule implements Serializable{
         this.unavailableTimeSlots.add(timeSlot);
     }
 
-    public List<TimeSlot> getTimeSlotsForDate(LocalDate date, List<Reservation> reservations) {
+    public List<TimeSlot> getTimeSlotsForDate(LocalDate date, List<ReservationDTO> reservations) {
         DayOfWeek day = date.getDayOfWeek();
         if (!days.contains(day)) {
             return new ArrayList<>();
@@ -114,8 +116,6 @@ public class FieldSchedule implements Serializable{
 
             actualTimeSlotStart = nextTimeSlotStart;
         }
-
-        System.out.println("Reserved time slots for " + date + ": " + reservations.stream().map(res -> res.getStart() + " - " + res.getEnd()).toList());
 
         timeSlots.removeIf(slot -> reservations.stream()
             .anyMatch(reservation -> 
@@ -173,13 +173,13 @@ public class FieldSchedule implements Serializable{
         return total_hours;
     }
 
-    public int getOccupiedHoursThisWeek(List<Reservation> reservations) {
+    public int getOccupiedHoursThisWeek(List<ReservationDTO> reservations) {
         if (reservations == null || reservations.isEmpty()) {
             return 0;
         }
 
         int occupied_hours = 0;
-        for (Reservation reservation : reservations) {
+        for (ReservationDTO reservation : reservations) {
             if (reservation.getDate().isBefore(LocalDate.now()) ||
                 reservation.getDate().isAfter(LocalDate.now().plusDays(7))) {
                 continue;
@@ -189,13 +189,13 @@ public class FieldSchedule implements Serializable{
         return occupied_hours;
     }
 
-    public int getOccupiedHoursThisMonth(List<Reservation> reservations) {
+    public int getOccupiedHoursThisMonth(List<ReservationDTO> reservations) {
         if (reservations == null || reservations.isEmpty()) {
             return 0;
         }
 
         int occupied_hours = 0;
-        for (Reservation reservation : reservations) {
+        for (ReservationDTO reservation : reservations) {
             if (reservation.getDate().getMonth() != LocalDate.now().getMonth() ||
                 reservation.getDate().getYear() != LocalDate.now().getYear()) {
                 continue;
@@ -203,5 +203,26 @@ public class FieldSchedule implements Serializable{
             occupied_hours += reservation.getEnd().getHour() - reservation.getStart().getHour();
         }
         return occupied_hours;
+    }
+
+    public void checkForAvailableTimeSlot(ReservationCreateDTO reservation){
+        if (getUnavailableTimeSlots().stream()
+                .anyMatch(unavailable -> reservation.getStart().isBefore(unavailable.getEndHour()) &&
+                        reservation.getEnd().isAfter(unavailable.getStartHour()))) {
+            throw new DuplicateEntityException("Blocked slot", "time slot");
+        }
+    }
+
+    public void checkForValidHours(ReservationCreateDTO reservation){
+        if (getStartHour().isAfter(reservation.getStart()) ||
+                getEndHour().isBefore(reservation.getEnd())) {
+            throw new IllegalArgumentException("Reservation time slot is outside of field's schedule.");
+        }
+        if (reservation.getDate().isBefore(LocalDate.now()) || (reservation.getDate().isEqual(LocalDate.now()) && reservation.getStart().isBefore(LocalTime.now()))) {
+            throw new IllegalArgumentException("Cannot reserve a field for a past date");
+        }
+        if (reservation.getStart().isAfter(reservation.getEnd())) {
+            throw new IllegalArgumentException("Start hour must be before end hour");
+        }
     }
 }

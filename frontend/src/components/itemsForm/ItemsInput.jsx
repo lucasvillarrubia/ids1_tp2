@@ -21,7 +21,6 @@ const ItemsInput = ({ name, type, id, htmlFor, placeholder, options = [], childr
                                         </div>
                                     ))}
                                     <ArrayButton type="button" onClick={() => {
-                                        // console.log("holi");
                                         push('');
                                     }}>+ Agregar</ArrayButton>
 
@@ -79,8 +78,6 @@ const ItemsInput = ({ name, type, id, htmlFor, placeholder, options = [], childr
                                                 </div>
                                             );
                                     }
-
-                                    // Fallback to standard input
                                     return (
                                         <ItemInputStyled
                                             {...field}

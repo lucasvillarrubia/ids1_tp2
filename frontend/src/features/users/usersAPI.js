@@ -28,8 +28,6 @@ export const createUser = async (userData) => {
                         error?.response?.data?.message ||
                         error?.message ||
                         "Ocurrió un error al crear el usuario.";
-                console.log("Status code:", error.response?.status);
-                console.log("Error data:", error.response?.data);
                 throw new Error(msg);
         }
 };
@@ -59,7 +57,7 @@ export const getUserProfile = async (token) => {
 
                 const userProfileResponse = await axios.get(`${BASE_URL}/sessions/profile`, {
                         headers: {
-                                'Authorization': `Bearer ${token}` // <- Aquí te aseguras que el token se envía
+                                'Authorization': `Bearer ${token}`
                         }
                 });
 
@@ -67,13 +65,13 @@ export const getUserProfile = async (token) => {
         } catch (error) {
                 console.error("getUserProfile error:", error);
 
-                // Extract a meaningful error message from the response
+                
                 const msg =
-                  error?.response?.data?.message || // For messages from your Spring backend
-                  error?.message ||                  // For network errors or generic JS errors
+                  error?.response?.data?.message ||
+                  error?.message ||              
                   "Ocurrió un error desconocido al cargar el perfil del usuario.";
 
-                throw new Error(msg); // Re-throw a standardized Error for the calling component to catch
+                throw new Error(msg);
         }
 };
 

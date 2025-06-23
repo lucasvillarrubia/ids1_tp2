@@ -28,7 +28,6 @@ export const verifyInitialValues = {
 
 export const teamInitialValues = {
     name: '',
-    // logo: '',
     colors: '',
     skill: '',
     players: ['']
@@ -40,20 +39,6 @@ export const fieldInitialValues = {
     zone: '',
     features: [],
 };
-
-// export const matchInitialValues = {
-//     fieldId: 1,
-//     participationType: {
-//         type: 'Open',
-//         minPlayersCount: 2,
-//         maxPlayersCount: 10,
-//         players: []
-//     },
-//     timeRange: {
-//         start: '19:00:00',
-//         end: '20:00:00'
-//     },
-// };
 
 export const matchOpenInitialValues = {
     participationType: {
@@ -75,9 +60,6 @@ export const matchClosedInitialValues = {
         type: 'Close',
         teama: '',
         teamb: ''
-        // minPlayersCount: 2,
-        // maxPlayersCount: 22,
-        // players: ['']
     },
     reservation: {
         fieldId: 1,
@@ -120,7 +102,6 @@ export const matchUpdateInitialValues = (match) => ({
 
 export const teamUpdateInitialValues = (team) => ({
     name: team?.name || '',
-    // logo: team?.logo || '',
     colors: team?.colors || '',
     skill: team?.skill || '',
     players: team?.players || ['']

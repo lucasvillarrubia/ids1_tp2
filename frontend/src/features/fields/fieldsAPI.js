@@ -13,7 +13,6 @@ export const getMyFields = (ownerEmail) => async (dispatch) => {
 
 export const updateField = (id, fieldDTO) => async (dispatch) => {
     try {
-        console.log("Actualizando cancha con id:", id, "con datos:", fieldDTO)
         const res = await axios.patch(`${BASE_URL}/fields/${id}`, fieldDTO)
         dispatch({ type: "fields/updateOne", payload: res.data })
     } catch (err) {
@@ -23,9 +22,7 @@ export const updateField = (id, fieldDTO) => async (dispatch) => {
 
 export const deleteField = (id) => async (dispatch) => {
     try {
-        console.log("Eliminando cancha con id:", id)
         await axios.delete(`${BASE_URL}/fields/${id}`)
-        console.log("se eliminó la cancha con id:", id)
         dispatch({ type: "fields/removeField", payload: id })
     } catch (err) {
         console.error("Error al eliminar la cancha:", err)

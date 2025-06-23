@@ -9,12 +9,9 @@ const CategoryResultsSection = () => {
   useEffect(() => {
     if (!selected) return;
 
-    // Example mapping: category string → endpoint
     const endpoints = {
       'Partidos Abiertos': '/api/matches/availableMatches',
       'Partidos Cerrados': '/api/matches/close',
-      //'Torneos': '/api/tournaments',
-      // Add more as needed
     };
 
     const endpoint = endpoints[selected.name];

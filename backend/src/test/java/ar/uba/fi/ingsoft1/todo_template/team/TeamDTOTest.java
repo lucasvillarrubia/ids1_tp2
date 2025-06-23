@@ -57,18 +57,6 @@ public class TeamDTOTest {
         assertEquals(List.of(team.getCaptain(),"jugador1@example.com", "jugador2@example.com"), team.getPlayers());
     }
 
-//    @Test
-//    public void testAsTeamWithNullPlayersReturnsEmptyList() {
-//        TeamDTO dto = new TeamDTO(
-//                "Lobos", "Juan Lopez", "logo.png", "Rojo", 7, null
-//        );
-//
-//        Team team = dto.asTeam();
-//        assertNotNull(team.getPlayers());
-//        assertEquals(1, team.getPlayers().size());
-//        assertEquals("Juan Lopez", team.getPlayers().get(0));
-//    }
-
     @Test
     public void testAsTeamWithEmptyPlayersArray() {
         TeamDTO dto = new TeamDTO(
@@ -78,7 +66,7 @@ public class TeamDTOTest {
         Team team = dto.asTeam();
 
         assertNotNull(team.getPlayers());
-        //si no hay jugadores esta unicamenre el capitan del equipo
+        //si no hay jugadores esta unicamente el capitan del equipo
         assertFalse(team.getPlayers().isEmpty());
     }
 

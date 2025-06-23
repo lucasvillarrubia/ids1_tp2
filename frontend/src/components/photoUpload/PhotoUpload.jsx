@@ -10,7 +10,6 @@ import { Upload, Camera, CloudUpload } from "lucide-react";
 
 const PhotoUpload = ({ onSearchResults }) => {
     const [searchResults, setSearchResults] = useState();
-    // const [isUploading, setIsUploading] = useState(false);
     const { toast } = useToast();
 
     const uploadMutation = useMutation({

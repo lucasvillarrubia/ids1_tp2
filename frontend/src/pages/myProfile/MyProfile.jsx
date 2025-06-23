@@ -31,7 +31,6 @@ const MyProfile = () => {
 		<MyProfileUI>
 			<MyProfileTitle>Mí Perfíl</MyProfileTitle>
 			<UserProfilePage />
-			{/* <UserInfo />*/}
 			<ProfileItemsSection category={"matches"} />
 			<ProfileItemsSection category={"teams"} />
 			<ProfileItemsSection category={"fields"} />

@@ -21,26 +21,8 @@ export const Form = styled(FormikForm)`
                 flex-wrap: wrap;
                 justify-content: center;
                 align-items: center;
-                /* gap: 10px; */
                 width: 100%;
         }
-        /* & label {
-                font-size: 20px;
-                color: black;
-                text-align: center;
-                width: 100%;
-                font-family: 'Bebas Neue', sans-serif;
-                font-weight: 700;
-                letter-spacing: 1px;
-        } */
-        /* & input {
-                background-color: white;
-                border: none;
-                outline: none;
-                padding: 10px;
-                border-radius: 15px;
-                font-size: 20px;
-        } */
         & a {
                 color: black;
                 text-align: center;
@@ -55,12 +37,6 @@ export const Form = styled(FormikForm)`
                 & div {
                         gap: 5px;
                 }
-                /* & label {
-                        width: 500px;
-                }
-                & input {
-                        width: 500px;
-                } */
         }
 `;
 
@@ -86,7 +62,6 @@ export const LoginSubmit = styled.button`
 export const LoginLabel = styled.label`
         font-size: 20px;
         color: black;
-        /* text-shadow: var(--borde_texto); */
         text-align: center;
         width: 100%;
         font-family: 'Bebas Neue', sans-serif;
@@ -105,7 +80,6 @@ export const LoginInputStyled = styled.input`
         border-radius: 15px;
         font-size: 20px;
         font-family: 'Bebas Neue', sans-serif;
-        /* width: 100%; */
         ::placeholder {
                 opacity: 60%;
         }

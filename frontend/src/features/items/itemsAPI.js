@@ -12,7 +12,6 @@ export const loadItemsByGenre = (genre) => async (dispatch) => {
                 genre = 'matches';
         }
         try {
-                console.log(genre);
                 const res = await axios.get(`${BASE_URL}/${genre}`);
                 const data = res.data;
 

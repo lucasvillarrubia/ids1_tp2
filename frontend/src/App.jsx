@@ -21,10 +21,10 @@ function App() {
         return (
                 <Layout>
                         <Navbar />
-                        {/* <Menu /> */}
+                        {}
                         <Routes />
-                        {/* <Toolbar /> */}
-                        {/* <Footer /> */}
+                        {}
+                        {}
                 </Layout>
         )
 }

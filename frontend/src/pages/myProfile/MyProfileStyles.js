@@ -12,7 +12,6 @@ export const MyProfileUI = styled.div`
         gap: 30px;
         @media screen and (max-width: 768px) {
                 padding-top: 100px;
-                /* font-size: 20px; */
         }
 `;
 
@@ -20,7 +19,6 @@ export const MyProfileTitle = styled.h2`
         font-size: 32px;
         letter-spacing: 1px;
         color: black;
-        /* text-shadow: var(--borde_fino); */
         font-family: 'Bebas Neue', sans-serif;
         text-overflow: ellipsis;
         word-wrap: break-word;
@@ -28,7 +26,6 @@ export const MyProfileTitle = styled.h2`
         max-width: 100%;
         @media screen and (min-width: 768px) {
                 font-size: 30px;
-                /* margin-bottom: 50px; */
         }
 `;
 
@@ -38,7 +35,6 @@ export const MyProfileButton = styled.button`
         border-radius: 30px;
         font-size: 30px;
         font-family: 'Bebas Neue', sans-serif;
-        /* font-weight: bold; */
         text-transform: uppercase;
         text-align: center;
         background: var(--amarillo);

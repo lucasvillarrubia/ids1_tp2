@@ -16,7 +16,6 @@ const UserMenu = () => {
                         }
                         {(userMenuOnDisplay) &&
                           <UserMenuUI>
-                                  {/* <h6>{`¡Hola ${currentUser?.name}!`}</h6>*/}
                                   <h6>{`¡Hola ${currentUser?.name || "Invitado"}!`}</h6>
                                   <p onClick={() => {
                                           dispatch(toggleUserMenuDisplay());

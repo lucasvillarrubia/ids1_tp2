@@ -19,11 +19,6 @@ public record UserProfileDTO(
 ) {
 
     public static UserProfileDTO fromUser(User user) {
-        List<String> collectedZoneNames = user.getZones()
-                .stream()
-                .map(UserZones::name)
-                .toList();
-
         UserProfileDTO userProfileDTO = new UserProfileDTO(
                 user.getId(),
                 user.getName(),

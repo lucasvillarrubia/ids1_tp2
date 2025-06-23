@@ -76,41 +76,6 @@ export const fieldValidationSchema = Yup.object({
     images: Yup.string().nullable()
 });
 
-// export const matchValidationSchema = Yup.object({
-//     fieldId: Yup.number().typeError('Debe ser un número').required('Field ID requerido'),
-//
-//     participationType: Yup.object({
-//         type: Yup.string().oneOf(['Open', 'Close']).required('Tipo requerido'),
-//         minPlayersCount: Yup.number()
-//             .typeError('Debe ser un número')
-//             .when('type', {
-//                 is: 'Open',
-//                 then: schema => schema.required('Requerido en modo Open').min(1),
-//                 otherwise: schema => schema.notRequired(),
-//             }),
-//         maxPlayersCount: Yup.number()
-//             .typeError('Debe ser un número')
-//             .when('type', {
-//                 is: 'Open',
-//                 then: schema => schema.required('Requerido en modo Open').max(50),
-//                 otherwise: schema => schema.notRequired(),
-//             }),
-//         players: Yup.array()
-//             .of(Yup.string().trim())
-//             .when('type', {
-//                 is: 'Open',
-//                 then: schema =>
-//                     schema.max(50, 'Máximo 50 jugadores'),
-//                 otherwise: schema => schema.notRequired(),
-//             }),
-//     }),
-//
-//     timeRange: Yup.object({
-//         start: Yup.string().required('Hora de inicio requerida'),
-//         end: Yup.string().required('Hora de fin requerida'),
-//     }),
-// });
-
 export const matchOpenValidationSchema = Yup.object({
     participationType: Yup.object({
         type: Yup.string().oneOf(['Open']).required(),

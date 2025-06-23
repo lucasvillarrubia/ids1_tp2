@@ -25,8 +25,6 @@ const TeamPage = () => {
         dispatch(fetchTeams());
     }, [dispatch]);
     const { currentUser } = useSelector(state => state.users);
-    console.log(useSelector(state => state.teams.list));
-    console.log(useSelector(state => state.teams));
     // const team = useSelector(state => state.teams.list[decodeURIComponent(teamId)]);
 
     const team = useSelector(state =>

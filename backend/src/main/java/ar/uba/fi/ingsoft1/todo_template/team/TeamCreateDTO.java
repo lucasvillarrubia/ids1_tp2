@@ -47,8 +47,8 @@ public record TeamCreateDTO(
             required = false)
     String[] players
 ) {
-    public Team asTeam() {
-        Team team = new Team(name);
+    public Team asTeam(String userName) {
+        Team team = new Team(name, userName);
         
         if (logo != null && !logo.isEmpty()) {
             team.setLogo(logo);

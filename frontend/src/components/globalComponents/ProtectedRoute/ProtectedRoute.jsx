@@ -11,7 +11,6 @@ const ProtectedRoute = ({ redirPath }) => {
                 return (<FlashMessage redirect={redirPath} message={"Para ver este recurso tenés que iniciar sesión! Aceptá para continuar al Log In"}/>)
         }
         else return (<Outlet />);
-        // return currentUser ? (<Outlet />) : (<Navigate to={redirPath} />)
 }
 
 export default ProtectedRoute
