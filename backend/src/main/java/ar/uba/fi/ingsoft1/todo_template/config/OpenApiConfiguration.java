@@ -35,8 +35,8 @@ public class OpenApiConfiguration {
             var tags = new HashSet<String>();
 
             // Iterate over what spring calls controllers (OpenAPI paths) and paths (OpenAPI operations)
-            for (var entry: openApi.getPaths().entrySet()) {
-                for (var operation: entry.getValue().readOperations()) {
+            for (var entry : openApi.getPaths().entrySet()) {
+                for (var operation : entry.getValue().readOperations()) {
                     tags.addAll(operation.getTags());
                     if (Arrays.asList(PUBLIC_ENDPOINTS).contains(entry.getKey())) {
                         operation.getResponses().remove("403");

@@ -7,15 +7,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sessions")
@@ -35,7 +36,7 @@ class SessionRestController {
     @ApiResponse(responseCode = "401", description = "Invalid username or password supplied", content = @Content)
     public TokenDTO login(
             @Valid @NonNull @RequestBody UserLoginDTO data
-    ) throws MethodArgumentNotValidException {
+    ) {
         return userService
                 .loginUser(data)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
@@ -47,9 +48,37 @@ class SessionRestController {
     @ApiResponse(responseCode = "401", description = "Invalid refresh token supplied", content = @Content)
     public TokenDTO refresh(
             @Valid @NonNull @RequestBody RefreshDTO data
-    ) throws MethodArgumentNotValidException {
+    ) {
         return userService
                 .refresh(data)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
     }
+
+    @GetMapping(value = "/me", produces = "application/json")
+    @Operation(summary = "Get current user's name")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Current user name")
+    public Map<String, String> getCurrentUserName() {
+        String name = userService.getCurrentUserName();
+        return Map.of("name", name);
+    }
+
+    @GetMapping(value = "/profile", produces = "application/json")
+    @Operation(summary = "Get current user's profile")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Current user profile")
+    public ResponseEntity<UserProfileDTO> getCurrentUserProfile() {
+        UserProfileDTO userProfile  = userService.getCurrentUserProfile();
+        return ResponseEntity.ok(userProfile);
+    }
+
+
+    @GetMapping(value = "/user-zones", produces = "application/json")
+    @Operation(summary =  "Get zones")
+        public List<String> getAllUserZones() {
+            return Arrays.stream(UserZones.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+        }
+
 }

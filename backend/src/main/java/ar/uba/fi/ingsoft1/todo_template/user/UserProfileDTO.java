@@ -1,18 +1,33 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
 
-import jakarta.validation.constraints.NotBlank;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Positive;
 
-import java.time.LocalDate;
+import java.util.List;
 
 public record UserProfileDTO(
-        @NotBlank String username,
-        @NotBlank String name,
-        @NotBlank String lastname,
-        LocalDate birthday,
-        @NotBlank String gender
+        Long id,
+        String name,
+        String lastname,
+        String email,
+        @Schema(description = "Edad del usuario", maxLength = 255, example = "23")
+        @Positive
+        Short age,
+        String gender,
+        List<UserZones> zones,
+        String photo
+) {
 
-){
-    public UserProfileDTO(User user) {
-        this(user.getUsername(), user.getName(), user.getLastname(), user.getBirthday(), user.getGender());
+    public static UserProfileDTO fromUser(User user) {
+        UserProfileDTO userProfileDTO = new UserProfileDTO(
+                user.getId(),
+                user.getName(),
+                user.getLastname(),
+                user.getEmail(),
+                user.getAge(),
+                user.getGender(),
+                user.getZones(),
+                user.getPhoto()
+                ); return userProfileDTO;
     }
 }

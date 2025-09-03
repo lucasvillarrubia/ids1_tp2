@@ -21,7 +21,11 @@ import java.util.List;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
 
-    public static final String[] PUBLIC_ENDPOINTS = {"/users", "/sessions", "/movies", "/actors", "/categories", "/ratings"};
+    public static final String[] PUBLIC_ENDPOINTS = {"/users", "/sessions",
+            "/users/login" , "/partido/","/partido","/partido/partido",
+            "/partido/availablePartidos", "/fields/**","/mail/sendEmail", "/mail/verify-email/**","/password_reset/new-password/**",
+            "/password_reset/request-reset/**" };
+
 
     private final JwtAuthFilter authFilter;
 
@@ -44,14 +48,6 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
-
-                        // ADMIN-only endpoints
-                        .requestMatchers("users/admin/**").hasAuthority("ROLE_ADMIN")
-
-                        // USER-only endpoints, if you want to separate them (optional)
-                        //.requestMatchers("/user/**").hasAuthority("USER")
-
-                        // All other authenticated requests allowed
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManager -> sessionManager
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

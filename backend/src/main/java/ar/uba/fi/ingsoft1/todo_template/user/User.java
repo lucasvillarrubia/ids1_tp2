@@ -1,81 +1,64 @@
 package ar.uba.fi.ingsoft1.todo_template.user;
-import ar.uba.fi.ingsoft1.todo_template.ratings.Rating;
 import jakarta.persistence.*;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+
 @Entity(name = "users")
-public class User implements UserDetails, UserCredentials {
+public class User implements UserCredentials {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(unique= true, nullable = false)
-    private String email;
 
     @Column(nullable = false)
     private String name;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String lastname;
 
-    @Column (nullable = false)
-    private LocalDate birthday;
+    @Column(unique= true, nullable = false)
+    private String email;
+
+    @NotEmpty(message = "El usuario debe tener asociado al menos una zona")
+    @ElementCollection
+    @CollectionTable(name = "user_zones", joinColumns = @JoinColumn(name = "id"))
+    @Column(name = "zone")
+    @Enumerated(EnumType.STRING)
+    private List<UserZones> zones;
+
+    @Column(nullable = false)
+    private String password;
+
+    private String photo;
 
     @Column (nullable = false)
     private String gender;
 
-    @Column(nullable = false)
-    private String role;
+    @Column (nullable = false)
+    private Short age;
 
-    @ManyToMany
-    private List<User> solicitudesSeguimiento = new ArrayList<>();
-    @ManyToMany
-    private List<User> seguidores = new ArrayList<>();
-    @ManyToMany
-    private List<User> seguidos = new ArrayList<>();
+    @Column(name = "email-verified")
+    private boolean emailVerified;
 
+    @Column(name = "token-verified")
+    private String tokenVerified;
 
-
-
-    @OneToMany(mappedBy = "user")
-    private List<Rating> ratings;
+    private String role = "USER";
 
     public User() {}
 
-    public User(String username, String password, String email, String name, String lastname, LocalDate birthday, String gender) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
+    public User(String name, String lastname, String email, List<UserZones> zones, String password, String gender, String photo, Short age) {
         this.name = name;
         this.lastname = lastname;
-        this.birthday = birthday;
+        this.email = email;
+        this.zones = zones;
+        this.password = password;
         this.gender = gender;
-        this.role = "USER";
-        this.ratings = new ArrayList<>();
-        this.solicitudesSeguimiento = new ArrayList<>();
-        this.seguidores = new ArrayList<>();
-    }
-
-    @Override
-    public String username() {
-        return this.username;
+        this.photo = photo;
+        this.age = age;
+        this.emailVerified = false;
     }
 
     @Override
@@ -84,89 +67,35 @@ public class User implements UserDetails, UserCredentials {
     }
 
     @Override
-    public String getUsername() {
-        return this.username;
-    }
+    public String email() {return this.email;}
 
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
+    public String getName() { return this.name;}
 
-    public Boolean isAdmin() {
-        return this.role.equals("ADMIN");
-    }
+    public String getLastname() { return this.lastname;}
 
-    public void setAdmin(){
-        this.role = "ADMIN";
-    }
+    public String getEmail() { return this.email;}
 
-    public String getRole() {
-        return this.role;
-    }
+    public List<UserZones> getZones() { return this.zones;}
 
-    public String getName() {
-        return name;
-    }
-    public String getLastname() {
-        return lastname;
-    }
-    public LocalDate getBirthday() {
-        return birthday;
-    }
-    public String getGender() {
-        return gender;
-    }
-    public String getEmail() {
-        return email;
-    }
+    public String getPassword() { return this.password;}
 
-    public List<Rating> getRatings() { return ratings; }
+    public String getGender() { return this.gender;}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public String getPhoto() { return this.photo;}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getRole() { return this.role;}
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
-    }
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
+    public Short getAge() { return this.age;}
 
-    public List<User>  getSolicitudesSeguimiento() { return solicitudesSeguimiento;}
-    public List<User>  getSeguidores() {return seguidores;}
-    public List<User> getSeguidos() {return seguidos;}
+    public boolean isEmailVerified() { return this.emailVerified;}
 
+    public String getTokenVerified() { return this.tokenVerified;}
 
-    public void aceptarSolicitudesSeguimiento(User solicitante) {
-        if(solicitudesSeguimiento.remove(solicitante)) {
-            solicitudesSeguimiento.add(solicitante);
-            solicitante.getSeguidos().add(this);
-        }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified;}
 
-    }
+    public void setTokenVerified(String tokenVerified) { this.tokenVerified = tokenVerified;}
 
-    public void rechazarSolicitudesSeguimiento(User solicitante) {
-        solicitudesSeguimiento.remove(solicitante);
-    }
+    public void setPassword(String newPassword) { this.password = newPassword;}
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
-    }
+    public Long getId() { return this.id;}
 }
